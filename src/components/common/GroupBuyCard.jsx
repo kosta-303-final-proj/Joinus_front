@@ -1,4 +1,3 @@
-import Button from '../common/Button';
 import './GroupBuyCard.css';
 
 export default function GroupBuyCard({ 
@@ -9,9 +8,10 @@ export default function GroupBuyCard({
   deadline,
   progress,
   badge,
+  onClick,
 }) {
   return (
-    <article className="groupbuy-card">
+    <article className="groupbuy-card" onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'deefault'}}>
       {/* 카드 이미지 */}
       <div className="card-image">
       {image && image !== '이미지' ? (

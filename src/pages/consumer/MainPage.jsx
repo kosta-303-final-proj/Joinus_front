@@ -2,9 +2,11 @@ import { useState } from 'react';
 import GroupBuyCard from '../../components/common/GroupBuyCard';
 import './MainPage.css';
 import TopBannerCarousel from './TopBannerCarousel';
+import { useNavigate } from 'react-router-dom';
 
 export default function MainPage() {
   const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
   // 마감 임박 공구
   const deadlineSoonItems = [
@@ -38,6 +40,32 @@ export default function MainPage() {
     { id: 4, title: '단백질 보충제', participants: '참여 30명 / 목표 10명', price: '예상 공동 구매가: 88,000원', image: '/mainPage/proteinSupplement.png'}
   ];
 
+  // 각 섹션별 클릭 핸들러 (더보기용)
+  const handleDeadlineSoonClick = () => {
+    navigate('/gbProductList?type=deadline-soon');
+  };
+
+  const handlePopularClick = () => {
+    navigate('/gbProductList?type=popular');
+  };
+
+  const handleOngoingClick = () => {
+    navigate('/gbProductList?type=ongoing');
+  };
+
+  const handleProposalClick = () => {
+    navigate('/proposalsList?type=popular');
+  };
+
+  // 카드 클릭 핸들러 (상세 페이지용)
+  const handleCardClick = (id, isProposal = false) => {
+    if (isProposal) {
+      navigate(`/proposalDetail/${id}`);
+    } else {
+      navigate(`/gbProductDetail/${id}`);
+    }
+  };
+
   return (
     <div className="mainpage-container">
       {/* Header는 App.jsx에서 공통으로 렌더링 */}
@@ -56,7 +84,16 @@ export default function MainPage() {
         <section className="section">
           <div className="section-header">
             <h2>마감 임박</h2>
-            <a href="#" className="more-link">더보기 &gt;</a>
+            <a 
+              href="#"
+              className="more-link"
+              onClick={(e) => {
+                e.preventDefault();
+                handleDeadlineSoonClick();
+              }}
+              >
+                더보기 &gt;
+              </a>
           </div>
           <div className="card-grid">
             {deadlineSoonItems.map(item => (
@@ -66,6 +103,7 @@ export default function MainPage() {
                 title={item.title}
                 participants={item.participants}
                 deadline={item.deadline}
+                onClick={() => handleCardClick(item.id)}
               />
             ))}
           </div>
@@ -75,7 +113,15 @@ export default function MainPage() {
         <section className="section">
           <div className="section-header">
             <h2>인기공구</h2>
-            <a href="#" className="more-link">더보기 &gt;</a>
+            <a 
+            href="#" 
+            className="more-link"
+            onClick={(e) => {
+              e.preventDefault();
+              handlePopularClick();
+            }}
+            >더보기 &gt;
+            </a>
           </div>
           <div className="card-grid">
             {popularItems.map(item => (
@@ -85,9 +131,7 @@ export default function MainPage() {
                 title={item.title}
                 participants={item.participants}
                 price={item.price}
-                onDetailClick={() => handleDetailClick(item.id)}
-                onJoinClick={() => handleJoinClick(item.id)}
-                primaryButtonText="관심표시"
+                onClick={() => handleCardClick(item.id)}
               />
             ))}
           </div>
@@ -97,7 +141,15 @@ export default function MainPage() {
         <section className="section">
           <div className="section-header">
             <h2>진행중 공구</h2>
-            <a href="#" className="more-link">더보기 &gt;</a>
+            <a 
+            href="#" 
+            className="more-link"
+            onClick={(e) => {
+              e.preventDefault();
+              handleOngoingClick();
+            }}
+            >더보기 &gt;
+            </a>
           </div>
           <div className="card-grid">
             {ongoingItems.map(item => (
@@ -108,9 +160,7 @@ export default function MainPage() {
                 participants={item.participants}
                 price={item.price}
                 progress={item.progress}
-                onDetailClick={() => handleDetailClick(item.id)}
-                onJoinClick={() => handleJoinClick(item.id)}
-                primaryButtonText="참여하기"
+                onClick={() => handleCardClick(item.id)}
               />
             ))}
           </div>
@@ -120,7 +170,15 @@ export default function MainPage() {
         <section className="section">
           <div className="section-header">
             <h2>인기 제안</h2>
-            <a href="#" className="more-link">더보기 &gt;</a>
+            <a 
+            href="#" 
+            className="more-link"           
+            onClick={(e) => {
+              e.preventDefault();
+              handleProposalClick();
+            }}
+            >더보기 &gt;
+            </a>
           </div>
           <div className="card-grid">
             {proposalItems.map(item => (
@@ -130,9 +188,7 @@ export default function MainPage() {
                 title={item.title}
                 participants={item.participants}
                 price={item.price}
-                onDetailClick={() => handleDetailClick(item.id)}
-                onJoinClick={() => handleJoinClick(item.id)}
-                primaryButtonText="관심표시"
+                onClick={() => handleCardClick(item.id, true)}
               />
             ))}
           </div>

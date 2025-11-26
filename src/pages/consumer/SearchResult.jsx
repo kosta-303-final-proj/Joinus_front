@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import GroupBuyCard from '../../components/common/GroupBuyCard';
 import './SearchResult.css';
+import { useNavigate } from 'react-router-dom';
 
 export default function SearchResult() {
   const [searchKeyword] = useState('텀블러');
@@ -8,7 +9,8 @@ export default function SearchResult() {
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [selectedPriceRange, setSelectedPriceRange] = useState([]);
   const [sortBy, setSortBy] = useState('인기순');
-  
+  const navigate = useNavigate();
+
   // 드롭다운 열림/닫힘 상태
   const [isTypeOpen, setIsTypeOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
@@ -48,12 +50,20 @@ export default function SearchResult() {
     );
   };
 
-  const handleDetailClick = (id) => {
-    console.log('상세보기:', id);
+  const handleProposalClick = () => {
+    navigate('/proposalsList?type=popular');
   };
 
-  const handleJoinClick = (id) => {
-    console.log('참여하기:', id);
+  const handleOngoingClick = () => {
+    navigate('/gbProductList?type=ongoing');
+  };
+
+  const handleCardClick = (id, isProposal = false) => {
+    if (isProposal) {
+      navigate(`/proposalDetail/${id}`);
+    } else {
+      navigate(`/gbProductDetail/${id}`);
+    }
   };
 
   return (
@@ -234,7 +244,15 @@ export default function SearchResult() {
             <h2 className="results-section-title">
               제안 <span className="results-count">(제안 4건)</span>
             </h2>
-            <a href="#" className="more-link">더보기 &gt;</a>
+            <a 
+            href="#" 
+            className="more-link"
+            onClick={(e) => {
+              e.preventDefault();
+              handleProposalClick();
+            }}
+            >더보기 &gt;
+            </a>
           </div>
           <div className="results-grid">
             {proposalResults.map(item => (
@@ -246,8 +264,7 @@ export default function SearchResult() {
                 deadline={item.deadline}
                 price={`예상 공동 구매가: ${item.price}`}
                 badge={item.badge}
-                onDetailClick={() => handleDetailClick(item.id)}
-                singleButton={true}
+                onClick={() => handleCardClick(item.id, true)}
               />
             ))}
           </div>
@@ -259,7 +276,15 @@ export default function SearchResult() {
             <h2 className="results-section-title">
               진행 공구 중 <span className="results-count">(공구 4건)</span>
             </h2>
-            <a href="#" className="more-link">더보기 &gt;</a>
+            <a 
+            href="#" 
+            className="more-link"
+            onClick={(e) => {
+              e.preventDefault();
+              handleOngoingClick();
+            }}
+            >더보기 &gt;
+            </a>
           </div>
           <div className="results-grid">
             {ongoingResults.map(item => (
@@ -271,8 +296,7 @@ export default function SearchResult() {
                 deadline={item.deadline}
                 price={`현재 공구가: ${item.price}`}
                 badge={item.badge}
-                onDetailClick={() => handleDetailClick(item.id)}
-                singleButton={true}
+                onClick={() => handleCardClick(item.id)}
               />
             ))}
           </div>
