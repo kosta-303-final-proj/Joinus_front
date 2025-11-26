@@ -151,7 +151,7 @@ export default function SearchResult() {
       {/* 필터 영역 (위로 이동) */}
       <div className="filter-section">
         {/* 타입 드롭다운 */}
-        <div className="filter-dropdown">
+        {/* <div className="filter-dropdown">
           <button
             type="button"
             className="dropdown-button"
@@ -180,7 +180,7 @@ export default function SearchResult() {
               </label>
             </div>
           )}
-        </div>
+        </div> */}
 
         {/* 카테고리 드롭다운 */}
         <div className="filter-dropdown">

@@ -13,7 +13,6 @@ export default function SignUp() {
     email: '',
     address: '',
     detailAddress: '',
-    gender: '',
     agreeMarketing: false
   });
   
@@ -103,7 +102,6 @@ export default function SignUp() {
           email: formData.email,
           address: formData.address,
           detailAddress: formData.detailAddress || null,
-          gender: formData.gender || null,
           agreeMarketing: formData.agreeMarketing
         }),
       });
@@ -264,7 +262,7 @@ export default function SignUp() {
           </div>
 
           {/* 성별 */}
-          <div className="form-group">
+          {/* <div className="form-group">
             <label className="form-label">성별</label>
             <div className="gender-options">
               <label className="radio-label">
@@ -298,7 +296,7 @@ export default function SignUp() {
                 <span>선택 안 함</span>
               </label>
             </div>
-          </div>
+          </div> */}
 
           {/* 추천인 ID */}
           <div className="form-group">
