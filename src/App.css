@@ -28,4 +28,12 @@
   background-color: #f5f5f5;
   padding: 24px;
   overflow-y: auto;
+  margin-left: 293px;
+  transition: margin-left 0.3s ease;
+}
+
+/* 사이드바가 접혔을 때 */
+.app-body-admin:has(.sidebar.collapsed) .app-content-admin,
+.app-content-admin.sidebar-collapsed {
+  margin-left: 70px; /* 접힌 사이드바 너비 */
 }

@@ -1,16 +1,13 @@
 import { useState } from 'react';
 import './NotificationSend.css';
 
+const initialForm = {
+  title: '',
+  content: '',
+}
+
 export default function NotificationSend() {
-  const [formData, setFormData] = useState({
-    title: '',
-    content: '',
-    targetType: '전체',
-    targetCategory: '',
-    sendType: '즉시',
-    scheduledDate: '',
-    scheduledTime: ''
-  });
+  const [formData, setFormData] = useState(initialForm);
 
 
   const handleChange = (e) => {
@@ -101,42 +98,7 @@ export default function NotificationSend() {
             </div>
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="targetType">
-                발송 대상 <span className="required">*</span>
-              </label>
-              <select
-                id="targetType"
-                name="targetType"
-                value={formData.targetType}
-                onChange={handleChange}
-                required
-              >
-                <option value="전체">전체 회원</option>
-                <option value="카테고리별">카테고리별</option>
-                <option value="주문자">주문자</option>
-                <option value="미주문자">미주문자</option>
-              </select>
-            </div>
-            {formData.targetType === '카테고리별' && (
-              <div className="form-group">
-                <label htmlFor="targetCategory">카테고리</label>
-                <select
-                  id="targetCategory"
-                  name="targetCategory"
-                  value={formData.targetCategory}
-                  onChange={handleChange}
-                >
-                  <option value="">선택하세요</option>
-                  <option value="생활용품">생활용품</option>
-                  <option value="식품">식품</option>
-                  <option value="주방/식기">주방/식기</option>
-                  <option value="가전/기타">가전/기타</option>
-                </select>
-              </div>
-            )}
-            <div className="form-group">
+            {/* <div className="form-group">
               <label htmlFor="sendType">
                 발송 방식 <span className="required">*</span>
               </label>
@@ -176,14 +138,14 @@ export default function NotificationSend() {
                 />
               </div>
             </div>
-          )}
+          )} */}
 
           <div className="form-actions">
             <button type="button" className="btn-cancel" onClick={handleCancel}>
               취소
             </button>
             <button type="submit" className="btn-submit">
-              {formData.sendType === '즉시' ? '발송하기' : '예약하기'}
+              발송하기
             </button>
           </div>
         </form>

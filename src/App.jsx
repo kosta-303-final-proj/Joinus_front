@@ -20,6 +20,10 @@ import Statistics from './pages/admin/Statistics';
 import ProductStatistics from './pages/admin/ProductStatistics';
 import InquiryDetail from './pages/cs/InquiryDetail';
 import PendingPayment from './pages/admin/PendingPayment';
+import DeliveryApplicationList from './pages/admin/DeliveryManagement/DeliveryApplicationList';
+import ApprovedDeliveryCompany from './pages/admin/DeliveryManagement/ApprovedDeliveryCompany';
+import DeliveryProductForm from './pages/admin/DeliveryManagement/DeliveryProductForm';
+import DeliveryProductList from './pages/admin/DeliveryManagement/DeliveryProductList';
 import './App.css';
 
 function AppContent() {
@@ -63,6 +67,11 @@ function AppContent() {
             <Route path="/admin/statistics" element={<Statistics />} />
             <Route path="/admin/statistics/product" element={<ProductStatistics />} />
             <Route path="/admin/pendingPayment" element={<PendingPayment />} />
+            <Route path="/admin/delivery/applications" element={<DeliveryApplicationList />} />
+            <Route path="/admin/delivery/application/:id" element={<DeliveryDetail />} />
+            <Route path="/admin/delivery/approved" element={<ApprovedDeliveryCompany />} />
+            <Route path="/admin/delivery/products/new" element={<DeliveryProductForm />} />
+            <Route path="/admin/delivery/products" element={<DeliveryProductList />} />
           </Routes>
         </main>
       </div>

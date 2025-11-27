@@ -1,176 +1,181 @@
+// final_project/src/pages/admin/Statistics.jsx
+
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import './Statistics.css';
 
 export default function Statistics() {
-  const navigate = useNavigate();
-  const [filters, setFilters] = useState({
-    period: '주간',
-    startDate: '2025-11-06',
-    endDate: '2025-11-13',
-    category: '전체'
-  });
+  const [selectedMonth, setSelectedMonth] = useState('2025-11');
+  const [unit, setUnit] = useState('일'); // 일/주/월
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // 매출 통계 더미 데이터
-  const revenueStats = {
-    total: 6520000,
-    average: 931429,
-    previousPeriod: 5800000,
-    growth: 12.4
+  // 월별 매출 데이터 (도넛 차트용)
+  const monthlyRevenue = [
+    { month: '9월', revenue: 2200000, profit: 110000 },
+    { month: '10월', revenue: 3300000, profit: 165000 },
+    { month: '11월', revenue: 4300000, profit: 215000 }
+  ];
+
+  // 요약 지표
+  const summary = {
+    totalRevenue: 12540000, // 총 매출액 (배송비 제외)
+    totalOrders: 158, // 총 주문 수
+    netProfit: 627000 // 순이익 (매출액의 5%)
   };
 
-  // 일별 매출 데이터
-  const dailyRevenue = [
-    { date: '2025-11-06', revenue: 850000, orders: 45 },
-    { date: '2025-11-07', revenue: 920000, orders: 52 },
-    { date: '2025-11-08', revenue: 780000, orders: 38 },
-    { date: '2025-11-09', revenue: 1110000, orders: 65 },
-    { date: '2025-11-10', revenue: 950000, orders: 48 },
-    { date: '2025-11-11', revenue: 1010000, orders: 58 },
-    { date: '2025-11-12', revenue: 1240000, orders: 72 },
-  ];
-
-  // 상세 매출 내역
-  const allRevenueDetails = [
+  // 매출 상세 데이터 (단위에 따라 필터링)
+  const allSalesDetails = [
     {
-      id: 'GG-1024',
-      productName: '친환경 텀블러 500ml',
-      category: '생활용품',
-      participants: 75,
-      revenue: 1125000,
-      date: '2025-11-13',
-      status: '진행중'
-    },
-    {
-      id: 'GG-1025',
-      productName: '프리미엄 수건 세트',
-      category: '생활용품',
-      participants: 40,
-      revenue: 640000,
-      date: '2025-11-12',
-      status: '진행중'
-    },
-    {
-      id: 'GG-1026',
-      productName: '해외 직구 커피머신',
-      category: '가전/기타',
-      participants: 18,
-      revenue: 1980000,
-      date: '2025-11-11',
-      status: '진행중'
-    },
-    {
-      id: 'GG-1023',
-      productName: '유기농 샴푸 세트',
-      category: '생활용품',
-      participants: 120,
-      revenue: 960000,
-      date: '2025-11-10',
-      status: '완료'
-    },
-    {
-      id: 'GG-1022',
-      productName: '스마트 워치',
-      category: '가전/기타',
-      participants: 85,
-      revenue: 2550000,
       date: '2025-11-09',
-      status: '완료'
+      orders: 24,
+      purchasePrice: 1980000,
+      pointsUsed: 35000,
+      commission: 99000,
+      salesAmount: 2044000,
+      settlementAmount: 1945000
     },
     {
-      id: 'GG-1021',
-      productName: '에어프라이어',
-      category: '가전/기타',
-      participants: 95,
-      revenue: 2850000,
       date: '2025-11-08',
-      status: '완료'
+      orders: 18,
+      purchasePrice: 1320000,
+      pointsUsed: 20000,
+      commission: 66000,
+      salesAmount: 1388000,
+      settlementAmount: 1300000
     },
     {
-      id: 'GG-1020',
-      productName: '무선 블루투스 이어폰',
-      category: '가전/기타',
-      participants: 150,
-      revenue: 4500000,
       date: '2025-11-07',
-      status: '완료'
+      orders: 21,
+      purchasePrice: 1580000,
+      pointsUsed: 15000,
+      commission: 79000,
+      salesAmount: 1644000,
+      settlementAmount: 1585000
     },
     {
-      id: 'GG-1019',
-      productName: '친환경 장바구니',
-      category: '생활용품',
-      participants: 200,
-      revenue: 1200000,
       date: '2025-11-06',
-      status: '완료'
+      orders: 17,
+      purchasePrice: 1210000,
+      pointsUsed: 10000,
+      commission: 60500,
+      salesAmount: 1260500,
+      settlementAmount: 1200000
     },
-    {
-      id: 'GG-1018',
-      productName: '주방용 소형 블렌더',
-      category: '주방/식기',
-      participants: 60,
-      revenue: 1800000,
-      date: '2025-11-05',
-      status: '완료'
-    },
-    {
-      id: 'GG-1017',
-      productName: '식품 세트',
-      category: '식품',
-      participants: 180,
-      revenue: 1080000,
-      date: '2025-11-04',
-      status: '완료'
-    },
-    {
-      id: 'GG-1016',
-      productName: 'LED 조명',
-      category: '가전/기타',
-      participants: 110,
-      revenue: 3300000,
-      date: '2025-11-03',
-      status: '완료'
-    },
-    {
-      id: 'GG-1015',
-      productName: '캐릭터 머그컵',
-      category: '주방/식기',
-      participants: 250,
-      revenue: 750000,
-      date: '2025-11-02',
-      status: '완료'
-    }
+    // 추가 데이터...
   ];
-
-  // 필터링된 데이터
-  const filteredDetails = allRevenueDetails.filter(item => {
-    if (filters.category !== '전체' && item.category !== filters.category) {
-      return false;
-    }
-    return true;
-  });
 
   // 페이지네이션 계산
-  const totalPages = Math.ceil(filteredDetails.length / itemsPerPage);
+  const totalPages = Math.ceil(allSalesDetails.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const revenueDetails = filteredDetails.slice(startIndex, endIndex);
+  const salesDetails = allSalesDetails.slice(startIndex, endIndex);
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters(prev => ({ ...prev, [name]: value }));
-    setCurrentPage(1);
-  };
+  // 도넛 차트 계산 (매출별)
+  const totalRevenueForChart = monthlyRevenue.reduce((sum, m) => sum + m.revenue, 0);
+  const revenueChartData = monthlyRevenue.map((item, index) => {
+    const percentage = (item.revenue / totalRevenueForChart) * 100;
+    const offset = monthlyRevenue.slice(0, index).reduce((sum, m) => sum + (m.revenue / totalRevenueForChart) * 100, 0);
+    return {
+      ...item,
+      percentage,
+      offset
+    };
+  });
 
-  const handleSearch = () => {
-    console.log('조회:', filters);
-    // 실제 조회 로직
-  };
+  // 도넛 차트 계산 (순익별)
+  const totalProfitForChart = monthlyRevenue.reduce((sum, m) => sum + m.profit, 0);
+  const profitChartData = monthlyRevenue.map((item, index) => {
+    const percentage = (item.profit / totalProfitForChart) * 100;
+    const offset = monthlyRevenue.slice(0, index).reduce((sum, m) => sum + (m.profit / totalProfitForChart) * 100, 0);
+    return {
+      ...item,
+      percentage,
+      offset
+    };
+  });
 
   const formatCurrency = (amount) => {
     return `₩ ${amount.toLocaleString()}`;
+  };
+
+  const DonutChart = ({ data, title, colorScheme, valueKey }) => {
+    const radius = 70;
+    const circumference = 2 * Math.PI * radius;
+    const centerX = 100;
+    const centerY = 100;
+    
+    // 누적 각도 계산
+    let currentOffset = 0;
+    const segments = data.map((item, index) => {
+      const percentage = item.percentage;
+      const segmentLength = (percentage / 100) * circumference;
+      const offset = currentOffset;
+      currentOffset += segmentLength;
+      
+      return {
+        ...item,
+        segmentLength,
+        offset,
+        color: colorScheme[index % colorScheme.length]
+      };
+    });
+    
+    return (
+      <div className="donut-chart-container">
+        <h3 className="chart-title">{title}</h3>
+        <div className="donut-chart-wrapper">
+          <svg width="200" height="200" viewBox="0 0 200 200" className="donut-svg">
+            {segments.map((segment, index) => (
+              <circle
+                key={index}
+                cx={centerX}
+                cy={centerY}
+                r={radius}
+                fill="none"
+                stroke={segment.color}
+                strokeWidth="35"
+                strokeDasharray={`${segment.segmentLength} ${circumference}`}
+                strokeDashoffset={-segment.offset}
+                transform={`rotate(-90 ${centerX} ${centerY})`}
+                className="donut-segment"
+              />
+            ))}
+            {/* 중앙 텍스트 */}
+            <text
+              x={centerX}
+              y={centerY - 5}
+              textAnchor="middle"
+              className="donut-center-text"
+              fontSize="14"
+              fill="#333"
+              fontWeight="600"
+            >
+              {title}
+            </text>
+            <text
+              x={centerX}
+              y={centerY + 15}
+              textAnchor="middle"
+              className="donut-center-value"
+              fontSize="12"
+              fill="#666"
+            >
+              총 {formatCurrency(data.reduce((sum, item) => sum + (item[valueKey] || 0), 0))}
+            </text>
+          </svg>
+          <div className="chart-legend">
+            {data.map((item, index) => (
+              <div key={index} className="legend-item">
+                <span className="legend-color" style={{ backgroundColor: colorScheme[index % colorScheme.length] }}></span>
+                <span className="legend-text">
+                  <strong>{item.month}</strong>: {formatCurrency(item[valueKey] || 0)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -180,174 +185,160 @@ export default function Statistics() {
         <div className="header-content">
           <h1 className="page-title">매출 통계</h1>
           <p className="page-description">
-            기간별 매출 통계와 상세 내역을 확인할 수 있습니다.
+            월별 기간을 기준으로 매출을 확인하고, 수수료 및 정산 금액을 조회합니다.
           </p>
         </div>
         <div className="header-date">
-          기준일: 2025-11-13
+          기준일: 2025-11-09
         </div>
       </div>
 
-      {/* 필터 섹션 */}
+      {/* 조회월 필터 */}
       <div className="filter-section">
         <div className="filter-row">
           <div className="filter-group">
-            <label>기간</label>
-            <select
-              name="period"
-              value={filters.period}
-              onChange={handleFilterChange}
-            >
-              <option value="일간">일간</option>
-              <option value="주간">주간</option>
-              <option value="월간">월간</option>
-            </select>
+            <label>조회월</label>
+            <div className="month-range">
+              <input
+                type="month"
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+              />
+              <span>~</span>
+              <input
+                type="month"
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+              />
+            </div>
+            <span className="filter-note">(최대 6개월 조회)</span>
           </div>
-          <div className="filter-group">
-            <label>시작일</label>
-            <input
-              type="date"
-              name="startDate"
-              value={filters.startDate}
-              onChange={handleFilterChange}
-            />
-          </div>
-          <div className="filter-group">
-            <label>종료일</label>
-            <input
-              type="date"
-              name="endDate"
-              value={filters.endDate}
-              onChange={handleFilterChange}
-            />
-          </div>
-          <div className="filter-group">
-            <label>카테고리</label>
-            <select
-              name="category"
-              value={filters.category}
-              onChange={handleFilterChange}
-            >
-              <option value="전체">전체</option>
-              <option value="생활용품">생활용품</option>
-              <option value="식품">식품</option>
-              <option value="주방/식기">주방/식기</option>
-              <option value="가전/기타">가전/기타</option>
-            </select>
-          </div>
-          <button className="search-button" onClick={handleSearch}>
+          <button className="search-button" onClick={() => console.log('조회:', selectedMonth)}>
             조회
           </button>
         </div>
       </div>
 
-      {/* 통계 카드 */}
+      {/* 기간별 매출 그래프 (도넛 차트) */}
+      <div className="chart-section">
+        <div className="chart-header">
+          <h2 className="section-title">기간별 매출 그래프</h2>
+          <span className="chart-unit">단위: 월별</span>
+        </div>
+        <div className="donut-charts-container">
+          <DonutChart
+            data={revenueChartData}
+            title="매출별"
+            colorScheme={['#3b82f6', '#8b5cf6', '#ec4899']}
+            valueKey="revenue"
+          />
+          <DonutChart
+            data={profitChartData}
+            title="순익별"
+            colorScheme={['#10b981', '#f59e0b', '#ef4444']}
+            valueKey="profit"
+          />
+        </div>
+        <p className="formula-note">
+          매출액 = (배송비 제외) 구매가 - 포인트 + 수수료 5%
+        </p>
+      </div>
+
+      {/* 요약 지표 */}
       <div className="stats-section">
         <div className="stat-card">
-          <div className="stat-label">총 매출</div>
-          <div className="stat-value">{formatCurrency(revenueStats.total)}</div>
-          <div className="stat-note">
-            전 기간 대비 {revenueStats.growth > 0 ? '+' : ''}{revenueStats.growth}%
-          </div>
+          <div className="stat-label">총 매출액</div>
+          <div className="stat-value">{formatCurrency(summary.totalRevenue)}</div>
+          <div className="stat-note">(선택한 기간 전체 (배송비 제외))</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label">평균 일 매출</div>
-          <div className="stat-value">{formatCurrency(revenueStats.average)}</div>
-          <div className="stat-note">
-            {filters.period === '주간' ? '주간' : filters.period === '월간' ? '월간' : '일간'} 평균
-          </div>
+          <div className="stat-label">총 주문 수</div>
+          <div className="stat-value">{summary.totalOrders}건</div>
+          <div className="stat-note">(취소 제외 확정 주문만 집계)</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label">전 기간 매출</div>
-          <div className="stat-value">{formatCurrency(revenueStats.previousPeriod)}</div>
-          <div className="stat-note">
-            비교 기준 기간
-          </div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-label">총 주문 건수</div>
-          <div className="stat-value">{dailyRevenue.reduce((sum, day) => sum + day.orders, 0)}건</div>
-          <div className="stat-note">
-            선택 기간 내 주문 수
-          </div>
+          <div className="stat-label">순이익</div>
+          <div className="stat-value">{formatCurrency(summary.netProfit)}</div>
+          <div className="stat-note">(매출액의 5% 기준)</div>
         </div>
       </div>
 
-      {/* 일별 매출 차트 */}
-      <div className="chart-section">
-        <h2 className="section-title">일별 매출 추이</h2>
-        <div className="chart-container">
-          <div className="chart-bars">
-            {dailyRevenue.map((day, index) => {
-              const maxRevenue = Math.max(...dailyRevenue.map(d => d.revenue));
-              const height = (day.revenue / maxRevenue) * 100;
-              return (
-                <div key={index} className="chart-bar-item">
-                  <div className="bar-wrapper">
-                    <div 
-                      className="bar" 
-                      style={{ height: `${height}%` }}
-                    />
-                  </div>
-                  <div className="bar-label">{day.date.split('-')[2]}</div>
-                  <div className="bar-value">{formatCurrency(day.revenue)}</div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* 상세 매출 내역 */}
+      {/* 매출 상세 */}
       <div className="details-section">
         <div className="section-header">
-          <h2 className="section-title">상세 매출 내역</h2>
-          <span className="details-count">총 {filteredDetails.length}건</span>
+          <h2 className="section-title">매출 상세</h2>
+        </div>
+        <div className="unit-selector">
+          <p className="unit-note">단위 선택에 따라 일/주/월 데이터를 조회합니다.</p>
+          <div className="unit-buttons">
+            <button
+              className={`unit-btn ${unit === '일' ? 'active' : ''}`}
+              onClick={() => setUnit('일')}
+            >
+              일
+            </button>
+            <button
+              className={`unit-btn ${unit === '주' ? 'active' : ''}`}
+              onClick={() => setUnit('주')}
+            >
+              주
+            </button>
+            <button
+              className={`unit-btn ${unit === '월' ? 'active' : ''}`}
+              onClick={() => setUnit('월')}
+            >
+              월
+            </button>
+          </div>
         </div>
         <div className="table-container">
-          <table className="revenue-table">
+          <table className="sales-table">
             <thead>
               <tr>
-                <th>공구 ID</th>
-                <th>상품명</th>
-                <th>카테고리</th>
-                <th>참여수</th>
-                <th>매출</th>
                 <th>날짜</th>
-                <th>상태</th>
-                <th>통계</th>
+                <th>주문 수</th>
+                <th>구매가 합계</th>
+                <th>포인트 사용</th>
+                <th>수수료 (5%)</th>
+                <th>매출액</th>
+                <th>정산 예정 금액</th>
               </tr>
             </thead>
             <tbody>
-              {revenueDetails.map((item) => (
-                <tr key={item.id}>
-                  <td>{item.id}</td>
-                  <td className="product-name-cell">{item.productName}</td>
-                  <td>{item.category}</td>
-                  <td>{item.participants}명</td>
-                  <td className="revenue-cell">{formatCurrency(item.revenue)}</td>
-                  <td>{item.date}</td>
-                  <td>
-                    <span className={`status-badge ${item.status === '완료' ? 'status-completed' : 'status-ongoing'}`}>
-                      {item.status}
-                    </span>
-                  </td>
-                  <td>
-                    <a 
-                      href={`/admin/statistics/product?groupbuy=${item.id}`}
-                      className="detail-link"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        navigate(`/admin/statistics/product?groupbuy=${item.id}`);
-                      }}
-                    >
-                      상세보기
-                    </a>
-                  </td>
+              {salesDetails.length === 0 ? (
+                <tr>
+                  <td colSpan="7" className="no-data">데이터가 없습니다.</td>
                 </tr>
-              ))}
+              ) : (
+                salesDetails.map((item, index) => (
+                  <tr key={index}>
+                    <td className="date-cell">{item.date}</td>
+                    <td className="number-cell">{item.orders}</td>
+                    <td className="number-cell">{formatCurrency(item.purchasePrice)}</td>
+                    <td className="number-cell">{formatCurrency(item.pointsUsed)}</td>
+                    <td className="number-cell">{formatCurrency(item.commission)}</td>
+                    <td className="number-cell sales-amount">{formatCurrency(item.salesAmount)}</td>
+                    <td className="number-cell settlement-amount">{formatCurrency(item.settlementAmount)}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
+            <tfoot>
+              <tr className="table-total">
+                <td className="total-label">합계</td>
+                <td className="number-cell">{allSalesDetails.reduce((sum, item) => sum + item.orders, 0)}</td>
+                <td className="number-cell">{formatCurrency(allSalesDetails.reduce((sum, item) => sum + item.purchasePrice, 0))}</td>
+                <td className="number-cell">{formatCurrency(allSalesDetails.reduce((sum, item) => sum + item.pointsUsed, 0))}</td>
+                <td className="number-cell">{formatCurrency(allSalesDetails.reduce((sum, item) => sum + item.commission, 0))}</td>
+                <td className="number-cell sales-amount">{formatCurrency(allSalesDetails.reduce((sum, item) => sum + item.salesAmount, 0))}</td>
+                <td className="number-cell settlement-amount">{formatCurrency(allSalesDetails.reduce((sum, item) => sum + item.settlementAmount, 0))}</td>
+              </tr>
+            </tfoot>
           </table>
+        </div>
+        <div className="table-notes">
+          <p>정산 완료된 금액은 정산내역 화면에서 별도로 관리됩니다.</p>
+          <p>취소/환불 주문은 매출집계에서 제외하거나, 별도 컬럼으로 분리할 수 있습니다.</p>
         </div>
 
         {/* 페이지네이션 */}
@@ -382,4 +373,3 @@ export default function Statistics() {
     </div>
   );
 }
-
