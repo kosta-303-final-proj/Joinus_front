@@ -15,7 +15,7 @@ export default function SearchResult() {
   // 데이터 상태
   const [proposalResults, setProposalResults] = useState([]);
   const [ongoingResults, setOngoingResults] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);  // 백엔트 연동 시 필요
+  const [isLoading, setIsLoading] = useState(true);
 
   // 드롭다운 열림/닫힘 상태
   const [isTypeOpen, setIsTypeOpen] = useState(false);
@@ -27,54 +27,137 @@ export default function SearchResult() {
     const fetchSearchResults = async () => {
       setIsLoading(true);
       try {
-        // TODO: 백엔드 연동 시 아래 주석 해제하고 실제 API 호출
-        // const queryParams = new URLSearchParams({
-        //   keyword: searchKeyword,
-        //   type: selectedType.join(','),
-        //   category: selectedCategory.join(','),
-        //   priceRange: selectedPriceRange.join(','),
-        //   sort: sortBy,
-        // });
-        // const response = await fetch(`/api/search?${queryParams}`);
-        // const data = await response.json();
-        // setProposalResults(data.proposals || []);
-        // setOngoingResults(data.ongoing || []);
-
         // 임시: 하드코딩된 데이터 (백엔드 연동 전까지)
-        // 실제로는 API에서 받아온 데이터로 교체됨
         const tempProposals = [
-          { id: 1, title: '향초', participants: '참여 120명 / 목표 80명', deadline: '남은 시간: 12시간', price: '13,900원', badge: 'HOT', image: '/searchResult/candle.jpg' },
-          { id: 2, title: '차량용 향수 디퓨저', participants: '참여 80명 / 목표 60명', deadline: '남은 시간: 25일', price: '9,900원', image: '/searchResult/carFragranceDiffuser.png' },
-          { id: 3, title: '전기포트', participants: '참여 45명 / 목표 80명', deadline: '남은 시간: 3일', price: '16,900원', image: '/searchResult/electricPot.png' },
-          { id: 4, title: 'LED 마스크', participants: '참여 35명 / 목표 50명', deadline: '남은 시간: 5일', price: '18,900원', image: '/searchResult/ledMask.png' },
+          { 
+            id: 1, 
+            title: '향초', 
+            category: '생활용품',
+            status: '진행중',
+            description: '향긋한 향초로 공간을 채워보세요.',
+            currentParticipants: 120,
+            maxParticipants: 80,
+            deadlineTime: '12시간',
+            price: '13,900원',
+            rating: 4.6,
+            badge: 'HOT', 
+            image: '/searchResult/candle.jpg' 
+          },
+          { 
+            id: 2, 
+            title: '차량용 향수 디퓨저', 
+            category: '자동차용품',
+            status: '진행중',
+            description: '차량 내부를 상쾌하게 만들어주는 디퓨저입니다.',
+            currentParticipants: 80,
+            maxParticipants: 60,
+            deadlineTime: '25일',
+            price: '9,900원',
+            rating: 4.5,
+            image: '/searchResult/carFragranceDiffuser.png' 
+          },
+          { 
+            id: 3, 
+            title: '전기포트', 
+            category: '가전',
+            status: '진행중',
+            description: '빠르고 안전한 전기포트입니다.',
+            currentParticipants: 45,
+            maxParticipants: 80,
+            deadlineTime: '3일',
+            price: '16,900원',
+            rating: 4.7,
+            image: '/searchResult/electricPot.png' 
+          },
+          { 
+            id: 4, 
+            title: 'LED 마스크', 
+            category: '뷰티',
+            status: '진행중',
+            description: '피부 관리에 좋은 LED 마스크입니다.',
+            currentParticipants: 35,
+            maxParticipants: 50,
+            deadlineTime: '5일',
+            price: '18,900원',
+            rating: 4.4,
+            image: '/searchResult/ledMask.png' 
+          },
         ];
         const tempOngoing = [
-          { id: 5, title: '로봇 청소기', participants: '참여 120명 / 목표 200명', deadline: '남은 시간: 2일', price: '11,900원', image: '/searchResult/robotVacuumCleaner.png' },
-          { id: 6, title: '가정용 cctv', participants: '참여 85명 / 목표 100명', deadline: '남은 시간: 8시간', price: '14,500원', badge: 'HOT', image: '/searchResult/homeCctv.png' },
-          { id: 7, title: '차량용 청소기', participants: '참여 60명 / 목표 80명', deadline: '남은 시간: 1일', price: '22,000원', image: '/searchResult/carVacuumCleaner.png' },
-          { id: 8, title: 'kpokahtChocolate', participants: '참여 95명 / 목표 120명', deadline: '남은 시간: 15시간', price: '8,900원', image: '/searchResult/kpokahtChocolate.png' },
+          { 
+            id: 5, 
+            title: '로봇 청소기', 
+            category: '가전',
+            status: '진행중',
+            description: '스마트 로봇 청소기로 집안을 깨끗하게 유지하세요.',
+            currentParticipants: 120,
+            maxParticipants: 200,
+            deadlineTime: '2일',
+            price: '11,900원',
+            rating: 4.8,
+            image: '/searchResult/robotVacuumCleaner.png' 
+          },
+          { 
+            id: 6, 
+            title: '가정용 cctv', 
+            category: '가전',
+            status: '진행중',
+            description: '집안 보안을 위한 가정용 CCTV입니다.',
+            currentParticipants: 85,
+            maxParticipants: 100,
+            deadlineTime: '8시간',
+            price: '14,500원',
+            rating: 4.6,
+            badge: 'HOT', 
+            image: '/searchResult/homeCctv.png' 
+          },
+          { 
+            id: 7, 
+            title: '차량용 청소기', 
+            category: '자동차용품',
+            status: '진행중',
+            description: '차량 내부 청소에 최적화된 청소기입니다.',
+            currentParticipants: 60,
+            maxParticipants: 80,
+            deadlineTime: '1일',
+            price: '22,000원',
+            rating: 4.5,
+            image: '/searchResult/carVacuumCleaner.png' 
+          },
+          { 
+            id: 8, 
+            title: 'kpokahtChocolate', 
+            category: '식품',
+            status: '진행중',
+            description: '프리미엄 초콜릿 세트입니다.',
+            currentParticipants: 95,
+            maxParticipants: 120,
+            deadlineTime: '15시간',
+            price: '8,900원',
+            rating: 4.7,
+            image: '/searchResult/kpokahtChocolate.png' 
+          },
         ];
 
-         // 정렬 로직 추가
-         const sortData = (data, sortType) => {
+        // 정렬 로직 수정
+        const sortData = (data, sortType) => {
           const sorted = [...data];
           switch (sortType) {
             case '인기순':
-              // 참여자 수 기준으로 정렬 (예: "참여 120명"에서 120 추출)
-              return sorted.sort((a, b) => {
-                const aCount = parseInt(a.participants.match(/\d+/)?.[0] || 0);
-                const bCount = parseInt(b.participants.match(/\d+/)?.[0] || 0);
-                return bCount - aCount; // 내림차순
-              });
+              return sorted.sort((a, b) => b.currentParticipants - a.currentParticipants);
             case '최신순':
-              // ID 기준으로 정렬 (최신 = ID 큰 순서)
               return sorted.sort((a, b) => b.id - a.id);
             case '마감임박순':
-              // deadline에서 시간 추출하여 정렬
               return sorted.sort((a, b) => {
-                const aTime = parseInt(a.deadline.match(/\d+/)?.[0] || 999);
-                const bTime = parseInt(b.deadline.match(/\d+/)?.[0] || 999);
-                return aTime - bTime; // 오름차순 (시간이 적을수록 임박)
+                // deadlineTime에서 숫자 추출 (시간/일)
+                const aTime = parseInt(a.deadlineTime.match(/\d+/)?.[0] || 999);
+                const bTime = parseInt(b.deadlineTime.match(/\d+/)?.[0] || 999);
+                // '시간'이면 더 임박하므로 우선순위 높음
+                const aIsHour = a.deadlineTime.includes('시간');
+                const bIsHour = b.deadlineTime.includes('시간');
+                if (aIsHour && !bIsHour) return -1;
+                if (!aIsHour && bIsHour) return 1;
+                return aTime - bTime;
               });
             default:
               return sorted;
@@ -85,8 +168,6 @@ export default function SearchResult() {
         const sortedOngoing = sortData(tempOngoing, sortBy);
         setProposalResults(sortedProposals);
         setOngoingResults(sortedOngoing);
-        // 검색어에 따라 필터링 (임시 로직, 백엔드는 자체 필터링)
-        // 실제로는 백엔드에서 필터링된 결과를 받음
       } catch (error) {
         console.error('검색 결과 로딩 실패:', error);
         setProposalResults([]);
@@ -97,7 +178,6 @@ export default function SearchResult() {
     };
     fetchSearchResults();
   }, [searchKeyword, selectedType, selectedCategory, selectedPriceRange, sortBy]);
-
 
   // 동적으로 개수 계산
   const totalCount = proposalResults.length + ongoingResults.length;
@@ -130,14 +210,6 @@ export default function SearchResult() {
     navigate('/gbProductList?type=ongoing');
   };
 
-  const handleCardClick = (id, isProposal = false) => {
-    if (isProposal) {
-      navigate(`/proposalDetail/${id}`);
-    } else {
-      navigate(`/gbProductDetail/${id}`);
-    }
-  };
-
   return (
     <div className="search-result-container">
       {/* 검색 결과 헤더 */}
@@ -148,40 +220,8 @@ export default function SearchResult() {
         </p>
       </div>
 
-      {/* 필터 영역 (위로 이동) */}
+      {/* 필터 영역 */}
       <div className="filter-section">
-        {/* 타입 드롭다운 */}
-        {/* <div className="filter-dropdown">
-          <button
-            type="button"
-            className="dropdown-button"
-            onClick={() => setIsTypeOpen(!isTypeOpen)}
-          >
-            <span>타입</span>
-            <span className="dropdown-arrow">{isTypeOpen ? '▲' : '▼'}</span>
-          </button>
-          {isTypeOpen && (
-            <div className="dropdown-menu">
-              <label className="dropdown-checkbox">
-                <input
-                  type="checkbox"
-                  checked={selectedType.includes('제안')}
-                  onChange={() => handleTypeChange('제안')}
-                />
-                <span>제안</span>
-              </label>
-              <label className="dropdown-checkbox">
-                <input
-                  type="checkbox"
-                  checked={selectedType.includes('진행 공구 중')}
-                  onChange={() => handleTypeChange('진행 공구 중')}
-                />
-                <span>진행 공구 중</span>
-              </label>
-            </div>
-          )}
-        </div> */}
-
         {/* 카테고리 드롭다운 */}
         <div className="filter-dropdown">
           <button 
@@ -294,7 +334,6 @@ export default function SearchResult() {
 
         {/* 정렬 드롭다운 */}
         <div className="filter-group sort-group">
-          {/* <label htmlFor="sort-select" className="filter-title">정렬:</label> */}
           <select
             id="sort-select"
             className="sort-select"
@@ -309,72 +348,100 @@ export default function SearchResult() {
       </div>
 
       {/* 검색 결과 리스트 */}
-      <div className="search-results">
-        {/* 제안 섹션 */}
-        <div className="results-section">
-          <div className="results-header">
-            <h2 className="results-section-title">
-              제안 <span className="results-count">(제안 {proposalCount}건)</span>
-            </h2>
-            <a 
-            href="#" 
-            className="more-link"
-            onClick={(e) => {
-              e.preventDefault();
-              handleProposalClick();
-            }}
-            >더보기 &gt;
-            </a>
-          </div>
-          <div className="results-grid">
-            {proposalResults.map(item => (
-              <GroupBuyCard
-                key={item.id}
-                image={item.image}
-                title={item.title}
-                participants={item.participants}
-                deadline={item.deadline}
-                price={`예상 공동 구매가: ${item.price}`}
-                badge={item.badge}
-                onClick={() => handleCardClick(item.id, true)}
-              />
-            ))}
-          </div>
-        </div>
+      {isLoading ? (
+        <div className="loading-message">로딩 중...</div>
+      ) : (
+        <div className="search-results">
+          {/* 제안 섹션 */}
+          {proposalResults.length > 0 && (
+            <div className="results-section">
+              <div className="results-header">
+                <h2 className="results-section-title">
+                  제안 <span className="results-count">(제안 {proposalCount}건)</span>
+                </h2>
+                <a 
+                  href="#" 
+                  className="more-link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleProposalClick();
+                  }}
+                >
+                  더보기 &gt;
+                </a>
+              </div>
+              <div className="results-grid">
+                {proposalResults.map(item => (
+                  <GroupBuyCard
+                    key={item.id}
+                    image={item.image}
+                    title={item.title}
+                    category={item.category}
+                    status={item.status}
+                    description={item.description}
+                    price={item.price}
+                    rating={item.rating}
+                    currentParticipants={item.currentParticipants}
+                    maxParticipants={item.maxParticipants}
+                    deadlineTime={item.deadlineTime}
+                    badge={item.badge}
+                    productId={item.id}
+                    isProposal={true}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
 
-        {/* 진행 공구 중 섹션 */}
-        <div className="results-section">
-          <div className="results-header">
-            <h2 className="results-section-title">
-              진행 공구 중 <span className="results-count">(공구 {ongoingCount}건)</span>
-            </h2>
-            <a 
-            href="#" 
-            className="more-link"
-            onClick={(e) => {
-              e.preventDefault();
-              handleOngoingClick();
-            }}
-            >더보기 &gt;
-            </a>
-          </div>
-          <div className="results-grid">
-            {ongoingResults.map(item => (
-              <GroupBuyCard
-                key={item.id}
-                image={item.image}
-                title={item.title}
-                participants={item.participants}
-                deadline={item.deadline}
-                price={`현재 공구가: ${item.price}`}
-                badge={item.badge}
-                onClick={() => handleCardClick(item.id)}
-              />
-            ))}
-          </div>
+          {/* 진행 공구 중 섹션 */}
+          {ongoingResults.length > 0 && (
+            <div className="results-section">
+              <div className="results-header">
+                <h2 className="results-section-title">
+                  진행 공구 중 <span className="results-count">(공구 {ongoingCount}건)</span>
+                </h2>
+                <a 
+                  href="#" 
+                  className="more-link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleOngoingClick();
+                  }}
+                >
+                  더보기 &gt;
+                </a>
+              </div>
+              <div className="results-grid">
+                {ongoingResults.map(item => (
+                  <GroupBuyCard
+                    key={item.id}
+                    image={item.image}
+                    title={item.title}
+                    category={item.category}
+                    status={item.status}
+                    description={item.description}
+                    price={item.price}
+                    rating={item.rating}
+                    currentParticipants={item.currentParticipants}
+                    maxParticipants={item.maxParticipants}
+                    deadlineTime={item.deadlineTime}
+                    badge={item.badge}
+                    productId={item.id}
+                    isProposal={false}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 결과가 없을 때 */}
+          {!isLoading && proposalResults.length === 0 && ongoingResults.length === 0 && (
+            <div className="no-results">
+              <p>검색 결과가 없습니다.</p>
+            </div>
+          )}
         </div>
-      </div>
+      )}
     </div>
   );
 }
-

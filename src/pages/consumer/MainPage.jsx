@@ -10,34 +10,226 @@ export default function MainPage() {
 
   // 마감 임박 공구
   const deadlineSoonItems = [
-    { id: 1, title: '프리미엄 수건 세트', participants: '참여 98명 / 목표 100명', deadline: '남은 시간: 6시간', image: '/mainPage/towelSet.png' },
-    { id: 2, title: '이벤트 한정 텀블러', participants: '참여 220명 / 목표 250명', deadline: '남은 시간: 12시간', image: '/mainPage/tumblr.jpg'},
-    { id: 3, title: '한정판 텀블러 세트', participants: '참여 98명 / 목표 100명', deadline: '남은 시간: 6시간', image: '/mainPage/tumblrSet.png'},
-    { id: 4, title: '스페셜 기획 키트', participants: '참여 45명 / 목표 60명', deadline: '남은 시간: 10시간', image: '/mainPage/specialKit.png'}
+    { 
+      id: 1, 
+      title: '프리미엄 수건 세트', 
+      category: '생활용품',
+      status: '마감임박',
+      description: '프리미엄 소재로 제작된 고급 수건 세트입니다.',
+      price: '29,900원',
+      currentParticipants: 98,
+      maxParticipants: 100,
+      deadlineTime: '6시간',
+      rating: 4.6,
+      image: '/mainPage/towelSet.png' 
+    },
+    { 
+      id: 2, 
+      title: '이벤트 한정 텀블러', 
+      category: '생활용품',
+      status: '마감임박',
+      description: '한정판 이벤트 텀블러입니다.',
+      price: '19,900원',
+      currentParticipants: 220,
+      maxParticipants: 250,
+      deadlineTime: '12시간',
+      rating: 4.8,
+      image: '/mainPage/tumblr.jpg'
+    },
+    { 
+      id: 3, 
+      title: '한정판 텀블러 세트', 
+      category: '생활용품',
+      status: '마감임박',
+      description: '한정판 텀블러 세트입니다.',
+      price: '24,900원',
+      currentParticipants: 98,
+      maxParticipants: 100,
+      deadlineTime: '6시간',
+      rating: 4.5,
+      image: '/mainPage/tumblrSet.png'
+    },
+    { 
+      id: 4, 
+      title: '스페셜 기획 키트', 
+      category: '기타',
+      status: '마감임박',
+      description: '스페셜 기획 키트입니다.',
+      price: '39,900원',
+      currentParticipants: 45,
+      maxParticipants: 60,
+      deadlineTime: '10시간',
+      rating: 4.7,
+      image: '/mainPage/specialKit.png'
+    }
   ];
 
   // 인기공구
   const popularItems = [
-    { id: 1, title: '미니 가습기', participants: '참여 120명 / 목표 80명', price: '예상 공동 구매가: 38,900원', image: '/mainPage/miniHumidifier.png'},
-    { id: 2, title: 'LED 조명', participants: '참여 90명 / 목표 60명', price: '예상 공동 구매가: 29,900원', image: '/mainPage/ledLight.png'},
-    { id: 3, title: '캐릭터 머그컵', participants: '참여 60명 / 목표 25명', price: '예상 공동 구매가: 13,900원', image: '/mainPage/characterMug.png'},
-    { id: 4, title: '주방용 소형 블렌더', participants: '참여 45명 / 목표 20명', price: '예상 공동 구매가: 29,900원', image: '/mainPage/smallBlender.png'}
+    { 
+      id: 1, 
+      title: '미니 가습기', 
+      category: '가전',
+      status: '진행중',
+      description: '소형 가습기로 사무실이나 침실에 적합합니다.',
+      price: '38,900원',
+      currentParticipants: 120,
+      maxParticipants: 80,
+      rating: 4.6,
+      image: '/mainPage/miniHumidifier.png'
+    },
+    { 
+      id: 2, 
+      title: 'LED 조명', 
+      category: '가전',
+      status: '진행중',
+      description: '다양한 색상의 LED 조명입니다.',
+      price: '29,900원',
+      currentParticipants: 90,
+      maxParticipants: 60,
+      rating: 4.5,
+      image: '/mainPage/ledLight.png'
+    },
+    { 
+      id: 3, 
+      title: '캐릭터 머그컵', 
+      category: '생활용품',
+      status: '진행중',
+      description: '귀여운 캐릭터 머그컵입니다.',
+      price: '13,900원',
+      currentParticipants: 60,
+      maxParticipants: 25,
+      rating: 4.8,
+      image: '/mainPage/characterMug.png'
+    },
+    { 
+      id: 4, 
+      title: '주방용 소형 블렌더', 
+      category: '주방용품',
+      status: '진행중',
+      description: '소형 블렌더로 주방에서 편리하게 사용할 수 있습니다.',
+      price: '29,900원',
+      currentParticipants: 45,
+      maxParticipants: 20,
+      rating: 4.4,
+      image: '/mainPage/smallBlender.png'
+    }
   ];
 
   // 진행중 공구  
   const ongoingItems = [
-    { id: 1, title: 'UGG 부츠', participants: '참여자 75명 / 목표 100명', price: '마감까지 3일', progress: 75, image: '/mainPage/uggBoots.png'},
-    { id: 2, title: '전자동 커피머신', participants: '참여자 40명 / 목표 40명', price: '마감 임박', progress: 100, image: '/mainPage/automaticCoffeeMachine.png'},
-    { id: 3, title: '휴대용 SSD', participants: '참여자 19명 / 목표 80명', price: '마감까지 7일', progress: 22, image: '/mainPage/portableSSD.png'},
-    { id: 4, title: '비타민D', participants: '참여자 32명 / 목표 60명', price: '마감까지 4일', progress: 53, image: '/mainPage/vitaminD.png'}
+    { 
+      id: 1, 
+      title: 'UGG 부츠', 
+      category: '패션',
+      status: '진행중',
+      description: '따뜻한 UGG 부츠입니다.',
+      price: '89,900원',
+      currentParticipants: 75,
+      maxParticipants: 100,
+      progress: 75,
+      deadlineTime: '3일',
+      rating: 4.7,
+      image: '/mainPage/uggBoots.png'
+    },
+    { 
+      id: 2, 
+      title: '전자동 커피머신', 
+      category: '가전',
+      status: '진행중',
+      description: '전자동 커피머신입니다.',
+      price: '299,000원',
+      currentParticipants: 40,
+      maxParticipants: 40,
+      progress: 100,
+      deadlineTime: '마감 임박',
+      rating: 4.9,
+      image: '/mainPage/automaticCoffeeMachine.png'
+    },
+    { 
+      id: 3, 
+      title: '휴대용 SSD', 
+      category: '전자제품',
+      status: '진행중',
+      description: '고속 휴대용 SSD입니다.',
+      price: '59,900원',
+      currentParticipants: 19,
+      maxParticipants: 80,
+      progress: 22,
+      deadlineTime: '7일',
+      rating: 4.6,
+      image: '/mainPage/portableSSD.png'
+    },
+    { 
+      id: 4, 
+      title: '비타민D', 
+      category: '건강',
+      status: '진행중',
+      description: '건강에 좋은 비타민D 보충제입니다.',
+      price: '24,900원',
+      currentParticipants: 32,
+      maxParticipants: 60,
+      progress: 53,
+      deadlineTime: '4일',
+      rating: 4.5,
+      image: '/mainPage/vitaminD.png'
+    }
   ];
 
-  // 임기 제안
+  // 인기 제안
   const proposalItems = [
-    { id: 1, title: '마스크팩 세트', participants: '참여 120명 / 목표 80명', price: '예상 공동 구매가: 8,900원', image: '/mainPage/maskSet.png'},
-    { id: 2, title: '무선 충전기', participants: '참여 90명 / 목표 60명', price: '예상 공동 구매가: 19,900원', image: '/mainPage/wirelessCharger.png'},
-    { id: 3, title: '스테인리스 키친툴', participants: '참여 45명 / 목표 20명', price: '예상 공동 구매가: 29,900원', image: '/mainPage/stainlessKitchenTool.png'},
-    { id: 4, title: '단백질 보충제', participants: '참여 30명 / 목표 10명', price: '예상 공동 구매가: 88,000원', image: '/mainPage/proteinSupplement.png'}
+    { 
+      id: 1, 
+      title: '마스크팩 세트', 
+      category: '뷰티',
+      status: '진행중',
+      description: '다양한 종류의 마스크팩 세트입니다.',
+      price: '8,900원',
+      currentParticipants: 120,
+      maxParticipants: 80,
+      rating: 4.6,
+      image: '/mainPage/maskSet.png',
+      isProposal: true
+    },
+    { 
+      id: 2, 
+      title: '무선 충전기', 
+      category: '전자제품',
+      status: '진행중',
+      description: '빠른 무선 충전이 가능한 충전기입니다.',
+      price: '19,900원',
+      currentParticipants: 90,
+      maxParticipants: 60,
+      rating: 4.7,
+      image: '/mainPage/wirelessCharger.png',
+      isProposal: true
+    },
+    { 
+      id: 3, 
+      title: '스테인리스 키친툴', 
+      category: '주방용품',
+      status: '진행중',
+      description: '고급 스테인리스 주방용품 세트입니다.',
+      price: '29,900원',
+      currentParticipants: 45,
+      maxParticipants: 20,
+      rating: 4.5,
+      image: '/mainPage/stainlessKitchenTool.png',
+      isProposal: true
+    },
+    { 
+      id: 4, 
+      title: '단백질 보충제', 
+      category: '건강',
+      status: '진행중',
+      description: '운동 후 섭취하는 단백질 보충제입니다.',
+      price: '88,000원',
+      currentParticipants: 30,
+      maxParticipants: 10,
+      rating: 4.8,
+      image: '/mainPage/proteinSupplement.png',
+      isProposal: true
+    }
   ];
 
   // 각 섹션별 클릭 핸들러 (더보기용)
@@ -57,29 +249,12 @@ export default function MainPage() {
     navigate('/proposalsList?type=popular');
   };
 
-  // 카드 클릭 핸들러 (상세 페이지용)
-  const handleCardClick = (id, isProposal = false) => {
-    if (isProposal) {
-      navigate(`/proposalDetail/${id}`);
-    } else {
-      navigate(`/gbProductDetail/${id}`);
-    }
-  };
-
   return (
     <div className="mainpage-container">
-      {/* Header는 App.jsx에서 공통으로 렌더링 */}
-
-      {/* 상단 배너 - 화면 전체 너비 */}
-      {/* <div className="main-top-banner">
-        <img src="/main-top-banner.png" alt="메인 상단 배너" />
-      </div> */}
       <div className="banner-wrapper">
         <TopBannerCarousel />
       </div>
-      {/* Main Content (1220px 컨테이너) */}
       <main className="main-content">
-
         {/* 마감 임박 */}
         <section className="section">
           <div className="section-header">
@@ -91,9 +266,9 @@ export default function MainPage() {
                 e.preventDefault();
                 handleDeadlineSoonClick();
               }}
-              >
-                더보기 &gt;
-              </a>
+            >
+              더보기 &gt;
+            </a>
           </div>
           <div className="card-grid">
             {deadlineSoonItems.map(item => (
@@ -101,9 +276,16 @@ export default function MainPage() {
                 key={item.id}
                 image={item.image}
                 title={item.title}
-                participants={item.participants}
-                deadline={item.deadline}
-                onClick={() => handleCardClick(item.id)}
+                category={item.category}
+                status={item.status}
+                description={item.description}
+                price={item.price}
+                rating={item.rating}
+                currentParticipants={item.currentParticipants}
+                maxParticipants={item.maxParticipants}
+                deadlineTime={item.deadlineTime}
+                productId={item.id}
+                isProposal={false}
               />
             ))}
           </div>
@@ -114,13 +296,14 @@ export default function MainPage() {
           <div className="section-header">
             <h2>인기공구</h2>
             <a 
-            href="#" 
-            className="more-link"
-            onClick={(e) => {
-              e.preventDefault();
-              handlePopularClick();
-            }}
-            >더보기 &gt;
+              href="#" 
+              className="more-link"
+              onClick={(e) => {
+                e.preventDefault();
+                handlePopularClick();
+              }}
+            >
+              더보기 &gt;
             </a>
           </div>
           <div className="card-grid">
@@ -129,9 +312,15 @@ export default function MainPage() {
                 key={item.id}
                 image={item.image}
                 title={item.title}
-                participants={item.participants}
+                category={item.category}
+                status={item.status}
+                description={item.description}
                 price={item.price}
-                onClick={() => handleCardClick(item.id)}
+                rating={item.rating}
+                currentParticipants={item.currentParticipants}
+                maxParticipants={item.maxParticipants}
+                productId={item.id}
+                isProposal={false}
               />
             ))}
           </div>
@@ -142,13 +331,14 @@ export default function MainPage() {
           <div className="section-header">
             <h2>진행중 공구</h2>
             <a 
-            href="#" 
-            className="more-link"
-            onClick={(e) => {
-              e.preventDefault();
-              handleOngoingClick();
-            }}
-            >더보기 &gt;
+              href="#" 
+              className="more-link"
+              onClick={(e) => {
+                e.preventDefault();
+                handleOngoingClick();
+              }}
+            >
+              더보기 &gt;
             </a>
           </div>
           <div className="card-grid">
@@ -157,10 +347,17 @@ export default function MainPage() {
                 key={item.id}
                 image={item.image}
                 title={item.title}
-                participants={item.participants}
+                category={item.category}
+                status={item.status}
+                description={item.description}
                 price={item.price}
+                rating={item.rating}
+                currentParticipants={item.currentParticipants}
+                maxParticipants={item.maxParticipants}
                 progress={item.progress}
-                onClick={() => handleCardClick(item.id)}
+                deadlineTime={item.deadlineTime}
+                productId={item.id}
+                isProposal={false}
               />
             ))}
           </div>
@@ -171,13 +368,14 @@ export default function MainPage() {
           <div className="section-header">
             <h2>인기 제안</h2>
             <a 
-            href="#" 
-            className="more-link"           
-            onClick={(e) => {
-              e.preventDefault();
-              handleProposalClick();
-            }}
-            >더보기 &gt;
+              href="#" 
+              className="more-link"           
+              onClick={(e) => {
+                e.preventDefault();
+                handleProposalClick();
+              }}
+            >
+              더보기 &gt;
             </a>
           </div>
           <div className="card-grid">
@@ -186,16 +384,20 @@ export default function MainPage() {
                 key={item.id}
                 image={item.image}
                 title={item.title}
-                participants={item.participants}
+                category={item.category}
+                status={item.status}
+                description={item.description}
                 price={item.price}
-                onClick={() => handleCardClick(item.id, true)}
+                rating={item.rating}
+                currentParticipants={item.currentParticipants}
+                maxParticipants={item.maxParticipants}
+                productId={item.id}
+                isProposal={item.isProposal}
               />
             ))}
           </div>
         </section>
       </main>
-
-      {/* Footer는 App.jsx에서 공통으로 렌더링 */}
     </div>
   );
 }

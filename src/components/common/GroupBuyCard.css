@@ -1,14 +1,17 @@
 .groupbuy-card {
   background: white;
-  border: 1px solid #e0e0e0;
+  border: none;
   border-radius: 8px;
   overflow: hidden;
   transition: box-shadow 0.2s, transform 0.2s;
   cursor: pointer;
+  /* width: 240px; */
+  width: 100%;
+  box-shadow: 0 5px 20px rgba(88, 88, 88, 0.2);
 }
 
 .groupbuy-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 25px rgba(88, 88, 88, 0.3);
   transform: translateY(-2px);
 }
 
@@ -16,16 +19,23 @@
 .card-image {
   position: relative;
   width: 100%;
-  height: 180px;
+  height: 200px;
   background: #e0e0e0;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
 .image-placeholder {
   color: #999;
   font-size: 14px;
+}
+
+.card-image-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .badge {
@@ -37,6 +47,7 @@
   font-size: 12px;
   font-weight: 700;
   color: white;
+  z-index: 1;
 }
 
 .badge-hot {
@@ -47,15 +58,31 @@
   background: #52c41a;
 }
 
+/* 카테고리 배지 */
+.category-badge {
+  border: 1px solid black;
+  font-size: 10px;
+  padding: 5px;
+  display: inline-block;
+}
+
+/* 상태 배지 */
+.status-badge {
+  background-color: #BBFFAC;
+  color: #0A8F30;
+  font-size: 10px;
+  padding: 5px;
+  display: inline-block;
+}
+
+.status-badge.completed {
+  background-color: #f0f0f0;
+  color: #666;
+}
+
 /* 카드 정보 */
 .card-info {
   padding: 16px;
-}
-
-.card-image-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
 .card-title {
@@ -68,22 +95,75 @@
   white-space: nowrap;
 }
 
+/* 상품명 (CardSubtitle 스타일) */
+.card-subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+/* 상품 설명 */
+.card-description {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.4;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .card-participants {
   font-size: 12px;
   color: #666;
   margin-bottom: 4px;
 }
 
+/* 가격 (큰 폰트) */
 .card-price {
-  font-size: 12px;
-  color: #666;
+  font-size: 24px;
+  font-weight: 700;
+  color: #000;
   margin-bottom: 12px;
 }
 
-.card-deadline {
+/* 별점 */
+.card-rating {
+  display: flex;
+  align-items: center;
   font-size: 12px;
-  color: #ff4444;
   margin-bottom: 12px;
+}
+
+.card-rating img {
+  width: 12px;
+  margin-right: 5px;
+}
+
+/* 참여 인원 및 마감 시간 */
+.card-footer-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.card-participants-info {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+}
+
+.card-participants-info img {
+  width: 15px;
+  margin-right: 5px;
+}
+
+.card-deadline {
+  font-size: 10px;
+  color: red;
+  margin-bottom: 0;
 }
 
 /* 진행률 */
@@ -144,4 +224,3 @@
   border: none !important;
   color: white !important;
 }
-
