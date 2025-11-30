@@ -1,0 +1,107 @@
+
+.content-area {
+    width: 1000px;
+}
+
+/* ========== 기본정보 테이블 ========== */
+.member-info-section {
+  margin-bottom: 24px;
+}
+
+.member-info-section h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #111827;
+}
+
+.member-info-table {
+  width: 100%;
+}
+
+/* ========== 상세 탭 - 회원 상세정보 ========== */
+.detail-info-section {
+  margin-bottom: 32px;
+}
+
+.detail-info-table {
+  width: 400px;
+}
+
+.detail-info-table colgroup col:first-child {
+  width: 120px !important;
+}
+
+.detail-info-table td {
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.detail-info-table .label-cell {
+  background-color: #E5EEFF;
+  font-weight: 600;
+  width: 120px;
+  text-align: left;
+  padding-left: 16px;
+}
+
+.detail-info-table .value-cell {
+  text-align: left;
+  white-space: pre-line;
+}
+
+.detail-info-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ========== 상세 탭 - 배송지 ========== */
+.shipping-section {
+  margin-bottom: 32px;
+}
+
+.shipping-section h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #111827;
+}
+
+.shipping-item {
+  margin-bottom: 24px;
+}
+
+.shipping-item:last-child {
+  margin-bottom: 0;
+}
+
+/* ========== 공구내역 탭 ========== */
+.purchase-section h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #111827;
+}
+
+/* ========== 활동내역 탭 ========== */
+.activity-section {
+  margin-bottom: 48px;
+}
+
+.activity-section h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #111827;
+}
+
+.activity-section:last-child {
+  margin-bottom: 0;
+}
+
+/* 포인트 현황 */
+.point-current {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 16px;
+  margin-top: 0;
+}

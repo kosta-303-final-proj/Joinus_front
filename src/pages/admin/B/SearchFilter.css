@@ -1,0 +1,142 @@
+
+.search-filter-box {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.filter-section {
+  padding: 10px 0;
+  padding-right: 20px;
+  display: flex;
+  align-items: stretch;
+  gap: 20px;
+  border: 1px solid #e5e7eb;
+}
+
+.filter-section:last-of-type {
+  margin-bottom: 0;
+}
+
+.filter-section label {
+  font-weight: 600;
+  font-size: 14px;
+  background-color: #F7F7F7;
+  color: #374151;
+  width: 100px;
+  margin: -10px 0;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center; 
+}
+
+/* 기간 */
+.date-range {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.date-range input {
+  flex: 1;
+  max-width: 200px;
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.date-range span {
+  color: #6b7280;
+}
+
+/* 검색 */
+.search-row {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+}
+
+.search-row select {
+  width: 200px;
+  padding: 10px 14px; 
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #ffffff;
+}
+
+.search-row input[type="text"] {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  width: 500px;
+}
+
+.search-row input[type="text"]::placeholder {
+  color: #9ca3af;
+}
+
+/* 버튼 */
+.filter-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.search-btn {
+  background-color: #739FF2;
+  color: #ffffff;
+
+}
+
+.filter-buttons .btn {
+  padding: 10px 32px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 6px;
+  min-width: 120px;
+}
+
+/* 탭 (pill 스타일) */
+.pill-tabs {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.pill-tab {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 10px; 
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  
+  /* 비활성 상태 */
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
+.pill-tab:hover {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+.pill-tab.active {
+  background-color: #739FF2;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.pill-tab:active {
+  transform: scale(0.98);
+}

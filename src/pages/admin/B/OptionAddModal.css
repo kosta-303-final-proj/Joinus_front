@@ -1,0 +1,98 @@
+/* 페이지 스타일  */
+.option-add-page {
+  min-height: 100vh;
+  background-color: #f9fafb;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.option-container {
+  background-color: white;
+  border-radius: 8px;
+  width: 500px;
+  max-width: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+.option-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.option-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.close-btn-small {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 4px;
+}
+
+.close-btn-small:hover {
+  color: #374151;
+}
+
+.option-body {
+  padding: 20px;
+}
+
+.option-field {
+  margin-bottom: 16px;
+}
+
+.option-field label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.option-field input,
+.option-field textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.option-field input:focus,
+.option-field textarea:focus {
+  outline: none;
+  border-color: #739FF2;
+}
+
+.option-footer {
+  padding: 16px 20px;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-add-option {
+  padding: 10px 24px;
+  background-color: #739FF2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-add-option:hover {
+  background-color: #2563eb;
+}

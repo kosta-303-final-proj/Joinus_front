@@ -1,0 +1,119 @@
+
+/* 탭 + 정렬 컨테이너 */
+.tabs-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+}
+
+/* 정렬 드롭다운 */
+.sort-dropdown {
+  margin-left: auto;
+}
+
+.sort-select {
+  padding: 8px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: #ffffff;
+  cursor: pointer;
+  min-width: 180px;
+}
+
+.sort-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+/* ===========테이블=========== */
+/* 각 컬럼 너비 고정 */
+/* 체크박스 */
+.admin-table th:nth-child(1),
+.admin-table td:nth-child(1) {
+  width: 50px;  
+}
+
+/* 현재참여 인원 */
+.admin-table th:nth-child(2),
+.admin-table td:nth-child(2) {
+  width: 70px;  
+}
+
+/* 상태 */
+.admin-table th:nth-child(3),
+.admin-table td:nth-child(3) {
+  width: 80px;  
+}
+
+/* 공구 코드 */
+.admin-table th:nth-child(4),
+.admin-table td:nth-child(4) {
+  width: 100px;  
+}
+
+/* 공구명 */
+.admin-table th:nth-child(5),
+.admin-table td:nth-child(5) {
+  width: 300px;  
+}
+
+/* 가격 */
+.admin-table th:nth-child(6),
+.admin-table td:nth-child(6) {
+  width: 100px;  
+}
+
+/* 총 가격 */
+.admin-table th:nth-child(7),
+.admin-table td:nth-child(7) {
+  width: 120px;  
+}
+
+/* 시작 날짜 */
+.admin-table th:nth-child(8),
+.admin-table td:nth-child(8) {
+  width: 120px;  
+}
+
+/* 종료 날짜 */
+.admin-table th:nth-child(9),
+.admin-table td:nth-child(9) {
+  width: 120px;  
+}
+
+/* 작업 */
+.admin-table th:nth-child(10),
+.admin-table td:nth-child(10) {
+  width: 100px;  
+}
+
+/* 하단 버튼 */
+.bottom-actions {
+  display: flex;
+  justify-content: end;
+  gap: 16px;
+  margin: 24px 0;
+}
+
+/* 작업 버튼 */
+.action-btn {
+  padding: 6px 16px;
+  background-color: #739FF2;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.action-btn:hover {
+  background-color: #2563eb;
+}

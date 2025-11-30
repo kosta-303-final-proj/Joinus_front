@@ -1,0 +1,269 @@
+/* 관리자 공통 css */
+
+/* ========== 레이아웃 ========== */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  /* background-color: #f9fafb; */
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  margin-left: 293px;
+  margin-top: 70px;
+  transition: margin-left 0.3s ease;
+}
+
+/* 사이드바 접혔을 때 */
+.admin-layout:has(.sidebar.collapsed) .main-content {
+  margin-left: 70px;
+}
+
+.content-area {
+  padding: 32px;
+  max-width: 1000px;
+}
+
+/* ========== 탭 ========== */
+.tabs-container {
+  margin-bottom: 24px;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.tab {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: -2px;
+}
+
+.tab:hover {
+  color: #374151;
+}
+
+.tab.active {
+  color: #3b82f6;
+  border-bottom-color: #3b82f6;
+  font-weight: 600;
+}
+
+/* ========== 테이블 ========== */
+.table-container {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0 !important;
+  overflow: auto;
+  margin-bottom: 8px;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  border-radius: 0 !important;
+}
+
+.admin-table thead {
+  background-color: #E5EEFF;
+}
+
+.admin-table th {
+  padding: 16px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
+}
+
+.admin-table tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s;
+}
+
+.admin-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.admin-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.admin-table td {
+  padding: 16px;
+  text-align: center;
+  font-size: 14px;
+  color: #374151;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.title-cell {
+  color: #111827;
+  font-weight: 500;
+  cursor: pointer;
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.title-cell:hover {
+  color: #3b82f6;
+  text-decoration: underline;
+}
+
+/* ========== 뱃지 ========== */
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-badge.blue {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.status-badge.red {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.status-badge.green {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge.gray {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+/* ========== 페이지네이션 ========== */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-btn {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 12px;
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.page-btn:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.page-btn.active {
+  background-color: #739FF2;
+  border-color: #739FF2;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.page-dots {
+  color: #9ca3af;
+  padding: 0 4px;
+}
+
+/* ========== 버튼 ========== */
+.btn-primary {
+  padding: 10px 24px;
+  background-color: #739FF2;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #2563eb;
+}
+
+.btn-secondary {
+  padding: 10px 24px;
+  background-color: #ffffff;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: #f9fafb;
+}
+
+/* 데이터 비어있을 때 */
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #9ca3af;
+}
+
+.empty-state p {
+  font-size: 16px;
+  margin: 0;
+}
+
+
+/* 반응형 - 필요한가...? */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 70px;
+  }
+  
+  .content-area {
+    padding: 20px;
+  }
+  
+  .filter-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .filter-inputs {
+    width: 100%;
+    flex-direction: column;
+  }
+  
+  .search-type-select {
+    width: 100%;
+  }
+}

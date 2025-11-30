@@ -1,0 +1,104 @@
+/* 섹션 헤더 */
+.section-header {
+  margin-bottom: 24px;
+}
+
+.section-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* FAQ */
+.faq-answer-row {
+  background-color: #f9fafb !important;
+}
+
+.faq-answer-cell {
+  padding: 20px !important;
+  text-align: left !important;
+}
+
+.faq-answer-content {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.answer-label {
+  color: #3b82f6;
+  font-size: 16px;
+  min-width: 30px;
+  font-weight: 600;
+}
+
+.answer-text {
+  color: #374151;
+  line-height: 1.6;
+  font-size: 14px;
+  flex: 1;
+}
+
+/* FAQ 질문 행 호버 효과 */
+.admin-table tbody tr[style*="cursor: pointer"]:hover {
+  background-color: #f3f4f6;
+}
+
+/* 작은 액션 버튼 */
+.action-btn-small {
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.action-btn-small.edit {
+  background-color: #ffffff;
+  color: #3b82f6;
+  border: 1px solid #3b82f6;
+}
+
+.action-btn-small.edit:hover {
+  background-color: #eff6ff;
+}
+
+.action-btn-small.primary {
+  background-color: #3b82f6;
+  color: #ffffff;
+}
+
+.action-btn-small.primary:hover {
+  background-color: #2563eb;
+}
+
+.action-btn-small.view {
+  background-color: #ffffff;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+}
+
+.action-btn-small.view:hover {
+  background-color: #f9fafb;
+}
+
+/* 테이블 내용 셀 */
+.content-cell {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 상태 배지 */
+.status-badge.view {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
+.status-badge.completed {
+  background-color: #d1fae5;
+  color: #065f46;
+}

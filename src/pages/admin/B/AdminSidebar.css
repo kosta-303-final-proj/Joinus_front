@@ -1,0 +1,96 @@
+.sidebar {
+  width: 250px;
+  background: white;
+  border-right: 1px solid #f0f0f0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 사이드바 헤더 */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 24px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.sidebar-logo {
+  width: 130px;
+  height: 93px;
+  object-fit: contain;
+}
+
+/* 메인 네비게이션 */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.menu-item-wrapper {
+  position: relative;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  text-decoration: none;
+  color: #000;
+  transition: background-color 0.2s;
+  height: 48px;
+  position: relative;
+  width: 100%;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.sidebar-item:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.sidebar-item.active {
+  background-color: rgba(0, 0, 0, 0.08);
+  font-weight: 500;
+}
+
+.sidebar-dropdown {
+  justify-content: space-between;
+}
+
+.dropdown-arrow {
+  font-size: 10px;
+  color: #999;
+  margin-left: auto;
+  transition: transform 0.2s;
+}
+
+.dropdown-submenu {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.sidebar-subitem {
+  padding-left: 56px !important;
+}
+
+.menu-divider {
+  height: 1px;
+  background-color: #cac4d0;
+  margin: 0 0 0 0;
+}
+
+.sidebar-label {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #000;
+  letter-spacing: 0.5px;
+  line-height: 24px;
+}
+

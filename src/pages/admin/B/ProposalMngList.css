@@ -1,0 +1,104 @@
+
+/* 테이블 */
+.table-container {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0 !important;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.proposal-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.proposal-table thead {
+  background-color: #E5EEFF;
+}
+
+.proposal-table th {
+  padding: 16px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.proposal-table tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s;
+}
+
+.proposal-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.proposal-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.proposal-table td {
+  padding: 16px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.title-cell {
+  color: #111827;
+  font-weight: 500;
+  max-width: 400px;
+  cursor: pointer;
+}
+
+.title-cell:hover {
+  color: #3b82f6;
+  text-decoration: underline;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-badge.pending {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.status-badge.rejected {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+
+/* 반응형 */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 70px;
+  }
+  
+  .content-area {
+    padding: 20px;
+  }
+  
+  .filter-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .filter-inputs {
+    width: 100%;
+    flex-direction: column;
+  }
+  
+  .search-type-select {
+    width: 100%;
+  }
+}

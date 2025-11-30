@@ -1,0 +1,95 @@
+
+.inquiry-detail-container {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  padding: 32px;
+  width: 900px;
+}
+
+.inquiry-info-section {
+  margin-bottom: 32px;
+}
+
+.info-row {
+  display: flex;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 16px 0;
+}
+
+.info-row.column {
+  flex-direction: column;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  min-width: 150px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  background-color: #f9fafb;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+}
+
+.info-value {
+  flex: 1;
+  font-size: 14px;
+  color: #374151;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+}
+
+.info-value.content {
+  white-space: pre-wrap;
+  align-items: flex-start;
+  line-height: 1.6;
+}
+
+.answer-section {
+  margin-bottom: 32px;
+}
+
+.answer-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 12px;
+}
+
+.answer-textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #374151;
+  resize: vertical;
+  font-family: inherit;
+  box-sizing: border-box;
+  line-height: 1.6;
+}
+
+.answer-textarea:focus {
+  outline: none;
+  border-color: #739FF2;
+}
+
+.answer-textarea:disabled {
+  background-color: #f9fafb;
+  cursor: not-allowed;
+}
+
+.answer-textarea::placeholder {
+  color: #9ca3af;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+}
