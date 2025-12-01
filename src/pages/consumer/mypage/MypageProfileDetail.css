@@ -1,0 +1,116 @@
+:root {
+  --intel-blue: #739FF2;
+  --light-blue: #E5EEFF;
+  --deep-text: #000000;
+  --gray-text: #333333;
+  --line: #D9E6F5;
+  --white: #FFFFFF;
+  --line-strong: #E2E4EA;
+
+  --font-small: 12px;
+  --font-base: 16px;
+  --font-title: 20px;
+}
+
+/********************************
+ * 상단 타이틀
+ ********************************/
+.profiledetail-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.profiledetail-page-title {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+/********************************
+ * 정보 박스
+ ********************************/
+.profiledetail-info-box {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid var(--line-strong);
+  padding: 40px 50px;
+  width: 100%;
+  max-width: 1100px;
+}
+
+/********************************
+ * Form
+ ********************************/
+.profiledetail-form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.profiledetail-form-group label {
+  width: 160px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #222;
+}
+
+.profiledetail-form-group input {
+  flex: 1;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+.profiledetail-form-group input:focus {
+  border-color: var(--intel-blue);
+  outline: none;
+}
+
+.profiledetail-form-group input[readonly] {
+  background: #F5F7FA;
+  color: #666;
+}
+
+/********************************
+ * 버튼 그룹
+ ********************************/
+.profiledetail-btn-wrap {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+/* 수정 버튼 */
+.profiledetail-btn-edit {
+  background: var(--intel-blue);
+  border: 1px solid var(--intel-blue);
+  color: #fff;
+  padding: 10px 22px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.profiledetail-btn-edit:hover {
+  opacity: 0.85;
+}
+
+/* 회원탈퇴 버튼 */
+.profiledetail-btn-quit {
+  background: #f7f7f7;
+  border: 1px solid var(--line-strong);
+  color: #333;
+  padding: 10px 22px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.profiledetail-btn-quit:hover {
+  background: #eee;
+}

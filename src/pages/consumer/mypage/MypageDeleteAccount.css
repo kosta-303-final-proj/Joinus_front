@@ -1,0 +1,137 @@
+:root {
+  --intel-blue: #739FF2;
+  --light-blue: #E5EEFF;
+  --deep-text: #000000;
+  --gray-text: #333333;
+  --line: #D9E6F5;
+  --white: #FFFFFF;
+  --line-strong: #E2E4EA;
+  --font-small: 12px;
+  --font-base: 16px;
+  --font-title: 20px;
+}
+
+/* 제목 */
+.deleteaccount-title {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 22px;
+  margin-top: 10px;
+  width: 100%;
+  max-width: 900px;
+}
+
+/* 안내 박스 */
+.deleteaccount-notice-box {
+  background: #F7F9FC;
+  border: 1px solid var(--line);
+  padding: 28px 32px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  max-width: 900px;
+}
+
+.deleteaccount-msg {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.deleteaccount-point-info {
+  font-size: 15px;
+}
+
+/* 본문 박스 */
+.deleteaccount-box {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  padding: 35px 40px;
+  max-width: 900px;
+}
+
+.deleteaccount-sub-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* 사유 리스트 */
+.deleteaccount-reason-list {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.deleteaccount-reason-item {
+  padding: 18px 10px;
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  border-bottom: 1px solid var(--line);
+}
+
+.deleteaccount-reason-item span {
+  flex: 1;
+}
+
+.deleteaccount-reason-item:last-child {
+  border-bottom: none;
+}
+
+.deleteaccount-reason-item input {
+  width: 18px;
+  height: 18px;
+}
+
+/* 기타 입력 */
+.deleteaccount-other-box {
+  margin-top: 25px;
+}
+
+.deleteaccount-other-box textarea {
+  width: 100%;
+  height: 150px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  resize: none;
+  font-size: 14px;
+}
+
+/* 버튼 */
+.deleteaccount-btn-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.deleteaccount-btn {
+  padding: 12px 26px;
+  font-size: 15px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--intel-blue);
+}
+
+/* 취소 버튼 */
+.deleteaccount-btn-cancel {
+  background: #F7F7F7;
+  color: #000;
+  border: 1px solid #CCC;
+}
+
+.deleteaccount-btn-cancel:hover {
+  background: #EDEDED;
+}
+
+/* 탈퇴 버튼 */
+.deleteaccount-btn-next {
+  background: var(--intel-blue);
+  color: white;
+}
+
+.deleteaccount-btn-next:hover {
+  opacity: 0.85;
+}

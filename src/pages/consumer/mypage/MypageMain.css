@@ -1,0 +1,86 @@
+:root {
+  --intel-blue: #739FF2;
+  --light-blue: #E5EEFF;
+  --deep-text: #000;
+  --gray-text: #333;
+  --line: #D9E6F5;
+  --white: #fff;
+  --line-strong: #E2E4EA;
+
+  --font-small: 12px;
+  --font-base: 16px;
+  --font-title: 20px;
+}
+
+/* =============== Card ================== */
+.main-card {
+  background: var(--white);
+  border-radius: 14px;
+  border: 1px solid var(--line-strong);
+  padding: 25px;
+  margin-bottom: 36px;
+}
+
+.main-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.main-more {
+  font-size: 13px;
+  color: var(--deep-text);
+  text-decoration: none;
+}
+
+/* =============== Table ================== */
+.main-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.main-table th {
+  background: #f5f7fb;
+  padding: 14px;
+  color: var(--intel-blue);
+  font-weight: 700;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.main-table td {
+  padding: 14px;
+  text-align: center;
+  color: var(--gray-text);
+  border-bottom: 1px solid #ececec;
+}
+
+.main-table tbody tr:hover {
+  background: #F8FAFF;
+}
+
+/* =============== Lists ================== */
+.main-product-item {
+  display: flex;
+  gap: 18px;
+  padding: 14px 0;
+  border-bottom: 1px solid #ececec;
+}
+
+.main-thumb {
+  width: 60px;
+  height: 60px;
+  background: #e5ecf3;
+  border-radius: 8px;
+}
+
+.main-product-info p:first-child {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.main-product-info p:last-child {
+  font-size: 14px;
+  color: #666;
+}

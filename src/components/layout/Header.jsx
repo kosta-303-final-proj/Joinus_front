@@ -61,7 +61,7 @@ export default function Header() {
                 </li>
 
                 <li><Link to="/logout">로그아웃</Link></li>
-                <li><Link to="/mypage">마이페이지</Link></li>
+                <li><Link to="/mypage/main">마이페이지</Link></li>
               </>
             ) : (
               <>

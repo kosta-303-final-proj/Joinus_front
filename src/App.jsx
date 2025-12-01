@@ -57,6 +57,21 @@ import ReviewWrite from './pages/consumer/mypage/ReviewWrite';
 import ReviewWrited from './pages/consumer/mypage/ReviewWrited';
 import ShopCartList from './pages/consumer/mypage/ShopCartList';
 import Sidebar from './pages/consumer/mypage/Sidebar'
+
+//마이페이지(도훈)//
+import AddressAdd from './pages/consumer/mypage/AddressAdd';
+import AddressEdit from './pages/consumer/mypage/AddressEdit';
+import AddressList from './pages/consumer/mypage/AddressList';
+import MypageAlert from './pages/consumer/mypage/MypageAlert';
+import MypageDeleteAccount from './pages/consumer/mypage/MypageDeleteAccount';
+import MypageMain from './pages/consumer/mypage/MypageMain';
+import MypagePoints from './pages/consumer/mypage/MypagePoints';
+import MypageProfileDetail from './pages/consumer/mypage/MypageProfileDetail';
+import MypageProfileEdit from './pages/consumer/mypage/MypageProfileEdit';
+import MypageProfileIndex from './pages/consumer/mypage/MypageProfileIndex';
+import MypageSuggestions from './pages/consumer/mypage/MypageSuggestions';
+import MypageTier from './pages/consumer/mypage/MypageTier';
+
 // 제안
 import ProposalsList from "./pages/consumer/proposals/ProposalsList";
 import ProposalDetailConsumar from "./pages/consumer/proposals/ProposalDetailConsumar";
@@ -134,9 +149,21 @@ function AppContent() {
                     <Route path='inquiryHistoryList' element={<InquiryHistoryList/>}/>
                     <Route path="orderList" element={<OrderList />} />
                     <Route path="orderList/orderDetail" element={<OrderDetail />} />
+                    <Route path="addressList" element={<AddressList />} />
+                    <Route path="addressAdd" element={<AddressAdd />} />
+                    <Route path="addressEdit/:id" element={<AddressEdit />} />  
+                    <Route path="alert" element={<MypageAlert />} />
+                    <Route path="deleteAccount" element={<MypageDeleteAccount />} />
+                    <Route path="main" element={<MypageMain />} />
+                    <Route path="points" element={<MypagePoints />} />
+                    <Route path="profileDetail" element={<MypageProfileDetail />} />
+                    <Route path="profileEdit" element={<MypageProfileEdit />} />
+                    <Route path="profileIndex" element={<MypageProfileIndex />} />
+                    <Route path="suggestions" element={<MypageSuggestions />} />
+                    <Route path="tier" element={<MypageTier />} />
                     <Route path="reviewManage/*" element={<ReviewManage />}>
-                      <Route index element={<ReviewWrite />} />
-                      <Route path="reviewWrited" element={<ReviewWrited />} />
+                    <Route index element={<ReviewWrite />} />
+                    <Route path="reviewWrited" element={<ReviewWrited />} />
                     </Route>
                   </Routes>
                 </Sidebar>

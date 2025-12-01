@@ -1,0 +1,130 @@
+/* ================================
+   AddressEdit 전용 스타일
+================================ */
+:root {
+  --intel-blue: #739FF2;
+  --line: #D9D9D9;
+  --line-strong: #E2E4EA;
+  --deep-text: #000;
+  --gray-text: #333;
+  --font-small: 12px;
+  --font-base: 14px;
+}
+
+.addressedit-content {
+  width: 100%;
+}
+
+/* 제목 */
+.addressedit-title {
+  font-size: 20px;
+  font-weight: 800;
+  margin: 25px 0 20px;
+}
+
+/* Form row */
+.addressedit-form-row {
+  margin-bottom: 18px;
+  width: 100%;
+}
+
+/* Label */
+.addressedit-label {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.addressedit-required {
+  color: #d9534f;
+}
+
+/* 배송지명 + 체크박스 */
+.addressedit-label-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.addressedit-checkbox-default {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.addressedit-checkbox-default input {
+  width: 16px;
+  height: 16px;
+}
+
+/* Input */
+.addressedit-input-box {
+  width: 100%;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 12px;
+  font-size: 14px;
+}
+
+.addressedit-input-box:focus {
+  border-color: var(--intel-blue);
+  outline: none;
+}
+
+/* 연락처 */
+.addressedit-phone-wrap {
+  display: flex;
+  gap: 10px;
+}
+
+.addressedit-phone-wrap select,
+.addressedit-phone-wrap input {
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 10px;
+  font-size: 14px;
+}
+
+/* textarea */
+.addressedit-textarea-box {
+  width: 100%;
+  height: 130px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14px;
+  resize: none;
+  margin-top: 10px;
+}
+
+/* 버튼 */
+.addressedit-btn-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.addressedit-btn-confirm {
+  background: var(--intel-blue);
+  border: 1px solid var(--intel-blue);
+  color: white;
+  padding: 12px 32px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.addressedit-btn-cancel {
+  background: #f7f7f7;
+  border: 1px solid #333;
+  color: #333;
+  padding: 12px 32px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+}

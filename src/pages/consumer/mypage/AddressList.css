@@ -1,0 +1,120 @@
+/* 전체 박스 */
+.addresslist-summary {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #E2E4EA;
+  padding: 20px 30px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  margin-bottom: 30px;
+}
+
+/* 제목 */
+.addresslist-page-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* 배송지 카드 */
+.addresslist-card {
+  width: 860px;
+  background: #fff;
+  border: 1px solid #D9E6F5;
+  border-radius: 12px;
+  padding: 24px 30px;
+  margin-bottom: 16px;
+}
+
+.addresslist-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.addresslist-header h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.addresslist-label {
+  background: rgba(115,159,242,0.15);
+  color: #739FF2;
+  padding: 3px 8px;
+  font-size: 13px;
+  border-radius: 6px;
+}
+
+.addresslist-badge-default {
+  background: #739FF2;
+  color: white;
+  padding: 4px 10px;
+  font-size: 13px;
+  border-radius: 6px;
+}
+
+/* 버튼 */
+.addresslist-btn-group {
+  display: flex;
+  gap: 8px;
+}
+
+.addresslist-btn-edit {
+  background: #739FF2;
+  border: none;
+  padding: 8px 20px;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.addresslist-btn-edit:hover {
+  background: #5b80d4;
+}
+
+.addresslist-btn-delete {
+  background: #fff;
+  border: 1px solid #D9E6F5;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.addresslist-btn-delete:hover {
+  background: #f7f7f7;
+}
+
+/* 상세 정보 */
+.addresslist-detail {
+  font-size: 14px;
+  margin-top: 12px;
+  color: #444;
+  line-height: 1.6;
+}
+
+/* 배송지 추가 버튼 */
+.addresslist-add {
+  width: 860px;
+  text-align: center;
+  border: 1px solid #D9E6F5;
+  padding: 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #fff;
+  margin-top: 25px;
+}
+
+.addresslist-add:hover {
+  background: #F2F9FC;
+}
+
+.addresslist-add span {
+  color: #739FF2;
+  font-size: 15px;
+  font-weight: 700;
+}

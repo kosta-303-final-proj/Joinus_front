@@ -65,8 +65,8 @@ export default function Sidebar({children}) {
               </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#" style={{ color: "#000", fontSize:"12px", textDecoration: "none" }}>
-                참여중인 제안
+              <NavLink to="/mypage/suggestions"  style={{ color: "#000", fontSize:"12px", textDecoration: "none" }}>
+                공동구매 요청
               </NavLink>
             </NavItem>
             <NavItem>
@@ -75,7 +75,7 @@ export default function Sidebar({children}) {
               </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#" style={{ color: "#000", fontSize:"12px", textDecoration: "none" }}>
+              <NavLink to="/mypage/alert"  style={{ color: "#000", fontSize:"12px", textDecoration: "none" }}>
                 알림
               </NavLink>
             </NavItem>
@@ -87,32 +87,22 @@ export default function Sidebar({children}) {
           <h6 className="fw-bold mb-2" style={{ color: "#739FF2", fontSize:"14px" }}>내 정보</h6>
           <Nav vertical>
             <NavItem>
-              <NavLink href="#" style={{ color: "#000", fontSize:"12px", textDecoration: "none" }}>
+              <NavLink to="/mypage/points" style={{ color: "#000", fontSize:"12px", textDecoration: "none" }}>
                 포인트
               </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#" style={{ color: "#000", fontSize:"12px", textDecoration: "none" }}>
+              <NavLink to="/mypage/tier" style={{ color: "#000", fontSize:"12px", textDecoration: "none" }}>
                 회원 등급
               </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#" style={{ color: "#000", fontSize:"12px", textDecoration: "none" }}>
+              <NavLink to="/mypage/addressList" style={{ color: "#000", fontSize:"12px", textDecoration: "none" }}>
                 배송지 관리
               </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#" style={{ color: "#000", fontSize:"12px", textDecoration: "none" }}>
-                결제 수단 관리
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="#" style={{ color: "#000", fontSize:"12px", textDecoration: "none" }}>
-                환불 계좌 관리
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="#" style={{ color: "#000", fontSize:"12px", textDecoration: "none" }}>
+                <NavLink to="/mypage/profileIndex"  style={{ color: "#000", fontSize:"12px", textDecoration: "none" }}>
                 개인정보 관리
               </NavLink>
             </NavItem>

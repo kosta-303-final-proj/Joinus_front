@@ -1,0 +1,145 @@
+:root {
+  --intel-blue: #739FF2;
+  --light-blue: #E5EEFF;
+  --deep-text: #000000;
+  --gray-text: #333333;
+  --line: #D9E6F5;
+  --white: #FFFFFF;
+  --line-strong: #E2E4EA;
+
+  --font-small: 12px;
+  --font-base: 16px;
+  --font-title: 20px;
+}
+
+* {
+  margin:0; padding:0;
+  box-sizing:border-box;
+  font-family:"Noto Sans KR", sans-serif;
+}
+
+/* ================================ 텍스트 ================================ */
+.mypageTier_page-title {
+  font-size:26px;
+  font-weight:800;
+  margin-bottom:15px;
+}
+
+.mypageTier_page-desc {
+  font-size:14px;
+  color:#555;
+  margin-bottom:32px;
+}
+
+/* ================================ 현재 등급 ================================ */
+.mypageTier_grade-box {
+  display:flex;
+  gap:24px;
+  align-items:center;
+  background:var(--white);
+  border:1px solid var(--line-strong);
+  border-radius:14px;
+  padding:30px 36px;
+  margin-bottom:40px;
+}
+
+.mypageTier_grade-img {
+  width:70px;
+  height:70px;
+  border-radius:12px;
+  background:#F0F3FF;
+  border:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:32px;
+  color:var(--intel-blue);
+  font-weight:800;
+}
+
+.mypageTier_grade-info-area { flex:1; }
+
+.mypageTier_grade-now {
+  font-size:20px;
+  font-weight:800;
+  margin-bottom:10px;
+}
+
+.mypageTier_progress-wrap { width:100%; margin:12px 0 16px 0; }
+
+.mypageTier_progress-bg {
+  width:100%; height:8px;
+  background:#E8ECF7; border-radius:4px; overflow:hidden;
+}
+
+.mypageTier_progress-bar {
+  height:100%; width:55%;
+  background:var(--intel-blue);
+  border-radius:4px;
+  transition:0.4s ease;
+}
+
+.mypageTier_progress-text {
+  display:flex;
+  justify-content:space-between;
+  font-size:14px; color:#666;
+}
+
+/* ================================ 등급 리스트 ================================ */
+.mypageTier_grade-list {
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:20px;
+  margin-bottom:40px;
+}
+
+.mypageTier_grade-item {
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#fff;
+  padding:24px 20px;
+  transition:0.2s;
+}
+
+.mypageTier_grade-item:hover { 
+  box-shadow:0 3px 10px rgba(0,0,0,0.06); 
+}
+
+.mypageTier_current {
+  border:2px solid var(--intel-blue);
+  background:#F4F7FF;
+}
+
+.mypageTier_grade-item h3 {
+  display:flex;
+  justify-content:space-between;
+  font-size:16px;
+  font-weight:700;
+  margin-bottom:10px;
+}
+
+.mypageTier_grade-item span { 
+  font-size:14px; color:#666; 
+}
+
+.mypageTier_grade-item p { 
+  font-size:13px; 
+  color:#555; 
+  margin-bottom:4px; 
+}
+
+/* ================================ 안내 박스 ================================ */
+.mypageTier_info-box {
+  border:1px solid var(--line);
+  background:#F9FAFE;
+  border-radius:12px;
+  padding:18px 20px;
+  font-size:14px;
+  line-height:1.6;
+  color:#444;
+}
+
+.mypageTier_info-box span {
+  font-weight:700;
+  color:var(--deep-text);
+}
