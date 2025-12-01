@@ -1,0 +1,222 @@
+/* ========== 공통 css ========== */
+@import url("//fonts.googleapis.com/earlyaccess/notosanskr.css");
+
+* {
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+/* ========== Header Wrapper ========== */
+.header-wrapper {
+  width: 100%;
+  margin: 0 auto;
+  background: #ffffff;
+}
+
+/* ========== Top Bar ========== */
+.header-top {
+  width: 100%;
+  background: #f7f7f7;
+  border-bottom: 1px solid #dfdfdf;
+}
+
+.header-top-inner {
+  width: 1020px;
+  height: 35px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.top-menu {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+  color: #333;
+}
+
+.top-menu li {
+  padding: 0 10px;
+  white-space: nowrap;
+}
+
+.top-menu li:not(:last-child) {
+  border-right: 1px solid #dfdfdf;
+}
+
+.top-menu li:last-of-type {
+  padding-right: 0;
+}
+
+.top-menu li:hover {
+  color: #739ff2;
+  cursor: pointer;
+}
+
+/* 글씨 영역만 클릭 */
+.top-menu li a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* 로그인 영역 */
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.grade-icon {
+  width: 14px;
+  height: 14px;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+/* ========== Header Main ========== */
+.header-main {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header-inner {
+  width: 1020px;
+  height: 100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 40px;
+  flex : 0 0 auto;
+  margin-right: 75px;
+}
+
+/* ========== Main Menu ========== */
+.main-menu {
+  display: flex;
+  align-items: center;
+  gap: 75px;
+  flex : 0 0 auto;
+  font-weight: 700;
+}
+
+/* 메뉴 링크 */
+.main-menu a {
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+  padding: 0 2px;
+}
+
+/* Hover underline bar (bottom) */
+.header-main .main-menu a::before {
+  content: "";
+  position: absolute;
+  bottom: -14px; 
+  left: 0;
+  width: 100%;
+  height: 3px; 
+  background: #000; 
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.header-main .main-menu a:hover::before {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+/* 드롭다운 활성 상태일 때도 유지 */
+.header-main .main-menu a.active-menu::before {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+
+/* ========== Search Box ========== */
+.search-box {
+  margin-left: auto;
+  width: 300px;
+  height: 36px;
+  border-radius: 20px;
+  background: #f7f7f7;
+  border: 1px solid #e6e6e6;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  gap: 6px;
+}
+
+.search-box input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 13px;
+}
+
+/* ========== Dropdown ========== */
+.dropdown-wrapper {
+  z-index: 9999;
+  font-family: "Noto Sans KR", sans-serif;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 150px;
+  background: #ffffff;
+  border-top: 1px solid #dfdfdf;
+  border-bottom: 1px solid #dfdfdf;
+  padding: 20px 0;
+
+  /* 닫힐 때는 즉시 사라지고, 열릴 때만 transition */
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-10px);
+}
+
+.dropdown-wrapper.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.dropdown-inner {
+  width: 1020px;
+  margin: 0 auto;
+  
+}
+
+.dropdown-inner ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+}
+
+/* 링크만 클릭 */
+.dropdown-inner li {
+  padding: 3px 0;
+}
+
+/* 드롭다운 내부 링크 기본 스타일 제거 */
+.dropdown-inner a,
+.dropdown-inner li a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.dropdown-inner a:hover {
+  color: #739ff2; /* 호버 시 색만 변경 */
+}

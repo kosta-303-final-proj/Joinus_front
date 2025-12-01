@@ -1,0 +1,121 @@
+@import url("//fonts.googleapis.com/earlyaccess/notosanskr.css");
+
+* {
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+/* ========== Footer Wrapper ========== */
+.footer-wrapper {
+  width: 100%;
+  margin: 0 auto;
+  background: #f7f7f7;
+  border-top: 1px solid #dfdfdf;
+}
+
+/* ===== footer Top 메뉴바 ===== */
+.footer-top {
+  width: 100%;
+  background: #f7f7f7;
+  border-bottom: 1px solid #dfdfdf;
+}
+
+.footer-top-inner {
+  width: 1020px;
+  height: 35px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* 메뉴 리스트 */
+.footer-menu {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+  color: #333;
+}
+
+.footer-menu li {
+  padding: 0 10px;
+  white-space: nowrap;
+}
+
+.footer-menu li:not(:last-child) {
+  border-right: 1px solid #dfdfdf;
+}
+
+.footer-menu li:last-of-type {
+  padding-right: 0;
+}
+
+.footer-menu li:hover {
+  color: #739ff2;
+  cursor: pointer;
+}
+
+.footer-menu li a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ===== footer 중간 컨텐츠 ===== */
+.footer-mid {
+  width: 1020px;
+  margin: 0 auto;
+  padding: 20px 0;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.footer-logo {
+  height: 40px;
+  flex : 0 0 auto;
+  margin-right: 75px;
+}
+
+.footer-desc {
+  line-height: 20px;
+}
+
+.footer-right {
+  flex: 0 0 auto;
+  display: block;
+  flex-direction: column;
+  margin-left: 75px;
+  gap: 6px;
+}
+
+.footer-right p {
+  margin: 10px 0;   /* 위아래로 여백 */
+}
+
+
+.footer-title {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.footer-phone {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* ===== footer 하단 텍스트 ===== */
+.footer-bottom {
+  width: 100%;
+  border-top: 1px solid #dfdfdf;
+  font-size: 12px;
+  text-align: center;
+  padding: 10px 0;
+  background: #f7f7f7;
+}

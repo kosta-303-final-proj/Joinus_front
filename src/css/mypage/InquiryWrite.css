@@ -1,0 +1,63 @@
+.pageWrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  background-color: #fff;
+}
+
+.container {
+  width: 1020px;
+  padding: 10px 0;
+}
+
+.imageGrid {
+  display: flex;       /* 가로 나열 */
+  gap: 20px;           /* 박스 사이 간격 */
+  margin-top: 10px;
+  flex-wrap: wrap;     /* 줄 바꿈 가능 */
+}
+
+.imageBox {
+  border: 1px dashed #bbb;
+  width: 1020px;        /* 다른 박스와 동일 */
+  height: 160px;        /* 다른 박스와 동일 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  background-color: #fafafa;
+}
+
+.fileInput {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.preview {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.box-container {
+    display: flex;           /* 가로로 나란히 */
+    gap: 20px;               /* 박스 사이 간격 */
+    margin-top: 20px;
+}
+
+.review-box {
+    width: 420px;
+    height: 80px;
+    background-color: #f0f0f0; /* 원하는 색상으로 변경 가능 */
+    display: flex;
+    justify-content: center;  /* 텍스트 가로 중앙 */
+    align-items: center;      /* 텍스트 세로 중앙 */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}

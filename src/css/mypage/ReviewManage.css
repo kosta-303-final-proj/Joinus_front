@@ -1,0 +1,11 @@
+.title {
+  font-weight: bold;
+  font-size: 20px;
+  margin: 15px auto;
+}
+.review-box {
+  background-color: white;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}

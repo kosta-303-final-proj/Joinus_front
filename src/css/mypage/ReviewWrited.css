@@ -1,0 +1,51 @@
+.reviewWrite {
+  max-height: 400px;
+  overflow-y: auto;
+  margin-top: 5px;
+  justify-content: space-between;
+}
+
+.reviewItem  {
+  display: flex;
+  height: 120px;
+  align-items: center;
+  padding: 10px;
+  /* border-bottom: 1px solid #eee; */
+}
+
+.reviewImg {
+  width: 70px;
+  height: 70px;
+  margin-right: 20px;
+}
+
+
+
+.productData{
+  font-size: 12px;
+}
+
+.productPrice { width: 80px; margin-right: 35px; }
+
+.buttonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-left: auto;
+}
+
+.buttonPrimary {
+  background-color: #739FF2;
+  color: white;
+  border: none;
+}
+
+.buttonSecondary {
+  background-color: #f7f7f7;
+  color: black;
+  border: none;
+}
+
+.paginationContainer {
+  margin-top: 20px;
+}

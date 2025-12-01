@@ -1,0 +1,118 @@
+import { Link } from "react-router-dom";
+import { Label, } from "reactstrap";
+export default function DetailInfo(){
+    return(
+        <>
+            <div style={styles.pageWrapper}>
+                <div style={styles.container}>
+                    <div style={{display: 'flex',justifyContent: 'space-between',alignItems: 'center',width: '860px',}}>
+                        <div style={{background: '#E5EEFF',  padding: '5px 0' }}>
+                        <Label style={{ fontWeight: 'bold', margin: '0', width:'255px', textAlign:'center'}}>상품 설명</Label>
+                        </div>
+                        <div style={{ padding: '5px 0' }}><Link to="/gbProductDetail/reviews" style={{color:'black'}}>
+                        <Label style={{ fontWeight: 'bold', margin: '0',width:'255px', textAlign:'center' }}>리뷰</Label></Link>
+                        </div>
+                        <div style={{  padding: '5px 0' }}>
+                        <Label style={{ fontWeight: 'bold', margin: '0', width:'255px', textAlign:'center'}}>Q & A</Label>
+                        </div>
+                        <div style={{ padding: '5px 0' }}><Link to="/gbProductDetail/policy" style={{color:'black'}}>
+                        <Label style={{ fontWeight: 'bold', margin: '0',width:'255px', textAlign:'center' }}>배송/환뷸 규칙</Label></Link>
+                        </div>
+                    </div>
+                    <hr style={{marginTop:'0'}}/>
+                </div>
+            </div>
+            <div style={styles.pageWrapper}>
+                <div style={styles.container}>
+                    <div style={{padding:'0 20px'}}>
+                        <Label style={{fontSize:'24px'}}>상품 설명</Label>
+                      <div>애플 정품 에어팟 프로 2세대입니다. 액티브 노이즈 캔슬링 기능이 업그레이드 되었으며, 최대 6시간 재생 시간을 지원합니다.MagSafe 충전 케이스가 포함되어 있습니다.</div> <br/>
+                      <div className="fw-bold" style={{fontSize:'16px'}}>제안 링크</div>
+                      <div>https://www.coupang.com/vp/products/8941702848?itemId=26149371639&vendorI333a0</div>
+                    </div>
+                  <hr/>
+                    <div style={{padding:'0 20px'}}>
+                        <Label style={{fontSize:'24px'}}>가격 계산 방식</Label>
+                        <div style={{border:'1px solid #2833D1', backgroundColor:'#F2F9FC', padding:"10px", height:'100px', alignContent:'center'}}>
+                          <div>상품가격 + 해외배송비 + 국내배송비</div>
+                          <div>※ 환율 변동 및 참여 인원에 따라 최종 가격이 소폭 변동될 수 있습니다.</div> 
+                        </div> <br/>
+                    </div>
+                  <hr/>
+                </div>
+            </div>
+            
+        </>
+    )
+}
+
+const styles = {
+  pageWrapper: {
+    display: "flex",
+    justifyContent: "center",
+    width: "100%",
+    backgroundColor: "#fff",
+  },
+  container: {
+    width: "1020px",
+    padding: "20px 0",
+  },
+  container2: {
+    width: "1020px",
+    padding: "0 20px",
+  },
+
+  // 전체 폭 hr
+  fullWidthHr: {
+  width: "100%",
+  margin: "0",
+},
+
+  imageGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(5, 1fr)",
+    gap: "10px",
+    marginTop: "10px",
+  },
+  imageBox: {
+    border: "1px dashed #bbb",
+    height: "140px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: "4px",
+    position: "relative",
+    cursor: "pointer",
+    overflow: "hidden",
+    backgroundColor: "#fafafa",
+  },
+  fileInput: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    opacity: 0,
+    cursor: "pointer",
+  },
+  preview: {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  },
+
+  tag: {
+    backgroundColor: "#E7EBF3",
+    padding: "5px 12px",
+    borderRadius: "20px",
+    fontSize: "14px",
+    cursor: "pointer",
+    },
+
+tagWhite: {
+  backgroundColor: "#FFFFFF",
+  border: "1px solid #CED4DA",
+  padding: "5px 12px",
+  borderRadius: "20px",
+  fontSize: "14px",
+  cursor: "pointer",
+}
+};

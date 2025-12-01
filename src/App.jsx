@@ -47,6 +47,26 @@ import AdminOrderDetail from './pages/admin/AdminOrderDetail';
 import ExchRtrnWaitingList from './pages/admin/ExchRtrnWaitingList';
 import ExchRtrnWaitingDetail from './pages/admin/ExchRtrnWaitingDetail';
 import './App.css';
+// 마이페이지 (지성스)
+import InterestList from './pages/consumer/mypage/InterestList';
+import InquiryHistoryList from './pages/consumer/mypage/inquiryHistoryList';
+import OrderList from './pages/consumer/mypage/OrderList';
+import OrderDetail from './pages/consumer/mypage/OrderDetail';
+import ReviewManage from './pages/consumer/mypage/ReviewManage';
+import ReviewWrite from './pages/consumer/mypage/ReviewWrite';
+import ReviewWrited from './pages/consumer/mypage/ReviewWrited';
+import ShopCartList from './pages/consumer/mypage/ShopCartList';
+import Sidebar from './pages/consumer/mypage/Sidebar'
+// 제안
+import ProposalsList from "./pages/consumer/proposals/ProposalsList";
+import ProposalDetail from "./pages/consumer/proposals/ProposalDetail";
+import ProposalWrite from "./pages/consumer/proposals/ProposalWrite";
+//공구
+import GBProductList from './pages/consumer/groups/GBProductList';
+import GBProductDetail from './pages/consumer/groups/GBProductDetail';
+import DetailInfo from './pages/consumer/groups/DetailInfo';
+import Reviews from './pages/consumer/groups/Reviews';
+import Policy from './pages/consumer/groups/Policy';
 
 
 function AppContent() {
@@ -88,6 +108,37 @@ function AppContent() {
             <Route path="/mypage/cnclExchRtrnHisList" element={<CnclExchRtrnHisList/>} />
             <Route path="/mypage/exchangeDetail:/id" element={<ExchangeDetail/>} />
             <Route path="/mypage/returnDetail:/id" element={<ReturnDetail/>} />
+            {/* 지성스 */}
+            {/* <Route path="/mypage/interestList" element={<InterestList />} /> */}
+            {/* <Route path="/mypage/interestList" element={<InterestList />} />
+            <Route path="/mypage/shopCartList" element={<ShopCartList />} />
+            <Route path="/mypage/inquiryDetail/:id" element={<InquiryDetail />} />
+            <Route path='/mypage/inquiryHistoryList' element={<InquiryHistoryList/>}/>
+            <Route path="/mypage/orderList" element={<OrderList />} />
+            <Route path="/mypage/orderList/orderDetail/:id" element={<OrderDetail />} />
+            <Route path="/reviewManage/*" element={<ReviewManage />}>
+              <Route index element={<ReviewWrite />} />
+              <Route path="reviewWrited" element={<ReviewWrited />} />
+            </Route> */}
+            <Route
+              path="/mypage/*"
+              element={
+                <Sidebar>
+                  <Routes>
+                    <Route path="interestList" element={<InterestList />} />
+                    <Route path="shopCartList" element={<ShopCartList />} />
+                    <Route path="inquiryDetail" element={<InquiryDetail />} />
+                    <Route path='inquiryHistoryList' element={<InquiryHistoryList/>}/>
+                    <Route path="orderList" element={<OrderList />} />
+                    <Route path="orderList/orderDetail" element={<OrderDetail />} />
+                    <Route path="reviewManage/*" element={<ReviewManage />}>
+                      <Route index element={<ReviewWrite />} />
+                      <Route path="reviewWrited" element={<ReviewWrited />} />
+                    </Route>
+                  </Routes>
+                </Sidebar>
+              }
+            />
 
 
             {/* 관리자 페이지 */}
@@ -124,7 +175,21 @@ function AppContent() {
             <Route path="/admin/adminOrderDetail" element={<AdminOrderDetail/>} />
             <Route path="/admin/exchRtrnWaitingList" element={<ExchRtrnWaitingList/>} />
             <Route path="/admin/exchRtrnWaitingDetail" element={<ExchRtrnWaitingDetail/>} />
+            
+            {/* 와타시 */}
+            {/* 제안 */}
+              <Route path="/proposalsList" element={<ProposalsList />} />
+              <Route path='/proposalDetail' element={<ProposalDetail/>}/>
+              <Route path="/proposalsList/proposalWrite" element={<ProposalWrite />} />
 
+            {/* 공구 */}
+            <Route path="/group-purchase" element={<GBProductList />} />
+            <Route path="/gbProductDetail/*" element={<GBProductDetail />}>
+              <Route index element={<DetailInfo />} />
+              <Route path="detailInfo" element={<DetailInfo />} />
+              <Route path="reviews" element={<Reviews />} />
+              <Route path="policy" element={<Policy />} />
+            </Route>
           </Routes>
         </main>
       </div>

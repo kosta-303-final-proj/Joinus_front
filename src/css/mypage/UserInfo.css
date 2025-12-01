@@ -1,0 +1,12 @@
+.CardHeaderCss{
+    width: 860px;
+    background-color: #F2F9FC;
+    border: solid 1px #2833D1;
+    height: 50px;
+}
+
+.CardBodyCss {
+    width: 860px;
+    background-color: #ffffff;
+    border: solid 1px black;
+}
