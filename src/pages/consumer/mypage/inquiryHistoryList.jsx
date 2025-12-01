@@ -13,7 +13,7 @@ export default function InquiryHistoryList(){
         
         <>
             <div className="containe" style={{width:'860px'}}>
-                <div className="title">1:1 문의 내역</div>
+                <div className="mb-0 fw-bold text-start" style={{fontSize:'20px', marginBottom:'14px', padding:'20px 0' }}>1:1 문의 내역</div>
 
                 <div className="box-container" style={{display:'flex'}}>
                     <div className="review-box" style={{textAlign:'center', fontSize:"16px", flexDirection: "column", width:'280px', marginRight:'10px'}}>전체 문의

@@ -5,7 +5,7 @@ import '../../../css/mypage/ShopCartList.css';
 export default function ShopCartList() {
   return (
     <div className="containe">
-      <div className="title">장바구니</div>
+      <div className="fw-bold d-block" style={{ fontSize: "20px", margin: "20px auto" }}>장바구니</div>
 
       {/* 헤더 */}
       <hr style={{ margin: "5px auto 0 auto" }} />
