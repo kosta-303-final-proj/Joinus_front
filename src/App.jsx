@@ -39,9 +39,11 @@ import AdminInquiryDetail from './pages/admin/AdminInquiryDetail';
 // 구매(주문)/교환 반품
 import ExchangeReq from './pages/consumer/mypage/ExchangeReq';
 import ReturnReq from './pages/consumer/mypage/ReturnReq';
+import CancelReq from './pages/consumer/mypage/cancelReq';
 import CnclExchRtrnHisList from './pages/consumer/mypage/CnclExchRtrnHisList';
 import ExchangeDetail from './pages/consumer/mypage/ExchangeDetail';
 import ReturnDetail from './pages/consumer/mypage/ReturnDetail';
+import CancelDetail from './pages/consumer/mypage/CancelDetail';
 import AdminOrderList from './pages/admin/AdminOrderList';
 import AdminOrderDetail from './pages/admin/AdminOrderDetail';
 import ExchRtrnWaitingList from './pages/admin/ExchRtrnWaitingList';
@@ -124,9 +126,11 @@ function AppContent() {
             {/* 사용자 마이페이지 */}
             <Route path="/mypage/exchangeReq" element={<ExchangeReq/>} />
             <Route path="/mypage/returnReq" element={<ReturnReq/>} />
+            <Route path="/mypage/cancelReq" element={<CancelReq/>} />
             <Route path="/mypage/cnclExchRtrnHisList" element={<CnclExchRtrnHisList/>} />
             <Route path="/mypage/exchangeDetail:/id" element={<ExchangeDetail/>} />
             <Route path="/mypage/returnDetail:/id" element={<ReturnDetail/>} />
+            <Route path="/mypage/cancelDetail" element={<CancelDetail/>} />
             {/* 지성스 */}
             {/* <Route path="/mypage/interestList" element={<InterestList />} /> */}
             {/* <Route path="/mypage/interestList" element={<InterestList />} />

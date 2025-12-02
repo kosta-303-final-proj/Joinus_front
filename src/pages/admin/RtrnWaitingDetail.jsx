@@ -6,7 +6,7 @@ import {
     CardTitle, CardText
 } from 'reactstrap';
 
-export default function ExchRtrnWaitingDetail() {
+export default function RtrnWaitingDetail() {
     const confirmBtnStyle = {
         backgroundColor: '#739FF2',
         padding: '10px 20px',
@@ -25,22 +25,21 @@ export default function ExchRtrnWaitingDetail() {
         <Container fluid className="p-4 bg-light min-vh-100">
             {/* Header and Action Buttons */}
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <h1 className="mb-0">교환 신청 관리</h1>
-                {/* <div className="d-flex flex-row gap-2">
+                <h1 className="mb-0">반품 신청 관리</h1>
+                <div className="d-flex flex-row gap-2">
                     <Button style={cancelBtnStyle} outline>신청 거부</Button>
                     <Button style={confirmBtnStyle}>신청 승인</Button>
-                </div> */}
+                </div>
 
                 <div className="d-flex flex-row gap-2">
                     <Input
-                        style={{ width: '150px' }}
+                        style={{ width: '80px' }}
                         type="select"
                     >
-                        <option label="상태옵션선택">상태옵션선택</option>
-                        <option value="supplyNo">교환준비</option>
-                        <option value="name">교환회수중</option>
-                        <option value="name">교환배송중</option>
-                        <option value="name">교환완료</option>
+                        <option value="">상태옵션선택</option>
+                        <option value="supplyNo">반품준비</option>
+                        <option value="name">반품회수중</option>
+                        <option value="name">반품완료</option>
                     </Input>
                     <Button style={confirmBtnStyle}>상태변경</Button>
                 </div>

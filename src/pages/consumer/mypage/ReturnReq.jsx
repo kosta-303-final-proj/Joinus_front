@@ -42,7 +42,7 @@ export default function ReturnReq() {
                             <Col md="10">
                                 <div className="mb-2">상품명: Start Fuck 500ml 세트</div>
                                 <hr />
-                                <div className="mb-2">옵션: <strong>조-size</strong></div>
+                                <div className="mb-2">옵션: <strong>S-size</strong></div>
                                 <hr />
                                 <div>₩2000000 / 1개</div>
                             </Col>

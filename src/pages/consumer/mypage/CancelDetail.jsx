@@ -13,7 +13,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./exchRtrn.css";
 import Sidebar from "../../../components/layout/Sidebar";
 
-export default function ReturnDetail() {
+export default function CancelDetail() {
     const confirmBtnStyle = {
         backgroundColor: '#739FF2',
         padding: '10px 20px',
@@ -29,7 +29,7 @@ export default function ReturnDetail() {
                     {/* 제목 및 주문 정보 */}
                     <Row className="mt-4">
                         <Col>
-                            <h5 className="fw-bold">반품신청 상세보기</h5>
+                            <h5 className="fw-bold">취소신청 상세보기</h5>
                             <div className="text-secondary mt-2">
                                 주문일 : <b>2025-02-04</b> &nbsp;&nbsp; / &nbsp;&nbsp; 주문번호 :
                                 <b> 32100094139406</b>
@@ -56,90 +56,12 @@ export default function ReturnDetail() {
                                         <td className="text-center">373,440원</td>
                                         <td className="text-center">
                                             <div style={{ color: '#739FF2' }}>
-                                                반품완료
+                                                취소신청
                                             </div>
                                         </td>
                                     </tr>
                                 </tbody>
                             </Table>
-                        </Col>
-                    </Row>
-
-                    {/* 상세정보 박스 */}
-                    <Row className="mt-4">
-                        <Col>
-                            <Card>
-                                <CardBody>
-                                    <h6 className="fw-bold mb-3 section-header">상세정보</h6>
-                                    <Table borderless>
-                                        <tbody>
-                                            <tr>
-                                                <th style={{ width: "180px" }}>반품접수일자</th>
-                                                <td>2025/02/07</td>
-                                            </tr>
-                                            <tr>
-                                                <th>반품접수번호</th>
-                                                <td>1257205758</td>
-                                            </tr>
-                                            <tr>
-                                                <th>반품완료일</th>
-                                                <td>2025/02/07</td>
-                                            </tr>
-                                            <tr>
-                                                <th>반품 사유</th>
-                                                <td>쿠팡 내 다른 판매자 가격이 더 저렴함</td>
-                                            </tr>
-                                        </tbody>
-                                    </Table>
-                                </CardBody>
-                            </Card>
-                        </Col>
-                    </Row>
-
-                    {/* 상품 회수정보 */}
-                    <Row className="mt-4">
-                        <Col>
-                            <Card>
-                                <CardBody>
-                                    <h6 className="fw-bold mb-3 section-header">상품 회수정보</h6>
-                                    <Table borderless>
-                                        <tbody>
-                                            <tr>
-                                                <th style={{ width: "180px" }}>상품회수 진행여부</th>
-                                                <td>판매자 직접완료</td>
-                                            </tr>
-                                            <tr>
-                                                <th>택배회사</th>
-                                                <td>우체국택배 (한성일)</td>
-                                            </tr>
-                                            <tr>
-                                                <th>송장번호</th>
-                                                <td>994696150361</td>
-                                            </tr>
-                                            <tr>
-                                                <th>회수인</th>
-                                                <td>박도훈</td>
-                                            </tr>
-                                            <tr>
-                                                <th>휴대폰</th>
-                                                <td>010-3958-5730</td>
-                                            </tr>
-                                            <tr>
-                                                <th>주소</th>
-                                                <td>서울시 강서구 1235-11 501호</td>
-                                            </tr>
-                                            <tr>
-                                                <th>회수 예정일</th>
-                                                <td>2025/02/07(금)</td>
-                                            </tr>
-                                            <tr>
-                                                <th>회수 요청사항</th>
-                                                <td>문 앞</td>
-                                            </tr>
-                                        </tbody>
-                                    </Table>
-                                </CardBody>
-                            </Card>
                         </Col>
                     </Row>
 
@@ -190,7 +112,7 @@ export default function ReturnDetail() {
                     {/* 목록 버튼 */}
                     <Row className="mt-4 mb-5">
                         <Col className="text-center">
-                            <Button color="primary" style={confirmBtnStyle}>
+                            <Button color="primary" style={confirmBtnStyle} onClick={() => navigate('/mypage/cnclExchRtrnHisList')}>
                                 목록
                             </Button>
                         </Col>
