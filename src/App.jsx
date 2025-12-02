@@ -209,7 +209,7 @@ function AppContent() {
             {/* 와타시 */}
             {/* 제안 */}
               <Route path="/proposalsList" element={<ProposalsList />} />
-              <Route path='/proposalDetailConsumar' element={<ProposalDetailConsumar/>}/>
+              <Route path='/proposalDetail/:id' element={<ProposalDetailConsumar/>}/>
               <Route path="/proposalsList/proposalWrite" element={<ProposalWrite />} />
 
             {/* 공구 */}
@@ -217,7 +217,7 @@ function AppContent() {
             <Route path='/pay' element={<Pay/>}/>
             <Route path="/payComplate" element={<PayComplete/>}/>
             <Route path="/gbProductList" element={<GBProductList />} />
-            <Route path="/gbProductDetail/*" element={<GBProductDetail />}>
+            <Route path="/gbProductDetail/:id/*" element={<GBProductDetail />}>
               <Route index element={<DetailInfo />} />
               <Route path="detailInfo" element={<DetailInfo />} />
               <Route path="reviews" element={<Reviews />} />

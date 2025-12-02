@@ -61,7 +61,7 @@ export default function ProposalsList(){
                 <div style={styles.container} >
                     <div style={{display:'grid', gap:"20px", gridTemplateColumns: "repeat(4, 1fr)"}}>
                         {Array.from({ length: 8 }).map((_, idx) => (
-                        <Card key={idx} style={{width: '240px', boxShadow: "0 5px 20px rgba(88 88 88 / 20%)", border:'none' }} onClick={() => navigate("/proposalDetailConsumar")}>
+                        <Card key={idx} style={{width: '240px', boxShadow: "0 5px 20px rgba(88 88 88 / 20%)", border:'none' }} onClick={() => navigate(`/proposalDetail/${idx + 1}`)}>
                             <img alt="Sample" src="https://picsum.photos/300/200"/>
                             <CardBody >
                                 <CardTitle tag="h5" style={{display:'flex', justifyContent:'space-between'}}>

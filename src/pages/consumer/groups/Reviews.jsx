@@ -1,23 +1,24 @@
 
 import { Label } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 export default function Reviews(){
+    const { id } = useParams();
     return(
         <>
             <div style={styles.pageWrapper}>
                 <div style={styles.container}>
                     <div style={{display: 'flex',justifyContent: 'space-between',alignItems: 'center',width: '860px',}}>
-                        <div style={{  padding: '5px 0' }}><Link to="/gbProductDetail/detailInfo" style={{color:'black'}}>
+                        <div style={{  padding: '5px 0' }}><Link to={`/gbProductDetail/${id}/detailInfo`} style={{color:'black'}}>
                         <Label style={{ fontWeight: 'bold', margin: '0', width:'255px', textAlign:'center'}}>상품 설명</Label></Link>
                         </div>
-                        <div style={{background: '#E5EEFF', padding: '5px 0' }}><Link to="/gbProductDetail/reviews" style={{color:'black'}}>
+                        <div style={{background: '#E5EEFF', padding: '5px 0' }}><Link to={`/gbProductDetail/${id}/reviews`} style={{color:'black'}}>
                         <Label style={{ fontWeight: 'bold', margin: '0',width:'255px', textAlign:'center' }}>리뷰</Label></Link>
                         </div>
-                        <div style={{  padding: '5px 0' }}><Link to="/gbProductDetail/qAndA" style={{color:'black'}}>
+                        <div style={{  padding: '5px 0' }}><Link to={`/gbProductDetail/${id}/qAndA`} style={{color:'black'}}>
                         <Label style={{ fontWeight: 'bold', margin: '0', width:'255px', textAlign:'center'}}>Q & A</Label></Link>
                         </div>
-                        <div style={{ padding: '5px 0' }}><Link to="/gbProductDetail/policy" style={{color:'black'}}>
+                        <div style={{ padding: '5px 0' }}><Link to={`/gbProductDetail/${id}/policy`} style={{color:'black'}}>
                         <Label style={{ fontWeight: 'bold', margin: '0',width:'255px', textAlign:'center' }}>배송/환뷸 규칙</Label></Link>
                         </div>
                     </div>

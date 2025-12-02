@@ -1,6 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Label, } from "reactstrap";
 export default function DetailInfo(){
+    const { id } = useParams();
     return(
         <>
             <div style={styles.pageWrapper}>
@@ -9,13 +10,13 @@ export default function DetailInfo(){
                         <div style={{background: '#E5EEFF',  padding: '5px 0' }}>
                         <Label style={{ fontWeight: 'bold', margin: '0', width:'255px', textAlign:'center'}}>상품 설명</Label>
                         </div>
-                        <div style={{ padding: '5px 0' }}><Link to="/gbProductDetail/reviews" style={{color:'black'}}>
+                        <div style={{ padding: '5px 0' }}><Link to={`/gbProductDetail/${id}/reviews`} style={{color:'black'}}>
                         <Label style={{ fontWeight: 'bold', margin: '0',width:'255px', textAlign:'center' }}>리뷰</Label></Link>
                         </div>
-                        <div style={{ padding: '5px 0' }}><Link to="/gbProductDetail/qAndA" style={{color:'black'}}>
+                        <div style={{ padding: '5px 0' }}><Link to={`/gbProductDetail/${id}/qAndA`} style={{color:'black'}}>
                         <Label style={{ fontWeight: 'bold', margin: '0', width:'255px', textAlign:'center'}}>Q & A</Label></Link>
                         </div>
-                        <div style={{ padding: '5px 0' }}><Link to="/gbProductDetail/policy" style={{color:'black'}}>
+                        <div style={{ padding: '5px 0' }}><Link to={`/gbProductDetail/${id}/policy`} style={{color:'black'}}>
                         <Label style={{ fontWeight: 'bold', margin: '0',width:'255px', textAlign:'center' }}>배송/환뷸 규칙</Label></Link>
                         </div>
                     </div>

@@ -1,5 +1,5 @@
 import { Label, Button, Input, FormGroup} from "reactstrap";
-import { Link, Outlet } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function ProposalDetailConsumar() {
 
