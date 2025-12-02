@@ -1,9 +1,9 @@
 /* 섹션 헤더 */
-.section-header {
+.faq-section-header {
   margin-bottom: 24px;
 }
 
-.section-header h3 {
+.faq-section-header h3 {
   font-size: 16px;
   font-weight: 600;
   color: #374151;

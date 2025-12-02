@@ -11,24 +11,29 @@
   --font-base: 14px;
 }
 
+/* 콘텐츠 영역 */
 .addressedit-content {
   width: 100%;
 }
 
-/* 제목 */
+/* ================================
+   페이지 제목
+================================ */
 .addressedit-title {
   font-size: 20px;
   font-weight: 800;
   margin: 20px 0 20px;
 }
 
-/* Form row */
+/* ================================
+   폼 Row
+================================ */
 .addressedit-form-row {
   margin-bottom: 18px;
   width: 100%;
 }
 
-/* Label */
+/* 라벨 */
 .addressedit-label {
   font-size: 14px;
   font-weight: 700;
@@ -40,7 +45,9 @@
   color: #d9534f;
 }
 
-/* 배송지명 + 체크박스 */
+/* ================================
+   배송지명 + 체크박스
+================================ */
 .addressedit-label-flex {
   display: flex;
   justify-content: space-between;
@@ -59,7 +66,9 @@
   height: 16px;
 }
 
-/* Input */
+/* ================================
+   Input 기본
+================================ */
 .addressedit-input-box {
   width: 100%;
   height: 44px;
@@ -74,7 +83,9 @@
   outline: none;
 }
 
-/* 연락처 */
+/* ================================
+   연락처
+================================ */
 .addressedit-phone-wrap {
   display: flex;
   gap: 10px;
@@ -89,19 +100,24 @@
   font-size: 14px;
 }
 
-/* textarea */
+/* ================================
+   textarea (상세주소)
+================================ */
 .addressedit-textarea-box {
   width: 100%;
-  height: 130px;
+  height: 44px;     /* add 버전 동일 */
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 12px;
+  flex: 1;
+  padding: 10px;
   font-size: 14px;
   resize: none;
-  margin-top: 10px;
+  margin-top: 25px;
 }
 
-/* 버튼 */
+/* ================================
+   버튼
+================================ */
 .addressedit-btn-row {
   display: flex;
   justify-content: center;
@@ -127,4 +143,50 @@
   border-radius: 8px;
   font-size: 16px;
   font-weight: 700;
+}
+
+/* ================================
+   주소 영역: 우편번호 + 검색 + 도로명 주소
+================================ */
+.addressedit-address-row {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  align-items: center;
+}
+
+/* 우편번호 input */
+.addressedit-postcode-input {
+  width: 170px;   /* add 버전과 동일하게 확장 */
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* 도로명 주소 input */
+.addressedit-road-input {
+  flex: 1;
+  padding: 10px;
+  margin-left: 7px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* 검색 버튼 */
+.addressedit-postcode-btn {
+  padding: 10px 20px;
+  background: var(--intel-blue);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.addressedit-postcode-btn:hover {
+  background: #1744c1;
 }

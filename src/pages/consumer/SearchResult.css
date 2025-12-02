@@ -2,8 +2,7 @@
   max-width: 1220px;
   margin: 0 auto;
   padding: 40px 24px;
-  background: #f5f5f5;
-  min-height: 100vh;
+  /* background와 min-height는 App.css에서 상속 */
 }
 
 /* 검색 결과 헤더 */
@@ -107,8 +106,8 @@
 }
 
 .dropdown-checkbox:hover {
-  background: #f5f5f5;
-  color: #222;
+  background: var(--color-bg);
+  color: var(--color-text);
 }
 
 .dropdown-checkbox input[type="checkbox"] {

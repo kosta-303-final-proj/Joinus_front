@@ -32,7 +32,7 @@ export default function ReturnReq() {
                     <h5 className="mb-4 fw-bold">반품 신청</h5>
                     {/* 신청 상품 */}
                     <section className="border p-3 mb-4">
-                        <h6 className="fw-bold mb-3 section-header">상품</h6>
+                        <h6 className="fw-bold mb-3 exch-rtrn-section-header">상품</h6>
                         <Row>
                             <Col md="2">
                                 <Card className="border-0">
@@ -42,7 +42,7 @@ export default function ReturnReq() {
                             <Col md="10">
                                 <div className="mb-2">상품명: Start Fuck 500ml 세트</div>
                                 <hr />
-                                <div className="mb-2">옵션: <strong>조-size</strong></div>
+                                <div className="mb-2">옵션: <strong>S-size</strong></div>
                                 <hr />
                                 <div>₩2000000 / 1개</div>
                             </Col>
@@ -51,7 +51,7 @@ export default function ReturnReq() {
 
                     {/* 신청 사유 */}
                     <section className="border p-3 mb-4">
-                        <h6 className="fw-bold mb-3 section-header">사유</h6>
+                        <h6 className="fw-bold mb-3 exch-rtrn-section-header">사유</h6>
 
                         <FormGroup>
                             <Input
@@ -81,7 +81,7 @@ export default function ReturnReq() {
 
                     {/* 상품 이미지 첨부 */}
                     <section className="border p-3 mb-4">
-                        <h6 className="fw-bold mb-3 section-header">상품 이미지 첨부</h6>
+                        <h6 className="fw-bold mb-3 exch-rtrn-section-header">상품 이미지 첨부</h6>
 
                         <Row>
                             {images.map((img, index) => (
@@ -127,7 +127,7 @@ export default function ReturnReq() {
 
                     {/* 환불 계좌 */}
                     <section className="border p-3 mb-4">
-                        <h6 className="fw-bold mb-3 section-header">환불 계좌</h6>
+                        <h6 className="fw-bold mb-3 exch-rtrn-section-header">환불 계좌</h6>
 
                         <FormGroup>
                             <Label className="sub-title">은행명</Label>
@@ -151,7 +151,7 @@ export default function ReturnReq() {
 
                     {/* 회수 정보 */}
                     <section className="border p-3 mb-4">
-                        <h6 className="fw-bold mb-3 section-header">회수 정보</h6>
+                        <h6 className="fw-bold mb-3 exch-rtrn-section-header">회수 정보</h6>
 
                         <FormGroup>
                             <div className="d-flex flex-row justify-content-between gap-5">
@@ -223,7 +223,7 @@ export default function ReturnReq() {
 
                     {/* 환불 안내 */}
                     <section className="border p-3 mb-4">
-                        <h6 className="fw-bold mb-3 section-header">환불 안내</h6>
+                        <h6 className="fw-bold mb-3 exch-rtrn-section-header">환불 안내</h6>
 
                         <div className="mb-2">상품금액: <span>₩2000000 / 1개</span></div>
                         <hr />

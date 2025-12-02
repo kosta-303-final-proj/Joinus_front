@@ -29,7 +29,7 @@ export default function AdminOrderDetail() {
             <h5 className="mb-4">공구관리 &gt; 주문 공구 상품</h5>
             {/* 공구 상품 카드 */}
             <div>
-                <h6 className="fw-bold mb-3 section-header" style={{ background: '#eaf1ff' }}>공구 상품</h6>
+                <h6 className="fw-bold mb-3 admin-order-section-header" style={{ background: '#eaf1ff' }}>공구 상품</h6>
                 <Row className="align-items-start align-items-center justify-content-center" style={{ backgroundColor: 'white', height: '250px' }}>
                     <Col md="2">
                         <img

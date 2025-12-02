@@ -265,7 +265,7 @@ export default function Statistics() {
 
       {/* 매출 상세 */}
       <div className="details-section">
-        <div className="section-header">
+        <div className="statistics-section-header">
           <h2 className="section-title">매출 상세</h2>
         </div>
         <div className="unit-selector">

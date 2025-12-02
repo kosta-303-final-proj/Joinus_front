@@ -88,7 +88,7 @@ export default function Header() {
           </Link>
 
           <nav className="main-menu">
-            <Link to="/group-purchase"
+            <Link to="/gbProductList"
               className={hoverMenu === "group" ? "active-menu" : ""}
                onMouseEnter={() => handleEnter("group")}
                 onMouseLeave={handleLeave}>

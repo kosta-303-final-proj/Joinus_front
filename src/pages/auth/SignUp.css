@@ -172,7 +172,7 @@
 } */
 
 .cancel-button:hover {
-  background: #f5f5f5;
+  background: var(--color-bg);
   border-color: #999;
 }
 

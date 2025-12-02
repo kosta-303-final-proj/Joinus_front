@@ -1,5 +1,6 @@
 import React from "react";
 import "./MypageAlert.css";
+      import { Pagination, PaginationItem, PaginationLink } from "reactstrap";
 
 export default function MypageAlert() {
   return (
@@ -97,6 +98,18 @@ export default function MypageAlert() {
         </div>
 
       </div>
+
+            {/* 페이지네이션 */}
+      <Pagination className="paginationContainer">
+        <PaginationItem><PaginationLink first href="#" /></PaginationItem>
+        <PaginationItem><PaginationLink previous href="#" /></PaginationItem>
+        {[1,2,3,4,5].map(num => (
+          <PaginationItem key={num}><PaginationLink href="#">{num}</PaginationLink></PaginationItem>
+        ))}
+        <PaginationItem><PaginationLink next href="#" /></PaginationItem>
+        <PaginationItem><PaginationLink last href="#" /></PaginationItem>
+      </Pagination>
+      
 
       {/* 안내 박스 */}
       <div className="alert-info-box">

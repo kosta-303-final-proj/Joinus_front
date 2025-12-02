@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./MypagePoints.css";
+import { Label, FormGroup, Input, Button, Pagination, PaginationItem, PaginationLink } from "reactstrap";
 
 export default function MypagePoints() {
   const [tab, setTab] = useState("all");
@@ -84,6 +85,17 @@ export default function MypagePoints() {
           </>
         )}
       </div>
+
+            {/* 페이지네이션 */}
+      <Pagination className="paginationContainer">
+        <PaginationItem><PaginationLink first href="#" /></PaginationItem>
+        <PaginationItem><PaginationLink previous href="#" /></PaginationItem>
+        {[1,2,3,4,5].map(num => (
+          <PaginationItem key={num}><PaginationLink href="#">{num}</PaginationLink></PaginationItem>
+        ))}
+        <PaginationItem><PaginationLink next href="#" /></PaginationItem>
+        <PaginationItem><PaginationLink last href="#" /></PaginationItem>
+      </Pagination>
 
       {/* 안내 박스 */}
       <div className="points-info-box">

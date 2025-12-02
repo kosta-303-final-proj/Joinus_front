@@ -113,7 +113,7 @@
 }
 
 .quick-date-btn:hover {
-  background-color: #f5f5f5;
+  background-color: var(--color-bg);
   border-color: #999999;
 }
 

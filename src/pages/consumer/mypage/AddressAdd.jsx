@@ -63,23 +63,40 @@ export default function AddressAdd() {
         </div>
       </div>
 
-      {/* ===== 주소 ===== */}
-      <div className="addressadd-form-row">
-        <label className="addressadd-label">
-          주소 <span className="addressadd-required">*</span>
-        </label>
+{/* ===== 주소 ===== */}
+<div className="addressadd-form-row">
+  <label className="addressadd-label">
+    주소 <span className="addressadd-required">*</span>
+  </label>
 
-        <input
-          type="text"
-          className="addressadd-input-box"
-          placeholder="도로명 주소를 입력하세요."
-          style={{ marginTop: "8px" }}
-        />
-        <textarea
-          className="addressadd-textarea-box"
-          placeholder="상세주소를 입력하세요."
-        ></textarea>
-      </div>
+  <div className="addressadd-address-row">
+    {/* 우편번호 */}
+    <input
+      type="text"
+      className="addressadd-postcode-input"
+      placeholder="우편번호"
+    />
+
+    {/* 우편번호 검색 버튼 */}
+    <button className="addressadd-postcode-btn">검색</button>
+
+    {/* 도로명 주소 */}
+    <input
+      type="text"
+      className="addressadd-road-input"
+      placeholder="도로명 주소를 입력하세요."
+    />
+
+    {/* 도로명 주소 검색 버튼 */}
+    <button className="addressadd-postcode-btn">검색</button>
+  </div>
+
+  {/* 상세주소 */}
+  <textarea
+    className="addressadd-textarea-box"
+    placeholder="상세주소를 입력하세요."
+  ></textarea>
+</div>
 
       {/* ===== 출입방법 ===== */}
       <div className="addressadd-form-row">

@@ -258,7 +258,7 @@ export default function MainPage() {
       <main className="main-content">
         {/* 마감 임박 */}
         <section className="section">
-          <div className="section-header">
+          <div className="mainpage-section-header">
             <h2>마감 임박</h2>
             <a 
               href="#"
@@ -294,7 +294,7 @@ export default function MainPage() {
 
         {/* 인기공구 */}
         <section className="section">
-          <div className="section-header">
+          <div className="mainpage-section-header">
             <h2>인기공구</h2>
             <a 
               href="#" 
@@ -329,7 +329,7 @@ export default function MainPage() {
 
         {/* 진행중 공구 */}
         <section className="section">
-          <div className="section-header">
+          <div className="mainpage-section-header">
             <h2>진행중 공구</h2>
             <a 
               href="#" 
@@ -366,7 +366,7 @@ export default function MainPage() {
 
         {/* 인기 제안 */}
         <section className="section">
-          <div className="section-header">
+          <div className="mainpage-section-header">
             <h2>인기 제안</h2>
             <a 
               href="#" 

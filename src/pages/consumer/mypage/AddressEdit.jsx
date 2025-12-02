@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./AddressEdit.css";
+
 export default function AddressEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ export default function AddressEdit() {
       phone1: "010",
       phone2: "5241",
       phone3: "8372",
+      postcode: "06351",
       road: "서울특별시 강남구 논현로 145길 18",
       detail: "힐스테이트 논현 103동 701호",
       enter: "공동현관 비밀번호 1234",
@@ -26,6 +28,7 @@ export default function AddressEdit() {
     phone1: "010",
     phone2: "",
     phone3: "",
+    postcode: "",
     road: "",
     detail: "",
     enter: "",
@@ -127,28 +130,53 @@ export default function AddressEdit() {
         </div>
       </div>
 
-      {/* 주소 */}
-      <div className="addressedit-form-row">
-        <label className="addressedit-label">
-          주소 <span className="addressedit-required">*</span>
-        </label>
+{/* 주소 */}
+<div className="addressedit-form-row">
+  <label className="addressedit-label">
+    주소 <span className="addressedit-required">*</span>
+  </label>
 
-        <input
-          type="text"
-          className="addressedit-input-box"
-          name="road"
-          value={form.road}
-          onChange={handleChange}
-          style={{ marginTop: "8px" }}
-        />
+  {/* 우편번호 + 검색 */}
+  <div className="addressedit-address-row">
+    <input
+      type="text"
+      className="addressedit-postcode-input"
+      name="postcode"
+      placeholder="우편번호"
+      value={form.postcode}
+      onChange={handleChange}
+    />
 
-        <textarea
-          className="addressedit-textarea-box"
-          name="detail"
-          value={form.detail}
-          onChange={handleChange}
-        ></textarea>
-      </div>
+    <button className="addressedit-postcode-btn">
+      검색
+    </button>
+
+    {/* 도로명 주소 */}
+    <input
+      type="text"
+      className="addressedit-road-input"
+      name="road"
+      placeholder="도로명 주소를 입력하세요."
+      value={form.road}
+      onChange={handleChange}
+    />
+
+    {/* 도로명 검색 버튼 (Add와 동일!) */}
+    <button className="addressedit-postcode-btn">
+      검색
+    </button>
+  </div>
+
+  {/* 상세주소 */}
+  <textarea
+    className="addressedit-textarea-box"
+    name="detail"
+    placeholder="상세주소를 입력하세요."
+    value={form.detail}
+    onChange={handleChange}
+  ></textarea>
+</div>
+
 
       {/* 출입방법 */}
       <div className="addressedit-form-row">

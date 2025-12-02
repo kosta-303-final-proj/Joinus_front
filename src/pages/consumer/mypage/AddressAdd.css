@@ -105,13 +105,15 @@
 ================================ */
 .addressadd-textarea-box {
   width: 100%;
-  height: 130px;
+  height: 44px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 12px;
+  flex:1;
+  padding: 10px;
   font-size: 14px;
   resize: none;
-  margin-top: 10px;
+  margin-top: 25px;
+
 }
 
 /* ================================
@@ -142,4 +144,50 @@
   border-radius: 8px;
   font-size: 16px;
   font-weight: 700;
+}
+
+/* ================================
+   주소 영역: 우편번호 + 검색 + 도로명 주소
+================================ */
+.addressadd-address-row {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  align-items: center;
+}
+
+/* 우편번호 input */
+.addressadd-postcode-input {
+  width: 170px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* 도로명 주소 input */
+.addressadd-road-input {
+  flex: 1;
+  padding: 10px;
+  margin-left:7px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* 검색 버튼 (공통) */
+.addressadd-postcode-btn {
+  padding: 10px 20px;
+  background: var(--intel-blue);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.addressadd-postcode-btn:hover {
+  background: #1744c1;
 }

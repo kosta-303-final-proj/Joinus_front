@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import "./MypageSuggestions.css";
+import { Pagination, PaginationItem, PaginationLink } from "reactstrap";
 
 export default function MypageSuggestions() {
   const [tab, setTab] = useState("participated");
 
   return (
     <>
-      <div className="suggestions-title">참여중인 공구 제안</div>
+      <div className="suggestions-title">공동구매 요청</div>
 
       {/* ================= 탭 메뉴 ================= */}
       <div className="suggestions-tab-menu">
@@ -14,14 +15,14 @@ export default function MypageSuggestions() {
           className={tab === "participated" ? "active" : ""}
           onClick={() => setTab("participated")}
         >
-          참여중인 공구 제안
+          내가 투표한 공동 구매
         </button>
 
         <button
           className={tab === "written" ? "active" : ""}
           onClick={() => setTab("written")}
         >
-          내가 작성한 공구 제안
+          내가 요청한 공동 구매
         </button>
       </div>
 
@@ -189,6 +190,16 @@ export default function MypageSuggestions() {
         )}
 
       </div>
+          {/* 페이지네이션 */}
+      <Pagination className="paginationContainer">
+        <PaginationItem><PaginationLink first href="#" /></PaginationItem>
+        <PaginationItem><PaginationLink previous href="#" /></PaginationItem>
+        {[1,2,3,4,5].map(num => (
+          <PaginationItem key={num}><PaginationLink href="#">{num}</PaginationLink></PaginationItem>
+        ))}
+        <PaginationItem><PaginationLink next href="#" /></PaginationItem>
+        <PaginationItem><PaginationLink last href="#" /></PaginationItem>
+      </Pagination>
     </>
   );
 }
