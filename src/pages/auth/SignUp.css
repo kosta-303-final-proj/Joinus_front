@@ -1,23 +1,78 @@
-/* 공통 스타일은 src/styles/pages/auth/auth-common.css 사용 */
+/* 회원가입 페이지 스타일 */
 .signup-page {
-  /* auth-common.css의 .auth-page 사용 */
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  padding: 40px 24px;
 }
 
 .signup-container {
+  width: 100%;
   max-width: 600px;
-  /* auth-common.css의 .auth-container 사용 */
+  margin: 0 auto;
+  background: var(--color-white);
+  border-radius: var(--border-radius-md);
+  padding: 48px 40px;
+  box-shadow: var(--shadow-md);
 }
 
 .signup-title {
-  /* auth-common.css의 .auth-title 사용 */
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-text);
+  text-align: center;
+  margin-bottom: var(--spacing-3);
 }
 
 .signup-subtitle {
-  /* auth-common.css의 .auth-subtitle 사용 */
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin-bottom: var(--spacing-8);
+  line-height: 1.6;
 }
 
 .signup-form {
-  /* auth-common.css의 .auth-form 사용 */
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+}
+
+/* 폼 공통 스타일 */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.form-label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px var(--spacing-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+  background-color: var(--color-white);
+}
+
+.form-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
 }
 
 /* 아이디 입력 필드와 중복 확인 버튼 */
@@ -32,8 +87,6 @@
   flex: 1;
   max-width: none;
 }
-
-/* form-group, form-label, form-input은 auth-common.css 사용 */
 
 .form-input.full-width {
   max-width: 100%;
@@ -78,33 +131,6 @@
   color: var(--color-badge-red-text);
 }
 
-/* 성별 라디오 버튼 */
-/* .gender-options {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  padding-top: 8px;
-}
-
-.radio-label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 14px;
-  color: #666;
-  cursor: pointer;
-}
-
-.radio-label input[type="radio"] {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-}
-
-.radio-label:hover {
-  color: #222;
-} */
-
 /* 주소 입력 영역 */
 .address-input-wrapper {
   display: flex;
@@ -135,8 +161,8 @@
 /* 버튼들 */
 .form-buttons {
   display: flex;
-  flex-direction: column;  /* 세로 배치 */
-  align-items: center;     /* 가운데 정렬 */
+  flex-direction: column;
+  align-items: center;
   gap: 12px;
   margin-top: 12px;
 }
@@ -159,24 +185,36 @@
   background: var(--color-primary-hover);
 }
 
-/* .cancel-button {
-  padding: 14px;
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  font-size: 16px;
-  font-weight: 500;
-  color: #666;
-  cursor: pointer;
-  transition: all 0.2s;
-} */
-
 .cancel-button:hover {
   background: var(--color-bg);
   border-color: #999;
 }
 
-/* 로그인 안내는 auth-common.css의 .auth-prompt, .auth-link 사용 */
+/* 로그인 안내 */
+.login-prompt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-6);
+  padding-top: var(--spacing-6);
+  border-top: 1px solid var(--color-border-light);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.login-link {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.login-link:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+}
 
 /* 반응형 */
 @media (max-width: 768px) {
@@ -218,4 +256,3 @@
     gap: 8px;
   }
 }
-

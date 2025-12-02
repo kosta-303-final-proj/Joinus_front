@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../../styles/pages/auth/auth-common.css';
 import './SignUp.css';
 
 export default function SignUp() {
@@ -243,7 +242,7 @@ export default function SignUp() {
           </div>
 
           {/* 주소 */}
-          <div className="form-group">
+          {/* <div className="form-group">
             <label htmlFor="address" className="form-label">주소</label>
             <div className="address-input-wrapper">
               <input
@@ -264,10 +263,10 @@ export default function SignUp() {
                 주소 찾기
               </button>
             </div>
-          </div>
+          </div> */}
 
           {/* 상세주소 */}
-          <div className="form-group">
+          {/* <div className="form-group">
             <label htmlFor="detailAddress" className="form-label">상세주소</label>
             <input
               type="text"
@@ -278,7 +277,7 @@ export default function SignUp() {
               value={formData.detailAddress}
               onChange={handleChange}
             />
-          </div>
+          </div> */}
 
           {/* 성별 */}
           {/* <div className="form-group">

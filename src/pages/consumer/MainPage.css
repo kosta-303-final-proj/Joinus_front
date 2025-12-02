@@ -3,7 +3,7 @@
 }
 
 /* Main Content */
-.main-content {
+.mainpage-container .main-content {
   max-width: 1220px;
   margin: 0 auto;
   padding: 40px var(--spacing-6);

@@ -1,23 +1,78 @@
-/* 공통 스타일은 src/styles/pages/auth/auth-common.css 사용 */
+/* 로그인 페이지 스타일 */
 .login-page {
-  /* auth-common.css의 .auth-page 사용 */
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  padding: 40px 24px;
 }
 
 .login-container {
+  width: 100%;
   max-width: 400px;
-  /* auth-common.css의 .auth-container 사용 */
+  margin: 0 auto;
+  background: var(--color-white);
+  border-radius: var(--border-radius-md);
+  padding: 48px 40px;
+  box-shadow: var(--shadow-md);
 }
 
 .login-title {
-  /* auth-common.css의 .auth-title 사용 */
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-text);
+  text-align: center;
+  margin-bottom: var(--spacing-3);
 }
 
 .login-subtitle {
-  /* auth-common.css의 .auth-subtitle 사용 */
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin-bottom: var(--spacing-8);
+  line-height: 1.6;
 }
 
 .login-form {
-  /* auth-common.css의 .auth-form 사용 */
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-5);
+}
+
+/* 폼 공통 스타일 */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.form-label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px var(--spacing-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+  background-color: var(--color-white);
+}
+
+.form-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
 }
 
 /* 로그인 버튼 */
@@ -57,7 +112,57 @@
   background: #e5cd00;
 }
 
-/* 링크들은 auth-common.css의 .auth-links, .link, .auth-prompt 사용 */
+/* 링크들 */
+.login-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: var(--spacing-3);
+  padding-top: var(--spacing-4);
+  border-top: 1px solid var(--color-border-light);
+}
+
+.link {
+  font-size: var(--font-size-sm);
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.link:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+}
+
+.divider {
+  color: #dddddd;
+  margin: 0 var(--spacing-3);
+}
+
+.signup-prompt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-6);
+  padding-top: var(--spacing-6);
+  border-top: 1px solid var(--color-border-light);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.signup-link-text {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.signup-link-text:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+}
 
 /* 반응형 */
 @media (max-width: 480px) {
@@ -69,4 +174,3 @@
     font-size: 24px;
   }
 }
-
