@@ -1,6 +1,7 @@
 import React from "react";
 import "./MypageProfileIndex.css";
 import { useNavigate } from "react-router-dom";
+import { FaLock } from "react-icons/fa";
 
 export default function MypageProfileIndex() {
 
@@ -12,11 +13,10 @@ export default function MypageProfileIndex() {
 
       <div className="profileindex-verify-box">
 
-        <img
-          className="profileindex-verify-icon"
-          src="https://i.ibb.co/CK0XkTnJ/verify.png"
-          alt="verify"
-        />
+      
+      <div className="profileindex-verify-icon">
+  <FaLock size={40} color="#739FF2" />
+</div>
 
         <div className="profileindex-verify-title">
           개인정보를 수정하시려면 비밀번호를 입력해주세요.

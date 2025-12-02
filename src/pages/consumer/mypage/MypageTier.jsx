@@ -9,7 +9,9 @@ export default function MypageTier() {
       {/* 현재 등급 박스 */}
       <div className="mypageTier_grade-box">
 
-        <div className="mypageTier_grade-img">★</div>
+        <div className="mypageTier_grade-img">
+    <img src="/grade/Gold.png" alt="현재 등급" className="mypageTier_grade-icon" />
+  </div>
 
         <div className="mypageTier_grade-info-area">
           <div className="mypageTier_grade-now">현재 등급 : 골드</div>

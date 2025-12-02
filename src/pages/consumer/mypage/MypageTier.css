@@ -47,15 +47,9 @@
 .mypageTier_grade-img {
   width:70px;
   height:70px;
-  border-radius:12px;
-  background:#F0F3FF;
-  border:1px solid var(--line);
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:32px;
-  color:var(--intel-blue);
-  font-weight:800;
 }
 
 .mypageTier_grade-info-area { flex:1; }
@@ -128,6 +122,13 @@
   color:#555; 
   margin-bottom:4px; 
 }
+
+.mypageTier_grade-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 
 /* ================================ 안내 박스 ================================ */
 .mypageTier_info-box {

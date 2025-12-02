@@ -45,8 +45,12 @@
 .profileindex-verify-icon {
   width: 80px;
   height: 80px;
-  margin-bottom: 24px;
   border-radius: 50%;
+  background: #E5EEFF; /* 연한 블루 배경 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px auto;
 }
 
 .profileindex-verify-title {
