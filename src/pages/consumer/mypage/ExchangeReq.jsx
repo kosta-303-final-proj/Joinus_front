@@ -31,7 +31,7 @@ export default function ExchangeReq() {
                     <h5 className="mb-4 fw-bold">교환 신청</h5>
                     {/* 신청 상품 */}
                     <section className="border p-3 mb-4">
-                        <h6 className="fw-bold mb-3 section-header">신청 상품</h6>
+                        <h6 className="fw-bold mb-3 exch-rtrn-section-header">신청 상품</h6>
                         <Row>
                             <Col md="2">
                                 <Card className="border-0">
@@ -59,7 +59,7 @@ export default function ExchangeReq() {
 
                     {/* 신청 사유 */}
                     <section className="border p-3 mb-4">
-                        <h6 className="fw-bold mb-3 section-header">신청 사유</h6>
+                        <h6 className="fw-bold mb-3 exch-rtrn-section-header">신청 사유</h6>
 
                         <FormGroup>
                             <Input
@@ -91,7 +91,7 @@ export default function ExchangeReq() {
 
                     {/* 상품 이미지 첨부 */}
                     <section className="border p-3 mb-4">
-                        <h6 className="fw-bold mb-3 section-header">상품 이미지 첨부</h6>
+                        <h6 className="fw-bold mb-3 exch-rtrn-section-header">상품 이미지 첨부</h6>
 
                         <Row>
                             {images.map((img, index) => (
@@ -137,7 +137,7 @@ export default function ExchangeReq() {
 
                     {/* 회수 정보 */}
                     <section className="border p-3 mb-4">
-                        <h6 className="fw-bold mb-3 section-header">회수 정보</h6>
+                        <h6 className="fw-bold mb-3 exch-rtrn-section-header">회수 정보</h6>
 
                         <FormGroup>
                             <div className="d-flex flex-row justify-content-between gap-5">
@@ -209,7 +209,7 @@ export default function ExchangeReq() {
 
                     {/* 배송 정보 */}
                     <section className="border p-3 mb-4">
-                        <h6 className="fw-bold mb-3 section-header">배송 정보</h6>
+                        <h6 className="fw-bold mb-3 exch-rtrn-section-header">배송 정보</h6>
 
                         <FormGroup>
                             <div className="d-flex flex-row justify-content-between gap-5">
@@ -260,7 +260,7 @@ export default function ExchangeReq() {
 
                     {/* 결제 정보 */}
                     <section className="border p-3 mb-4">
-                        <h6 className="fw-bold mb-3 section-header">결제 정보</h6>
+                        <h6 className="fw-bold mb-3 exch-rtrn-section-header">결제 정보</h6>
                         <FormGroup>
                             <Label className="sub-title">결제수단</Label>
                             <div>

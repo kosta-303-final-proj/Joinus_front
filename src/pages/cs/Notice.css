@@ -1,6 +1,5 @@
 .notice-page {
-  min-height: 100vh;
-  background: var(--color-bg);
+  /* background와 min-height는 App.css에서 상속 */
   padding: 40px var(--spacing-6);
 }
 

@@ -28,7 +28,7 @@ export default function CancelReq() {
                     <h5 className="mb-4 fw-bold">취소 신청</h5>
                     {/* 신청 상품 */}
                     <section className="border p-3 mb-4">
-                        <h6 className="fw-bold mb-3 section-header">상품</h6>
+                        <h6 className="fw-bold mb-3 exch-rtrn-section-header">상품</h6>
                         <Row>
                             <Col md="2">
                                 <Card className="border-0">
@@ -47,7 +47,7 @@ export default function CancelReq() {
 
                     {/* 신청 사유 */}
                     <section className="border p-3 mb-4">
-                        <h6 className="fw-bold mb-3 section-header">사유</h6>
+                        <h6 className="fw-bold mb-3 exch-rtrn-section-header">사유</h6>
 
                         <FormGroup>
                             <Input

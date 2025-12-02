@@ -220,7 +220,7 @@ function AppContent() {
               <Route path="/proposalsList/proposalWrite" element={<ProposalWrite />} />
 
             {/* 공구 */}
-            <Route path="/group-purchase" element={<GBProductList />} />
+            <Route path="/gbProductList" element={<GBProductList />} />
             <Route path="/gbProductDetail/*" element={<GBProductDetail />}>
               <Route index element={<DetailInfo />} />
               <Route path="detailInfo" element={<DetailInfo />} />

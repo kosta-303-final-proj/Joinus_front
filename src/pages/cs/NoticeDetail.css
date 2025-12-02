@@ -1,6 +1,5 @@
 .notice-detail-page {
-  min-height: 100vh;
-  background: #f5f5f5;
+  /* background와 min-height는 App.css에서 상속 */
   padding: 40px 24px;
 }
 
@@ -36,7 +35,7 @@
 }
 
 .back-button:hover {
-  background: #f5f5f5;
+  background: var(--color-bg);
   border-color: #999;
 }
 

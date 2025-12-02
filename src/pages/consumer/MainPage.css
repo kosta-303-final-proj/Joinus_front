@@ -1,6 +1,5 @@
 .mainpage-container {
-  min-height: 100vh;
-  background: var(--color-bg);
+  /* background와 min-height는 App.css에서 상속 */
 }
 
 /* Main Content */
@@ -37,14 +36,14 @@
   margin-bottom: 56px;
 }
 
-.section-header {
+.mainpage-section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--spacing-6);
 }
 
-.section-header h2 {
+.mainpage-section-header h2 {
   font-size: var(--font-size-lg);
   font-weight: 700;
   color: var(--color-text);

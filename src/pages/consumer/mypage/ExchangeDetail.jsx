@@ -69,7 +69,7 @@ export default function ExchangeDetail() {
                         <Col>
                             <Card>
                                 <CardBody>
-                                    <h6 className="fw-bold mb-3 section-header">상세정보</h6>
+                                    <h6 className="fw-bold mb-3 exch-rtrn-section-header">상세정보</h6>
                                     <Table borderless>
                                         <tbody>
                                             <tr>
@@ -96,7 +96,7 @@ export default function ExchangeDetail() {
                         <Col>
                             <Card>
                                 <CardBody>
-                                    <h6 className="fw-bold mb-3 section-header">교환 상품 배송정보</h6>
+                                    <h6 className="fw-bold mb-3 exch-rtrn-section-header">교환 상품 배송정보</h6>
                                     <Table borderless>
                                         <tbody>
                                             <tr>
@@ -135,7 +135,7 @@ export default function ExchangeDetail() {
                         <Col>
                             <Card>
                                 <CardBody>
-                                    <h6 className="fw-bold mb-3 section-header">상품 회수정보</h6>
+                                    <h6 className="fw-bold mb-3 exch-rtrn-section-header">상품 회수정보</h6>
                                     <Table borderless>
                                         <tbody>
                                             <tr>

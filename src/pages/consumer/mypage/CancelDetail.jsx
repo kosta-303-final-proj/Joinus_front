@@ -70,7 +70,7 @@ export default function CancelDetail() {
                         <Col>
                             <Card>
                                 <CardBody>
-                                    <h6 className="fw-bold mb-3 section-header">환불 내역</h6>
+                                    <h6 className="fw-bold mb-3 exch-rtrn-section-header">환불 내역</h6>
                                     <Table borderless>
                                         <tbody>
                                             <tr>

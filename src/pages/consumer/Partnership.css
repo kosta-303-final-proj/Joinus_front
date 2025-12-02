@@ -1,6 +1,5 @@
 .partnership-page {
-  min-height: 100vh;
-  background-color: #f5f5f5;
+  /* background-color와 min-height는 App.css에서 상속 */
   padding: 40px 24px;
 }
 
@@ -197,7 +196,7 @@
 }
 
 .btn-reset:hover {
-  background-color: #f5f5f5;
+  background-color: var(--color-bg);
   border-color: #999;
 }
 

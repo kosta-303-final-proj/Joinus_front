@@ -12,7 +12,7 @@ export default function GBProductDetail() {
             <div style={styles.pageWrapper}>
               <div style={styles.container}>
                 <div style={{ display: "flex", alignItems: "center", marginBottom: "20px" ,gap:'10px'}}>
-                  <Link to="/group-purchase" style={{ textDecoration: 'none', color: 'black', display: "flex", alignItems: "center",gap:'10px' }}>
+                  <Link to="/gbProductList" style={{ textDecoration: 'none', color: 'black', display: "flex", alignItems: "center",gap:'10px' }}>
                     <img src="/left.png" style={{width:'30px'}}/><h3 className="mb-0 fw-bold text-start">목록으로</h3>
                   </Link>
                 </div>
