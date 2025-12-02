@@ -7,7 +7,7 @@ export default function MypageDeleteAccount() {
 
   const handleDelete = () => {
     alert("회원탈퇴가 완료되었습니다.");
-    navigate("/mypage");
+    navigate("/");
   };
 
   const handleCancel = () => {

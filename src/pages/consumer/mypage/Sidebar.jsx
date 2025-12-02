@@ -24,7 +24,14 @@ export default function Sidebar({children}) {
           flexShrink: 0,
         }}
       >
-        <h5 className="mb-4 fw-bold" style={{fontSize:"20px"}}>마이페이지</h5>
+       <NavLink 
+  to="/mypage/main" 
+  style={{ textDecoration: "none" }}
+>
+  <h5 className="mb-4 fw-bold" style={{fontSize:"20px", color:"#000"}}>
+    마이페이지
+  </h5>
+</NavLink>
         
 
         {/* 쇼핑 정보 */}
