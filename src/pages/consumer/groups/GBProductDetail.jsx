@@ -1,8 +1,8 @@
 import { Label, Button, Input, FormGroup} from "reactstrap";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useParams } from "react-router-dom";
 
 export default function GBProductDetail() {
-
+    const { id } = useParams();
     const total = 15;
     const joined = 10;
     const percentage = (joined/total) * 100;

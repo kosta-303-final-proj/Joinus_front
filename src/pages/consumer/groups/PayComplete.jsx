@@ -75,7 +75,7 @@ export default function PayComplete(){
                         <Link to="/myPage/orderList">
                             <Button style={{backgroundColor:'#739FF2', color:'white', border:'none',fontSize:'12px'}}>주문 배송 조회</Button>
                         </Link>
-                        <Link to="/gbProductDetail">
+                        <Link to="/gbProductList">
                             <Button style={{backgroundColor:'#F7F7F7', color:'black', border:'none',fontSize:'12px'}}>공구 목록</Button>
                         </Link>
                     </div>
