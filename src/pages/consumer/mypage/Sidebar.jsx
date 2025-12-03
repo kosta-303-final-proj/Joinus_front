@@ -54,7 +54,7 @@ export default function Sidebar({children}) {
               </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#" style={{ color: "#000", fontSize:"12px", textDecoration: "none" }}>
+              <NavLink to="/mypage/cnclExchRtrnHisList" style={{ color: "#000", fontSize:"12px", textDecoration: "none" }}>
                 취소/교환/반품 내역
               </NavLink>
             </NavItem>

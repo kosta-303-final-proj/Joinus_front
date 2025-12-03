@@ -7,7 +7,7 @@ import {
 } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./exchRtrn.css";
-import Sidebar from "../../../components/layout/Sidebar";
+// import Sidebar from "../../../components/layout/Sidebar";
 import OrderItem from "./OrderItem";
 
 export default function CnclExchRtrnHisList() {
@@ -26,10 +26,10 @@ export default function CnclExchRtrnHisList() {
         color: '#739FF2'
     }
     return (
-        <Container fluid className="bg-light py-4" style={{ minWidth: "1440px" }}>
-            <Container className="bg-white p-4 d-flex flex-row" style={{ maxWidth: "1220px" }}>
-                <Sidebar />
-                <div style={{ width: "100%", marginLeft: "24px" }}>
+        <Container fluid className="bg-light py-4" style={{ minWidth: "860px" }}>
+            <Container className="bg-white p-4 d-flex flex-row" style={{ maxWidth: "860px" }}>
+                {/* <Sidebar /> */}
+                {/* <div style={{ width: "100%", marginLeft: "24px" }}> */}
                     <Card>
                         <CardBody>
                             <h5 className="mb-4">취소 / 반품 / 교환 / 환불 내역</h5>
@@ -146,7 +146,7 @@ export default function CnclExchRtrnHisList() {
                             </div>
                         </CardBody>
                     </Card>
-                </div>
+                {/* </div> */}
             </Container>
         </Container>
     );

@@ -37,19 +37,12 @@ import FaqForm from './pages/admin/FaqForm';
 import NoticeForm from './pages/admin/NoticeForm';
 import AdminInquiryDetail from './pages/admin/AdminInquiryDetail';
 // 구매(주문)/교환 반품
-import ExchangeReq from './pages/consumer/mypage/ExchangeReq';
-import ReturnReq from './pages/consumer/mypage/ReturnReq';
-import CancelReq from './pages/consumer/mypage/cancelReq';
-import CnclExchRtrnHisList from './pages/consumer/mypage/CnclExchRtrnHisList';
-import ExchangeDetail from './pages/consumer/mypage/ExchangeDetail';
-import ReturnDetail from './pages/consumer/mypage/ReturnDetail';
-import CancelDetail from './pages/consumer/mypage/CancelDetail';
 import AdminOrderList from './pages/admin/AdminOrderList';
 import AdminOrderDetail from './pages/admin/AdminOrderDetail';
 import ExchRtrnWaitingList from './pages/admin/ExchRtrnWaitingList';
 import ExchRtrnWaitingDetail from './pages/admin/ExchRtrnWaitingDetail';
 import './App.css';
-// 마이페이지 (지성스)
+// 마이페이지
 import InterestList from './pages/consumer/mypage/InterestList';
 import InquiryHistoryList from './pages/consumer/mypage/inquiryHistoryList';
 import OrderList from './pages/consumer/mypage/OrderList';
@@ -59,8 +52,6 @@ import ReviewWrite from './pages/consumer/mypage/ReviewWrite';
 import ReviewWrited from './pages/consumer/mypage/ReviewWrited';
 import ShopCartList from './pages/consumer/mypage/ShopCartList';
 import Sidebar from './pages/consumer/mypage/Sidebar'
-
-//마이페이지(도훈)//
 import AddressAdd from './pages/consumer/mypage/AddressAdd';
 import AddressEdit from './pages/consumer/mypage/AddressEdit';
 import AddressList from './pages/consumer/mypage/AddressList';
@@ -74,6 +65,13 @@ import MypageProfileIndex from './pages/consumer/mypage/MypageProfileIndex';
 import MypageSuggestions from './pages/consumer/mypage/MypageSuggestions';
 import MypageTier from './pages/consumer/mypage/MypageTier';
 import MyInquiryDetail from './pages/consumer/mypage/MyInquiryDetail';
+import ExchangeReq from './pages/consumer/mypage/ExchangeReq';
+import ReturnReq from './pages/consumer/mypage/ReturnReq';
+import CancelReq from './pages/consumer/mypage/cancelReq';
+import CnclExchRtrnHisList from './pages/consumer/mypage/CnclExchRtrnHisList';
+import ExchangeDetail from './pages/consumer/mypage/ExchangeDetail';
+import ReturnDetail from './pages/consumer/mypage/ReturnDetail';
+import CancelDetail from './pages/consumer/mypage/CancelDetail';
 // 제안
 import ProposalsList from "./pages/consumer/proposals/ProposalsList";
 import ProposalDetailConsumar from "./pages/consumer/proposals/ProposalDetailConsumar";
@@ -127,15 +125,17 @@ function AppContent() {
             {/* 납품문의 */}
             <Route path="/partnership" element={<Partnership />} />
 
+
+
+            <Route path="exchangeReq" element={<ExchangeReq/>} />
+            <Route path="returnReq" element={<ReturnReq/>} />
+            <Route path="cancelReq" element={<CancelReq/>} />
+            <Route path="exchangeDetail:/id" element={<ExchangeDetail/>} />
+            <Route path="returnDetail:/id" element={<ReturnDetail/>} />
+            <Route path="cancelDetail" element={<CancelDetail/>} />
+
+
             {/* 사용자 마이페이지 */}
-            <Route path="/mypage/exchangeReq" element={<ExchangeReq/>} />
-            <Route path="/mypage/returnReq" element={<ReturnReq/>} />
-            <Route path="/mypage/cancelReq" element={<CancelReq/>} />
-            <Route path="/mypage/cnclExchRtrnHisList" element={<CnclExchRtrnHisList/>} />
-            <Route path="/mypage/exchangeDetail:/id" element={<ExchangeDetail/>} />
-            <Route path="/mypage/returnDetail:/id" element={<ReturnDetail/>} />
-            <Route path="/mypage/cancelDetail" element={<CancelDetail/>} />
-            {/* 지성스 */}
             <Route path="/mypage/*" element={<Sidebar>
                 <Routes>
                   <Route path="orderList" element={<OrderList />} />
@@ -146,6 +146,7 @@ function AppContent() {
                   <Route path="inquiryHistoryList" element={<InquiryHistoryList />} />
                   <Route path="inquiryDetail/:id" element={<InquiryDetail />} />
 
+                  <Route path="cnclExchRtrnHisList" element={<CnclExchRtrnHisList/>} />  {/*취소교환목록*/}
                   <Route path="addressList" element={<AddressList />} />
                   <Route path="addressAdd" element={<AddressAdd />} />
                   <Route path="addressEdit/:id" element={<AddressEdit />} />
