@@ -268,10 +268,18 @@ const Sidebar = () => {
 
           {openMenus.stats && !isCollapsed && (
             <div className="submenu">
-              <div className="submenu-item">
+              <div 
+                className="submenu-item"
+                onClick={() => navigate('/admin/statistics')}
+                style={{ cursor: 'pointer' }}
+              >
                 <span className="submenu-label">매출통계</span>
               </div>
-              <div className="submenu-item">
+              <div 
+                className="submenu-item"
+                onClick={() => navigate('/admin/statistics/product')}
+                style={{ cursor: 'pointer' }}
+              >
                 <span className="submenu-label">상품별 통계</span>
               </div>
             </div>
