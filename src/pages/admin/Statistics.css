@@ -9,7 +9,76 @@
 .filter-note {
   font-size: 12px;
   color: #666;
-  margin-top: 4px;
+  white-space: nowrap;
+  margin: 0;
+}
+
+/* 아래 스타일들을 추가 */
+.filter-section {
+  background: white;
+  border: 1px solid #e3e6eb;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filter-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.month-range input[type="month"] {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+  background: #fff;
+  cursor: pointer;
+}
+
+.month-range input[type="month"]:focus {
+  outline: none;
+  border-color: #739FF2;
+  box-shadow: 0 0 0 3px rgba(115, 159, 242, 0.1);
+}
+
+.month-separator {
+  font-size: 14px;
+  color: #666;
+  margin: 0 4px;
+}
+
+.search-button {
+  padding: 8px 24px;
+  background: #739FF2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s;
+  margin-left: auto;
+}
+
+.search-button:hover {
+  background: #5a8ae3;
+}
+
+.search-button:active {
+  background: #4a7ad3;
 }
 
 .chart-section {

@@ -236,7 +236,7 @@ export default function NoticePage() {
             <div className="inquiry-footer-section">
               <button
                 className="btn btn-primary"
-                onClick={() => navigate('/cs/inquiry/write')}
+                onClick={() => navigate('/cs/inquiryWrite')}
                 >
                   문의 작성
                 </button>

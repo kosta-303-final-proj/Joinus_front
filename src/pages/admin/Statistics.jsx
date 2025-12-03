@@ -4,7 +4,8 @@ import { useState } from 'react';
 import './Statistics.css';
 
 export default function Statistics() {
-  const [selectedMonth, setSelectedMonth] = useState('2025-11');
+  const [startMonth, setStartMonth] = useState('2025-11');  // 추가
+  const [endMonth, setEndMonth] = useState('2025-11');      // 추가
   const [unit, setUnit] = useState('일'); // 일/주/월
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -196,24 +197,22 @@ export default function Statistics() {
       {/* 조회월 필터 */}
       <div className="filter-section">
         <div className="filter-row">
-          <div className="filter-group">
-            <label>조회월</label>
+          <label className="filter-label">조회 월</label>
             <div className="month-range">
               <input
                 type="month"
-                value={selectedMonth}
-                onChange={(e) => setSelectedMonth(e.target.value)}
+                value={startMonth}
+                onChange={(e) => setStartMonth(e.target.value)}
               />
-              <span>~</span>
+              <span className="month-separator">~</span>
               <input
                 type="month"
-                value={selectedMonth}
-                onChange={(e) => setSelectedMonth(e.target.value)}
-              />
+                value={endMonth}
+                onChange={(e) => setEndMonth(e.target.value)}
+            />
             </div>
             <span className="filter-note">(최대 6개월 조회)</span>
-          </div>
-          <button className="search-button" onClick={() => console.log('조회:', selectedMonth)}>
+            <button className="search-button" onClick={() => console.log('조회:', { startMonth, endMonth })}>
             조회
           </button>
         </div>

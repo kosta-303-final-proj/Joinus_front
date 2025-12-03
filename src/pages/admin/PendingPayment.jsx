@@ -70,9 +70,9 @@ export default function PendingPayment() {
       {/* 헤더 */}
       <div className="page-header">
         <div className="header-content">
-          <h1 className="page-title">결제 대기 공구상품 건</h1>
+          <h1 className="page-title">주문 대기 공구상품 건</h1>
           <p className="page-description">
-            결제 대기 중인 공구상품 목록을 확인하고 관리합니다.
+            주문 대기 중인 공구상품 목록을 확인하고 관리합니다.
           </p>
         </div>
       </div>
@@ -91,15 +91,14 @@ export default function PendingPayment() {
                   <th>결제 대기 건수</th>
                   <th>총 결제 금액</th>
                   <th>마감일</th>
-                  <th>상태</th>
                   <th>관리</th>
                 </tr>
               </thead>
               <tbody>
                 {pendingPayments.length === 0 ? (
                   <tr>
-                    <td colSpan="7" className="no-data">
-                      결제 대기 중인 공구상품이 없습니다.
+                    <td colSpan="6" className="no-data"> 
+                      주문 대기 중인 공구상품이 없습니다.
                     </td>
                   </tr>
                 ) : (
@@ -110,9 +109,6 @@ export default function PendingPayment() {
                       <td>{item.count}건</td>
                       <td>{item.totalAmount}</td>
                       <td>{item.deadline}</td>
-                      <td>
-                        <span className="status-badge pending">{item.status}</span>
-                      </td>
                       <td>
                         <button
                           className="detail-button"
