@@ -87,8 +87,7 @@ import Pay from './pages/consumer/groups/Pay';
 import PayComplete from './pages/consumer/groups/PayComplete';
 //관리자
 import ProposalDetailAdmin from './pages/admin/ProposalDetailAdmin';
-
-
+import InquiryWrite from './pages/cs/InquiryWrite';
 
 
 
@@ -120,7 +119,7 @@ function AppContent() {
             <Route path="/cs/notice" element={<Notice />} />
             <Route path="/cs/notice/:id" element={<NoticeDetail />} />
             <Route path="/cs/inquiry/:id" element={<MyInquiryDetail />} />
-            <Route path="/cs/inquiryWrite" element={<div>문의 작성 페이지 (준비 중)</div>} /> {/* 임시 */}
+            <Route path="/cs/inquiryWrite" element={<InquiryWrite/>} /> {/* 임시 */}
 
             {/* 납품문의 */}
             <Route path="/partnership" element={<Partnership />} />

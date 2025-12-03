@@ -1,7 +1,8 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../css/mypage/InquiryWrite.css";
+import "../../css/mypage/InquiryWrite.css";
 import React, { useState } from "react";
 import { Form, FormGroup, Label, Input, Button } from "reactstrap";
+import { Link } from "react-router-dom";
 
 export default function InquiryWrite() {
     const [mainFile, setMainFile] = useState(null);
@@ -41,11 +42,12 @@ export default function InquiryWrite() {
         <div className="container">
           <Form>
             <FormGroup>
-              
+              <Link to="/cs/notice">
               <Label className="fw-bold text-end d-block">
                 <img src="/left.png" alt="뒤로가기" className="back" style={{width:'20px', height:'20px',  marginRight:"5px"}}/>
                 뒤로가기
               </Label>
+              </Link>
             </FormGroup>
             {/* 주문번호 */}
             <FormGroup className="mb-3">
@@ -113,7 +115,7 @@ export default function InquiryWrite() {
             </FormGroup>
 
             {/* 개인 정보 수집 동의 */}
-            <FormGroup className="mb-4">
+            {/* <FormGroup className="mb-4">
             <Label className="fw-bold text-start d-block" style={{ fontSize: "16px" }}>
                 개인정보 수집 및 이용 동의 *
             </Label>
@@ -124,7 +126,7 @@ export default function InquiryWrite() {
                 3. 보유 기간: 회원 탈퇴 시까지 또는 법령에 따른 보존 기간<br/>
                 본인은 상기 내용을 확인하였으며, 개인정보 수집 및 이용에 동의합니다.
             </div>
-            </FormGroup>
+            </FormGroup> */}
 
             <div className="d-flex gap-2 justify-content-end">
               <Button color="secondary">취소하기</Button>
