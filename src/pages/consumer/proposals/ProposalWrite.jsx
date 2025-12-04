@@ -21,41 +21,46 @@ export default function ProposalWrite() {
   const [abroadShippingCost, setAbroadShippingCost] = useState('');
   const [minPart, setMinPart] = useState('');
 
+  // 대표 이미지 서버 전송용 상태
+  const [mainFile, setMainFile] = useState(null);
+
+  // 일반 이미지 서버 전송용 상태 (4개)
+  const [subFiles, setSubFiles] = useState([null, null, null, null]);
+
   const mainRef = useRef(null);
   const subRef = useRef(null);
   const navigate = useNavigate();
 
   const submit = () => {
-      const formData = new FormData();
-      formData.append('productName',productName);
-      formData.append('title',title);
-      formData.append('category',category);
-      formData.append('description',description);
-      formData.append('originalSiteUrl',originalSiteUrl);
-      formData.append('originalPrice',originalPrice);
-      formData.append('abroadShippingCost',abroadShippingCost);
-      formData.append('minPart',minPart);
-      formData.append('mainImage',mainRef);
-      formData.append('subImages',subRef);
+  const formData = new FormData();
+  formData.append('productName', productName);
+  formData.append('title', title);
+  formData.append('category', category);
+  formData.append('description', description);
+  formData.append('originalSiteUrl', originalSiteUrl);
+  formData.append('originalPrice', originalPrice);
+  formData.append('abroadShippingCost', abroadShippingCost);
+  formData.append('minPart', minPart);
 
-      // 대표 이미지
-      if (mainFile) formData.append('mainImage', mainFile);
+  // 대표 이미지
+  if (mainFile) formData.append('mainImage', mainFile);
 
-      // 서브 이미지
-      subFiles.forEach((file) => {
-        if (file) formData.append('subImages', file); // subImages는 List<MultipartFile>로 받음
-      });
+  // 서브 이미지
+  subFiles.forEach((file) => {
+    if (file) formData.append('subImages', file);
+  });
 
-      myAxios().post(`/proposalWrite`, formData)
-          .then(res=> {
-              console.log(res)
-              let proposalId = res.data;
-              navigate(`/proposalsList/proposalWrite/${proposalId}`)
-          })
-          .catch(err=>{
-            console.log(err)
-          })
-  }
+  myAxios().post(`/proposalWrite`, formData)
+    .then(res => {
+      console.log(res);
+      let proposalId = res.data;
+      navigate(`/proposalsList/proposalWrite/${proposalId}`);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};
+
 
   // 대표 이미지 업로드
   const handleMainImageUpload = (e) => {

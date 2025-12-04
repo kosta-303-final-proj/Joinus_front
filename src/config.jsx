@@ -8,6 +8,14 @@ export const myAxios = (token, setToken) => {
         timeout:5000,
     })
 
+    // 필요하다면 인터셉터 추가 가능
+    instance.interceptors.response.use(
+        (response) => response,
+        (error) => {
+        // 토큰 만료 등 처리
+        return Promise.reject(error);
+        }
+    );
     // instance.interceptors.response.use(//응답이 올때마다 헤더에 토큰이 있는지 확인하여 토큰 갱신
     //     (response) => { // 토큰이 만료되고 다시 줄때 
     //         console.log(response)
@@ -37,5 +45,5 @@ export const myAxios = (token, setToken) => {
     //     return config;
     // })
 
-    // return instance;
+    return instance;
 }
