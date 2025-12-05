@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import AdminSidebar from './components/layout/AdminSidebar';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 import MainPage from './pages/consumer/MainPage';
 import SearchResult from './pages/consumer/SearchResult';
 import Login from './pages/auth/Login';
@@ -128,84 +129,207 @@ function AppContent() {
             {/* 납품문의 */}
             <Route path="/partnership" element={<Partnership />} />
 
-            {/* 사용자 마이페이지 */}
-            <Route path="/mypage/*" element={<Sidebar>
-              <Routes>
-                <Route path="orderList" element={<OrderList />} />
-                <Route path="orderList/orderDetail/:id" element={<OrderDetail />} />
+            {/* 사용자 마이페이지 - 로그인 필요 */}
+            <Route path="/mypage/*" element={
+              <ProtectedRoute>
+                <Sidebar>
+                  <Routes>
+                    <Route path="orderList" element={<OrderList />} />
+                    <Route path="orderList/orderDetail/:id" element={<OrderDetail />} />
 
-                <Route path="shopCartList" element={<ShopCartList />} />
-                <Route path="interestList" element={<InterestList />} />
-                <Route path="inquiryHistoryList" element={<InquiryHistoryList />} />
-                <Route path="inquiryDetail/:id" element={<InquiryDetail />} />
+                    <Route path="shopCartList" element={<ShopCartList />} />
+                    <Route path="interestList" element={<InterestList />} />
+                    <Route path="inquiryHistoryList" element={<InquiryHistoryList />} />
+                    <Route path="inquiryDetail/:id" element={<InquiryDetail />} />
 
-                 {/*교환 취소 반품*/}
-                <Route path="cnclExchRtrnHisList" element={<CnclExchRtrnHisList />} /> 
-                <Route path="exchangeReq" element={<ExchangeReq />} />
-                <Route path="returnReq" element={<ReturnReq />} />
-                <Route path="exchangeDetail:/id" element={<ExchangeDetail />} />
-                <Route path="returnDetail:/id" element={<ReturnDetail />} />
-                <Route path="cancelDetail:/id" element={<CancelDetail />} />
+                     {/*교환 취소 반품*/}
+                    <Route path="cnclExchRtrnHisList" element={<CnclExchRtrnHisList />} /> 
+                    <Route path="exchangeReq" element={<ExchangeReq />} />
+                    <Route path="returnReq" element={<ReturnReq />} />
+                    <Route path="exchangeDetail:/id" element={<ExchangeDetail />} />
+                    <Route path="returnDetail:/id" element={<ReturnDetail />} />
+                    <Route path="cancelDetail:/id" element={<CancelDetail />} />
 
-                <Route path="addressList" element={<AddressList />} />
-                <Route path="addressAdd" element={<AddressAdd />} />
-                <Route path="addressEdit/:id" element={<AddressEdit />} />
+                    <Route path="addressList" element={<AddressList />} />
+                    <Route path="addressAdd" element={<AddressAdd />} />
+                    <Route path="addressEdit/:id" element={<AddressEdit />} />
 
-                <Route path="alert" element={<MypageAlert />} />
-                <Route path="deleteAccount" element={<MypageDeleteAccount />} />
-                <Route path="main" element={<MypageMain />} />
-                <Route path="points" element={<MypagePoints />} />
-                <Route path="profileDetail" element={<MypageProfileDetail />} />
-                <Route path="profileEdit" element={<MypageProfileEdit />} />
-                <Route path="profileIndex" element={<MypageProfileIndex />} />
-                <Route path="suggestions" element={<MypageSuggestions />} />
-                <Route path="tier" element={<MypageTier />} />
+                    <Route path="alert" element={<MypageAlert />} />
+                    <Route path="deleteAccount" element={<MypageDeleteAccount />} />
+                    <Route path="main" element={<MypageMain />} />
+                    <Route path="points" element={<MypagePoints />} />
+                    <Route path="profileDetail" element={<MypageProfileDetail />} />
+                    <Route path="profileEdit" element={<MypageProfileEdit />} />
+                    <Route path="profileIndex" element={<MypageProfileIndex />} />
+                    <Route path="suggestions" element={<MypageSuggestions />} />
+                    <Route path="tier" element={<MypageTier />} />
 
-                <Route path="reviewManage/*" element={<ReviewManage />}>
-                  <Route index element={<ReviewWrite />} />
-                  <Route path="reviewWrited" element={<ReviewWrited />} />
-                </Route>
-              </Routes>
-            </Sidebar>
+                    <Route path="reviewManage/*" element={<ReviewManage />}>
+                      <Route index element={<ReviewWrite />} />
+                      <Route path="reviewWrited" element={<ReviewWrited />} />
+                    </Route>
+                  </Routes>
+                </Sidebar>
+              </ProtectedRoute>
             } />
 
 
-            {/* 관리자 페이지 */}
-            <Route path="/admin" element={<Dashboard />} />
-            <Route path="/admin/noticeWrite" element={<NoticeWrite />} />
-            <Route path="/admin/deliveryManagement" element={<DeliveryManagement />} />
-            <Route path="/admin/delivery/:id" element={<DeliveryDetail />} />
-            <Route path="/admin/notifications" element={<NotificationSend />} />
-            <Route path="/admin/statistics" element={<Statistics />} />
-            <Route path="/admin/statistics/product" element={<ProductStatistics />} />
-            <Route path="/admin/pendingPayment" element={<PendingPayment />} />
-            <Route path="/admin/suppliy/applications" element={<DeliveryApplicationList />} />
-            <Route path="/admin/suppliy/application/:id" element={<DeliveryApplicationDetail />} />
-            <Route path="/admin/suppliy/approved" element={<ApprovedDeliveryCompany />} />
-            <Route path="/admin/suppliy/products/new" element={<DeliveryProductForm />} />
-            <Route path="/admin/suppliy/products" element={<DeliveryProductList />} />
+            {/* 관리자 페이지 - ROLE_ADMIN 또는 ROLE_MANAGER 권한 필요 */}
+            <Route path="/admin" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/noticeWrite" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <NoticeWrite />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/deliveryManagement" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <DeliveryManagement />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/delivery/:id" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <DeliveryDetail />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/notifications" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <NotificationSend />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/statistics" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <Statistics />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/statistics/product" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <ProductStatistics />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/pendingPayment" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <PendingPayment />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/suppliy/applications" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <DeliveryApplicationList />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/suppliy/application/:id" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <DeliveryApplicationDetail />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/suppliy/approved" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <ApprovedDeliveryCompany />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/suppliy/products/new" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <DeliveryProductForm />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/suppliy/products" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <DeliveryProductList />
+              </ProtectedRoute>
+            } />
 
             {/* 제안/공구상품/회원관리 */}
-            <Route path="/admin/proposalMngList" element={<ProposalMngList />} />
-            <Route path="/admin/gbProductMngList" element={<GbProductMngList />} />
-            <Route path="/admin/gbProductCreate" element={<GbProductCreate />} />
-            <Route path="/admin/optionAdd" element={<OptionAddPage />} />
-            <Route path="/admin/noticeList" element={<NoticeList />} />
-            <Route path="/admin/noticeForm" element={<NoticeForm />} />
-            <Route path="/admin/noticeForm/:id" element={<NoticeForm />} />
-            <Route path="/admin/faqAndInquiryList" element={<FaqAndInquiryList />} />
-            <Route path="/admin/admininquiryDetail/:id" element={<AdminInquiryDetail />} />
-            <Route path="/admin/faqForm" element={<FaqForm />} />
-            <Route path="/admin/memberList" element={<MemberList />} />
-            <Route path="/admin/member/:id" element={<MemberDetail />} />
+            <Route path="/admin/proposalMngList" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <ProposalMngList />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/gbProductMngList" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <GbProductMngList />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/gbProductCreate" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <GbProductCreate />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/optionAdd" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <OptionAddPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/noticeList" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <NoticeList />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/noticeForm" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <NoticeForm />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/noticeForm/:id" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <NoticeForm />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/faqAndInquiryList" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <FaqAndInquiryList />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/admininquiryDetail/:id" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <AdminInquiryDetail />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/faqForm" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <FaqForm />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/memberList" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <MemberList />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/member/:id" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <MemberDetail />
+              </ProtectedRoute>
+            } />
             {/* 자엔 디테일 관리자 화면 */}
-            <Route path="/admin/proposalDetailAdmin" element={<ProposalDetailAdmin />} />
+            <Route path="/admin/proposalDetailAdmin" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <ProposalDetailAdmin />
+              </ProtectedRoute>
+            } />
 
             {/* 구매(주문)/교환 반품 */}
-            <Route path="/admin/adminOrderList" element={<AdminOrderList />} />
-            <Route path="/admin/adminOrderDetail" element={<AdminOrderDetail />} />
-            <Route path="/admin/exchRtrnWaitingList" element={<ExchRtrnWaitingList />} />
-            <Route path="/admin/exchRtrnWaitingDetail" element={<ExchRtrnWaitingDetail />} />
+            <Route path="/admin/adminOrderList" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <AdminOrderList />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/adminOrderDetail" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <AdminOrderDetail />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/exchRtrnWaitingList" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <ExchRtrnWaitingList />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/exchRtrnWaitingDetail" element={
+              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
+                <ExchRtrnWaitingDetail />
+              </ProtectedRoute>
+            } />
 
             {/* 와타시 */}
             {/* 제안 */}

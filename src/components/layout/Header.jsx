@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./Header.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { Link } from "react-router-dom";
@@ -6,16 +6,47 @@ import { Link } from "react-router-dom";
 export default function Header() {
   const [hoverMenu, setHoverMenu] = useState(null);
   const hideTimer = useRef(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
 
-  // ========== Login 여부 ==========
-  const isLoggedIn = true; 
-  const nickname = "홍길동"; // 로그인 시 닉네임 표시
-  const grade = "Gold";
+  // ========== Login 여부 확인 ==========
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      const accessToken = localStorage.getItem('access_token');
+      const storedUserInfo = localStorage.getItem('userInfo');
+      
+      if (accessToken && storedUserInfo) {
+        setIsLoggedIn(true);
+        try {
+          setUserInfo(JSON.parse(storedUserInfo));
+        } catch (e) {
+          console.error('사용자 정보 파싱 실패:', e);
+          setUserInfo(null);
+        }
+      } else {
+        setIsLoggedIn(false);
+        setUserInfo(null);
+      }
+    };
 
-  // const user = {
-  //   nickname : "NickName",
-  //   grade : "GOLD",
-  // };
+    // 초기 로드 시 확인
+    checkLoginStatus();
+
+    // storage 이벤트 리스너 추가 (다른 탭에서 로그인/로그아웃 시 동기화)
+    window.addEventListener('storage', checkLoginStatus);
+
+    // 주기적으로 확인 (같은 탭에서 로그인/로그아웃 시)
+    const interval = setInterval(checkLoginStatus, 1000);
+
+    return () => {
+      window.removeEventListener('storage', checkLoginStatus);
+      clearInterval(interval);
+    };
+  }, []);
+
+  // 사용자 정보에서 닉네임과 등급 가져오기
+  const nickname = userInfo?.nickname || userInfo?.name || "사용자";
+  const grade = userInfo?.grade || "Gold";
 
   // ========== Menu css용 ==========
   const handleEnter = (menu) => {
