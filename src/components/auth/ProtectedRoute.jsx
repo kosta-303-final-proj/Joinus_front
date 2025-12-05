@@ -19,7 +19,14 @@ export default function ProtectedRoute({ children, requiredRoles = null }) {
   if (requiredRoles && userInfoStr) {
     try {
       const userInfo = JSON.parse(userInfoStr);
-      const userRoles = userInfo.roles || [];
+      // roles가 문자열인 경우 배열로 변환 (백엔드가 "ROLE_USER" 형태로 보낼 수 있음)
+      let userRoles = userInfo.roles || [];
+      if (typeof userRoles === 'string') {
+        userRoles = [userRoles];
+      }
+      if (!Array.isArray(userRoles)) {
+        userRoles = [];
+      }
       
       // 필요한 권한이 있는지 확인
       const hasRequiredRole = requiredRoles.some(role => userRoles.includes(role));

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { apiFetch } from '../../config';
+import { baseUrl } from '../../config';
 import '../../styles/components/button.css';
 import './FindPassword.css';
 
@@ -30,8 +30,12 @@ export default function FindPassword() {
     setTempPassword(null);
 
     try {
-      const response = await apiFetch('/find-pw', {
+      // 일반 fetch 사용 (인증 불필요한 API)
+      const response = await fetch(`${baseUrl}/find-pw`, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
           username: formData.userId,
           name: formData.name,
