@@ -34,7 +34,10 @@ const Header = ({ title = "페이지 제목" }) => {
                 <p className="user-email">admin@joinus.com</p>
               </div>
               <div className="user-menu-divider"></div>
-              <button className="user-menu-item">
+              <button 
+                className="user-menu-item"
+                onClick={() => window.location.href = '/logout'}
+              >
                 <LogOut size={16} />
                 <span>로그아웃</span>
               </button>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { apiFetch } from '../../config';
 import '../../styles/components/button.css';
 import './FindPassword.css';
 
@@ -10,17 +11,51 @@ export default function FindPassword() {
     name: '',
     email: ''
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [tempPassword, setTempPassword] = useState(null);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    // 입력 변경 시 결과 초기화
+    setTempPassword(null);
+    setError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('비밀번호 찾기 시도:', formData);
-    // 실제 비밀번호 찾기 로직 (API 호출 등)
-    alert('임시 비밀번호가 이메일로 발송되었습니다.');
+    setIsLoading(true);
+    setError('');
+    setTempPassword(null);
+
+    try {
+      const response = await apiFetch('/find-pw', {
+        method: 'POST',
+        body: JSON.stringify({
+          username: formData.userId,
+          name: formData.name,
+          email: formData.email
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('비밀번호 찾기에 실패했습니다.');
+      }
+
+      const password = await response.text(); // 백엔드가 String으로 반환
+      
+      if (password && password !== 'null') {
+        setTempPassword(password);
+      } else {
+        setError('입력하신 정보와 일치하는 계정을 찾을 수 없습니다.');
+      }
+    } catch (error) {
+      console.error('비밀번호 찾기 실패:', error);
+      setError('입력하신 정보와 일치하는 계정을 찾을 수 없습니다.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -43,6 +78,7 @@ export default function FindPassword() {
                 onChange={handleChange}
                 placeholder="아이디를 입력하세요"
                 required
+                disabled={isLoading}
               />
             </div>
 
@@ -56,6 +92,7 @@ export default function FindPassword() {
                 onChange={handleChange}
                 placeholder="홍길동"
                 required
+                disabled={isLoading}
               />
             </div>
 
@@ -69,12 +106,41 @@ export default function FindPassword() {
                 onChange={handleChange}
                 placeholder="email@example.com"
                 required
+                disabled={isLoading}
               />
             </div>
 
+            {/* 결과 표시 */}
+            {tempPassword && (
+              <div className="result-success">
+                <p><strong>임시 비밀번호가 발급되었습니다.</strong></p>
+                <div className="temp-password-box">
+                  <p>임시 비밀번호: <strong>{tempPassword}</strong></p>
+                  <p className="warning-text">로그인 후 반드시 비밀번호를 변경해주세요.</p>
+                </div>
+                <button 
+                  type="button" 
+                  className="btn-secondary"
+                  onClick={() => navigate('/login')}
+                >
+                  로그인 하기
+                </button>
+              </div>
+            )}
+
+            {error && (
+              <div className="result-error">
+                <p>{error}</p>
+              </div>
+            )}
+
             <div className="auth-actions">
-              <button type="submit" className="btn-primary">
-                임시 비밀번호 발급
+              <button 
+                type="submit" 
+                className="btn-primary"
+                disabled={isLoading}
+              >
+                {isLoading ? '발급 중...' : '임시 비밀번호 발급'}
               </button>
             </div>
           </form>

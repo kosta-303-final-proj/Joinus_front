@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { apiFetch } from '../../config';
 import '../../styles/components/button.css';
 import './FindId.css';
 
@@ -9,17 +10,50 @@ export default function FindId() {
     name: '',
     email: ''
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [foundUsername, setFoundUsername] = useState(null);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    // 입력 변경 시 결과 초기화
+    setFoundUsername(null);
+    setError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('아이디 찾기 시도:', formData);
-    // 실제 아이디 찾기 로직 (API 호출 등)
-    alert('아이디 찾기 기능은 아직 구현되지 않았습니다.');
+    setIsLoading(true);
+    setError('');
+    setFoundUsername(null);
+
+    try {
+      const response = await apiFetch('/find-id', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('아이디 찾기에 실패했습니다.');
+      }
+
+      const username = await response.text(); // 백엔드가 String으로 반환
+      
+      if (username && username !== 'null') {
+        setFoundUsername(username);
+      } else {
+        setError('입력하신 정보와 일치하는 아이디를 찾을 수 없습니다.');
+      }
+    } catch (error) {
+      console.error('아이디 찾기 실패:', error);
+      setError('입력하신 정보와 일치하는 아이디를 찾을 수 없습니다.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -42,6 +76,7 @@ export default function FindId() {
                 onChange={handleChange}
                 placeholder="홍길동"
                 required
+                disabled={isLoading}
               />
             </div>
 
@@ -55,12 +90,37 @@ export default function FindId() {
                 onChange={handleChange}
                 placeholder="email@example.com"
                 required
+                disabled={isLoading}
               />
             </div>
 
+            {/* 결과 표시 */}
+            {foundUsername && (
+              <div className="result-success">
+                <p>찾으시는 아이디는 <strong>{foundUsername}</strong> 입니다.</p>
+                <button 
+                  type="button" 
+                  className="btn-secondary"
+                  onClick={() => navigate('/login')}
+                >
+                  로그인 하기
+                </button>
+              </div>
+            )}
+
+            {error && (
+              <div className="result-error">
+                <p>{error}</p>
+              </div>
+            )}
+
             <div className="auth-actions">
-              <button type="submit" className="btn-primary">
-                아이디 확인
+              <button 
+                type="submit" 
+                className="btn-primary"
+                disabled={isLoading}
+              >
+                {isLoading ? '확인 중...' : '아이디 확인'}
               </button>
             </div>
           </form>

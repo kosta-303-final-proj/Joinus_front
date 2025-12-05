@@ -51,8 +51,17 @@ export default function Login() {
     const userInfo = await response.json();
     localStorage.setItem('userInfo', JSON.stringify(userInfo));
 
-    alert('로그인 성공!');
-    navigate('/');
+    // ROLE에 따라 리다이렉트 분기
+    const userRole = userInfo.roles;
+    if (userRole && (userRole.includes('ROLE_ADMIN') || userRole.includes('ROLE_MANAGER'))) {
+      // 관리자 또는 매니저인 경우
+      alert('로그인 성공!');
+      navigate('/admin');
+    } else {
+      // 일반 사용자인 경우
+      alert('로그인 성공!');
+      navigate('/');
+    }
   } catch (error) {
     console.error('로그인 실패:', error);
     alert('아이디 또는 비밀번호가 올바르지 않습니다.');

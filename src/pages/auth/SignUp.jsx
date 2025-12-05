@@ -47,23 +47,25 @@ export default function SignUp() {
 
     setIsCheckingUserId(true);
     try {
-      // TODO: 실제 API URL로 변경 필요
-      const url = 'http://localhost:8080'; // 환경변수나 설정 파일로 관리
-      const response = await fetch(`${url}/signup/checkUserId?userId=${formData.userId}`, {
-        method: 'GET',
+      const url = 'http://localhost:8080';
+      const response = await fetch(`${url}/doubleUsername`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          username: formData.userId
+        }),
       });
 
       if (!response.ok) {
         throw new Error('아이디 중복 확인에 실패했습니다.');
       }
 
-      const data = await response.json();
+      const exist = await response.json(); // true면 이미 존재, false면 사용 가능
       setUserIdChecked(true);
-      setUserIdAvailable(data.available);
-      setUserIdMessage(data.message || (data.available ? '사용 가능한 아이디입니다.' : '이미 사용 중인 아이디입니다.'));
+      setUserIdAvailable(!exist); // exist가 false면 사용 가능
+      setUserIdMessage(exist ? '이미 사용 중인 아이디입니다.' : '사용 가능한 아이디입니다.');
     } catch (error) {
       console.error('아이디 중복 확인 실패:', error);
       alert('아이디 중복 확인에 실패했습니다. 다시 시도해주세요.');
@@ -96,22 +98,20 @@ export default function SignUp() {
     }
 
     try {
-      // TODO: 실제 API URL로 변경 필요
-      const url = 'http://localhost:8080'; // 환경변수나 설정 파일로 관리
-      const response = await fetch(`${url}/signup/`, {
+      const url = 'http://localhost:8080';
+      const response = await fetch(`${url}/join`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: formData.userId,
-          nickname: formData.nickname,
+          username: formData.userId, // userId → username
+          name: formData.nickname, // nickname → name
           password: formData.password,
-          phone: formData.phone,
           email: formData.email,
-          address: formData.address,
-          detailAddress: formData.detailAddress || null,
-          agreeMarketing: formData.agreeMarketing
+          address: formData.address || null,
+          detailAddress: formData.detailAddress || null
+          // phone, agreeMarketing은 UserDto에 없으므로 제외
         }),
       });
 
