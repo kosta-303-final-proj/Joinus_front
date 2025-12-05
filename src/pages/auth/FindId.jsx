@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { apiFetch } from '../../config';
+import { apiFetch, baseUrl } from '../../config';
 import '../../styles/components/button.css';
 import './FindId.css';
 
@@ -29,8 +29,12 @@ export default function FindId() {
     setFoundUsername(null);
 
     try {
-      const response = await apiFetch('/find-id', {
+      // apiFetch 대신 일반 fetch 사용 (인증 불필요)
+      const response = await fetch(`${baseUrl}/find-id`, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
           name: formData.name,
           email: formData.email
@@ -38,12 +42,15 @@ export default function FindId() {
       });
 
       if (!response.ok) {
+        // 에러 응답의 상세 정보 확인
+        const errorText = await response.text();
+        console.error('아이디 찾기 실패:', response.status, errorText);
         throw new Error('아이디 찾기에 실패했습니다.');
       }
 
       const username = await response.text(); // 백엔드가 String으로 반환
       
-      if (username && username !== 'null') {
+      if (username && username !== 'null' && username.trim() !== '') {
         setFoundUsername(username);
       } else {
         setError('입력하신 정보와 일치하는 아이디를 찾을 수 없습니다.');
@@ -54,7 +61,7 @@ export default function FindId() {
     } finally {
       setIsLoading(false);
     }
-  };
+  };  
 
   return (
     <div className="find-id-page">
