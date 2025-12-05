@@ -40,11 +40,12 @@ export default function OAuthTokenHandler() {
           localStorage.setItem('refresh_token', tokenData.refresh_token);
         }
 
-        // 사용자 정보 가져오기 (선택사항)
+        // 사용자 정보 가져오기
+        let userInfo = null;
         try {
           const response = await apiFetch('/user');
           if (response.ok) {
-            const userInfo = await response.json();
+            userInfo = await response.json();
             localStorage.setItem('userInfo', JSON.stringify(userInfo));
           }
         } catch (error) {
@@ -52,9 +53,23 @@ export default function OAuthTokenHandler() {
           // 사용자 정보는 나중에 가져올 수 있으므로 에러 무시
         }
 
-        // 로그인 성공 후 메인 페이지로 이동
-        alert('로그인 성공!');
-        navigate('/');
+        // ROLE에 따라 리다이렉트 분기
+        if (userInfo && userInfo.roles) {
+          const userRole = userInfo.roles;
+          if (userRole.includes('ROLE_ADMIN') || userRole.includes('ROLE_MANAGER')) {
+            // 관리자 또는 매니저인 경우
+            alert('로그인 성공!');
+            navigate('/admin');
+          } else {
+            // 일반 사용자인 경우
+            alert('로그인 성공!');
+            navigate('/');
+          }
+        } else {
+          // 사용자 정보를 가져오지 못한 경우 기본값으로 메인 페이지로 이동
+          alert('로그인 성공!');
+          navigate('/');
+        }
       } catch (error) {
         console.error('토큰 처리 실패:', error);
         alert('로그인 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
