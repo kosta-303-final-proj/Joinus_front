@@ -139,7 +139,7 @@ export default function FindId() {
               className="help-link"
               onClick={(e) => {
                 e.preventDefault();
-                navigate('/find-password');
+                navigate('/findPw');
               }}
             >
               비밀번호 찾기
