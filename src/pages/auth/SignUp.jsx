@@ -6,6 +6,7 @@ export default function SignUp() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     userId: '',
+    name: '',
     nickname: '',
     password: '',
     passwordConfirm: '',
@@ -105,13 +106,15 @@ export default function SignUp() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username: formData.userId, // userId → username
-          name: formData.nickname, // nickname → name
+          username: formData.userId, // userId → username (아이디)
+          name: formData.name, // name (이름)
+          nickname: formData.nickname, // nickname (닉네임)
           password: formData.password,
           email: formData.email,
+          phone: formData.phone,
           address: formData.address || null,
           detailAddress: formData.detailAddress || null
-          // phone, agreeMarketing은 UserDto에 없으므로 제외
+          // agreeMarketing은 MemberDto에 없으므로 제외
         }),
       });
 
@@ -164,6 +167,21 @@ export default function SignUp() {
                 {userIdMessage}
               </span>
             )}
+          </div>
+
+          {/* 이름 */}
+          <div className="form-group">
+            <label htmlFor="name" className="form-label">이름</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              className="form-input"
+              placeholder="이름"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
           </div>
 
           {/* 닉네임 */}
