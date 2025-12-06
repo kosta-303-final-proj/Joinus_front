@@ -1,51 +1,49 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import './InquiryDetail.css';
+import { getInquiryDetail, getInquiryImageUrl } from '../../services/csApi';
 
 export default function InquiryDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [inquiry, setInquiry] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // 더미 데이터 (백엔드 연동 전까지)
-  const dummyInquiry = {
-    id: 1,
-    order_number: 'ORD-2025-001234',
-    category: '배송',
-    title: '배송 지연 문의',
-    content: '주문한 상품이 예상 배송일보다 늦게 도착하고 있습니다. 배송 상황을 확인해주세요.',
-    status: '답변 완료',
-    created_at: '2025-01-15',
-    attachments: [
-      { id: 1, url: '/images/inquiry1.jpg', name: '배송지연증명.jpg' },
-      { id: 2, url: '/images/inquiry2.jpg', name: '주문내역.jpg' }
-    ],
-    answer: {
-      content: '안녕하세요. 배송 지연으로 불편을 드려 죄송합니다. 현재 배송 중이며 내일 도착 예정입니다. 추가 문의사항이 있으시면 언제든지 연락주세요.',
-      answered_at: '2025-01-16',
-      answered_by: '관리자'
-    }
+  // 날짜 포맷팅 함수
+  const formatDate = (timestamp) => {
+    if (!timestamp) return '';
+    const date = new Date(timestamp);
+    return date.toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+  };
+
+  // 카테고리 한글 변환
+  const getCategoryName = (category) => {
+    const categoryMap = {
+      'GBPRODCUT': '공구상품',
+      'ORDER': '주문',
+      'CANCEL_REFUND_EXCHANGE': '취소/교환/반품',
+      'LOST_DAMAGED_DEFECTIVE': '분실/파손/불량',
+      'DELIVERY': '배송 관련',
+      'OTHER': '기타'
+    };
+    return categoryMap[category] || category;
   };
 
   useEffect(() => {
     const fetchInquiry = async () => {
       setIsLoading(true);
+      setError(null);
       try {
-        // TODO: 백엔드 연동 시 아래 주석 해제하고 실제 API 호출
-        // const baseUrl = 'http://localhost:8080';
-        // const response = await fetch(`${baseUrl}/inquiries/${id}`, {
-        //   headers: {
-        //     'Authorization': `Bearer ${token}`, // 인증 토큰 필요
-        //   },
-        // });
-        // const data = await response.json();
-        // setInquiry(data);
-
-        // 임시: 더미 데이터 사용
-        setInquiry(dummyInquiry);
+        const data = await getInquiryDetail(id);
+        setInquiry(data);
       } catch (error) {
         console.error('문의 상세 조회 실패:', error);
+        setError('문의를 불러오는 중 오류가 발생했습니다.');
       } finally {
         setIsLoading(false);
       }
@@ -62,13 +60,15 @@ export default function InquiryDetail() {
     );
   }
 
-  if (!inquiry) {
+  if (error || !inquiry) {
     return (
       <div className="inquiry-detail-page">
-        <div className="error">문의를 찾을 수 없습니다.</div>
+        <div className="error">{error || '문의를 찾을 수 없습니다.'}</div>
       </div>
     );
   }
+
+  const status = inquiry.answer ? '답변 완료' : '답변 대기';
 
   return (
     <div className="inquiry-detail-page">
@@ -86,18 +86,18 @@ export default function InquiryDetail() {
           {/* 제목 및 상태 */}
           <div className="inquiry-title-section">
             <div className="inquiry-header">
-              <h2 className="inquiry-title">{inquiry.title}</h2>
-              <span className={`status-badge ${inquiry.status === '답변 완료' ? 'completed' : 'pending'}`}>
-                {inquiry.status}
+              <h2 className="inquiry-title">{inquiry.question || '제목 없음'}</h2>
+              <span className={`status-badge ${status === '답변 완료' ? 'completed' : 'pending'}`}>
+                {status}
               </span>
             </div>
             <div className="inquiry-meta">
-              <span className="inquiry-date">작성일: {inquiry.created_at}</span>
-              {inquiry.order_number && (
-                <span className="inquiry-order">주문번호: {inquiry.order_number}</span>
+              <span className="inquiry-date">작성일: {formatDate(inquiry.questionedAt)}</span>
+              {inquiry.orderId && (
+                <span className="inquiry-order">주문번호: {inquiry.orderId}</span>
               )}
               {inquiry.category && (
-                <span className="inquiry-category">카테고리: {inquiry.category}</span>
+                <span className="inquiry-category">카테고리: {getCategoryName(inquiry.category)}</span>
               )}
             </div>
           </div>
@@ -105,40 +105,41 @@ export default function InquiryDetail() {
           {/* 문의 내용 */}
           <div className="inquiry-question-section">
             <h3 className="section-label">문의 내용</h3>
-            <div className="inquiry-content">{inquiry.content}</div>
+            <div className="inquiry-content">{inquiry.question}</div>
             
             {/* 첨부 이미지 */}
-            {inquiry.attachments && inquiry.attachments.length > 0 && (
+            {inquiry.imageFileId && (
               <div className="inquiry-attachments">
                 <h4 className="attachments-title">첨부 파일</h4>
                 <div className="attachment-list">
-                  {inquiry.attachments.map((file) => (
-                    <div key={file.id} className="attachment-item">
-                      <img src={file.url} alt={file.name} className="attachment-image" />
-                      <span className="attachment-name">{file.name}</span>
-                    </div>
-                  ))}
+                  <div className="attachment-item">
+                    <img 
+                      src={getInquiryImageUrl(inquiry.imageFileId)} 
+                      alt="문의 이미지" 
+                      className="attachment-image" 
+                    />
+                    <span className="attachment-name">문의 이미지</span>
+                  </div>
                 </div>
               </div>
             )}
           </div>
 
           {/* 관리자 답변 */}
-          {inquiry.status === '답변 완료' && inquiry.answer && (
+          {status === '답변 완료' && inquiry.answer && (
             <div className="inquiry-answer-section">
               <h3 className="section-label">관리자 답변</h3>
               <div className="answer-content">
-                <p>{inquiry.answer.content}</p>
+                <p>{inquiry.answer}</p>
                 <div className="answer-footer">
-                  <span>답변일: {inquiry.answer.answered_at}</span>
-                  <span>담당자: {inquiry.answer.answered_by}</span>
+                  <span>답변일: {formatDate(inquiry.answeredAt)}</span>
                 </div>
               </div>
             </div>
           )}
 
           {/* 답변 대기 상태 */}
-          {inquiry.status === '답변 대기' && (
+          {status === '답변 대기' && (
             <div className="inquiry-waiting">
               <p>답변 대기 중입니다. 빠른 시일 내에 답변드리겠습니다.</p>
             </div>
