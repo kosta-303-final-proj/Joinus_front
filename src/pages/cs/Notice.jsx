@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import '../../styles/components/button.css';
 import '../../styles/components/table.css';
 import './Notice.css';
+import { getNoticeList, getFaqList, getInquiryList } from '../../services/csApi';
 
 export default function NoticePage() {
   const navigate = useNavigate();
@@ -17,71 +18,54 @@ export default function NoticePage() {
   const [noticeList, setNoticeList] = useState([]);
   const [faqList, setFaqList] = useState([]);
   const [inquiryList, setInquiryList] = useState([]);
-  const [totalCount, setTotalCount] = useState(0);
+  const [pageInfo, setPageInfo] = useState({
+    curPage: 1,
+    allPage: 1,
+    startPage: 1,
+    endPage: 1
+  });
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // 더미 데이터 (백엔드 연동 전까지 사용)
-  const dummyNotices = [
-    { id: 1, title: '시스템 점검 안내', created_at: '2025-01-15', view_count: 152 },
-    { id: 2, title: '설 연휴 배송 안내', created_at: '2025-01-14', view_count: 203 },
-    { id: 3, title: '개인정보 처리방침 변경 안내', created_at: '2025-01-10', view_count: 89 },
-    { id: 4, title: '신규 결제 수단 추가 안내', created_at: '2025-01-08', view_count: 145 },
-    { id: 5, title: '고객센터 운영시간 변경', created_at: '2025-01-05', view_count: 178 },
-  ];
+  // 날짜 포맷팅 함수
+  const formatDate = (timestamp) => {
+    if (!timestamp) return '';
+    const date = new Date(timestamp);
+    return date.toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+  };
 
-  const dummyFaqs = [
-    { id: 1, question: '배송은 얼마나 걸리나요?', answer: '주문 후 평균 2-3일 소요됩니다.' },
-    { id: 2, question: '환불은 어떻게 하나요?', answer: '마이페이지에서 주문 취소 후 환불 신청 가능합니다.' },
-    { id: 3, question: '공동구매는 어떻게 참여하나요?', answer: '원하는 상품의 공구 참여하기 버튼을 클릭하세요.' },
-    { id: 4, question: '회원 탈퇴는 어떻게 하나요?', answer: '마이페이지 > 설정에서 회원 탈퇴가 가능합니다.' },
-  ];
-
-  const dummyInquiries = [
-    { id: 1, title: '배송 지연 문의', status: '답변 완료', created_at: '2025-01-15' },
-    { id: 2, title: '상품 불량 문의', status: '답변 대기', created_at: '2025-01-14' },
-    { id: 3, title: '결제 오류 문의', status: '답변 완료', created_at: '2025-01-13' },
-  ];
-
-  // 데이터 로딩 (백엔드 연동 시 이 부분만 수정)
+  // 데이터 로딩
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
+      setError(null);
       try {
-        // TODO: 백엔드 연동 시 아래 주석 해제하고 실제 API 호출
-        // const baseUrl = 'http://localhost:8080';
-        // 
-        // if (activeTab === 'notice') {
-        //   const response = await fetch(
-        //     `${baseUrl}/notice?page=${currentPage}&size=${pageSize}`
-        //   );
-        //   const data = await response.json();
-        //   setNoticeList(data.items || []);
-        //   setTotalCount(data.totalCount || 0);
-        // } else if (activeTab === 'faq') {
-        //   const response = await fetch(`${baseUrl}/faq`);
-        //   const data = await response.json();
-        //   setFaqList(data.items || []);
-        // } else if (activeTab === 'inquiry') {
-        //   const response = await fetch(
-        //     `${baseUrl}/inquiries?page=${currentPage}&size=${pageSize}`
-        //   );
-        //   const data = await response.json();
-        //   setInquiryList(data.items || []);
-        //   setTotalCount(data.totalCount || 0);
-        // }
-
-        // 임시: 더미 데이터 사용 (백엔드 연동 전까지)
         if (activeTab === 'notice') {
-          setNoticeList(dummyNotices);
-          setTotalCount(dummyNotices.length);
+          const data = await getNoticeList(currentPage);
+          setNoticeList(data.noticeList || []);
+          setPageInfo(data.pageInfo || { curPage: 1, allPage: 1, startPage: 1, endPage: 1 });
         } else if (activeTab === 'faq') {
-          setFaqList(dummyFaqs);
+          const data = await getFaqList();
+          setFaqList(data || []);
         } else if (activeTab === 'inquiry') {
-          setInquiryList(dummyInquiries);
-          setTotalCount(dummyInquiries.length);
+          const data = await getInquiryList(currentPage);
+          setInquiryList(data.inquiryList || []);
+          setPageInfo(data.pageInfo || { curPage: 1, allPage: 1, startPage: 1, endPage: 1 });
         }
       } catch (error) {
         console.error('데이터 로딩 실패:', error);
+        setError('데이터를 불러오는 중 오류가 발생했습니다.');
+        if (activeTab === 'notice') {
+          setNoticeList([]);
+        } else if (activeTab === 'faq') {
+          setFaqList([]);
+        } else if (activeTab === 'inquiry') {
+          setInquiryList([]);
+        }
       } finally {
         setIsLoading(false);
       }
@@ -108,6 +92,41 @@ export default function NoticePage() {
   // 1:1 문의 클릭 핸들러
   const handleInquiryClick = (id) => {
     navigate(`/cs/inquiry/${id}`);
+  };
+
+  // 페이지네이션 컴포넌트
+  const Pagination = ({ currentPage, totalPages, startPage, endPage, onPageChange }) => {
+    if (totalPages <= 1) return null;
+
+    return (
+      <div className="pagination">
+        <button
+          className="pagination-button"
+          onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+          disabled={currentPage === 1}
+        >
+          이전
+        </button>
+        <div className="pagination-numbers">
+          {Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i).map((page) => (
+            <button
+              key={page}
+              className={`pagination-number ${currentPage === page ? 'active' : ''}`}
+              onClick={() => onPageChange(page)}
+            >
+              {page}
+            </button>
+          ))}
+        </div>
+        <button
+          className="pagination-button"
+          onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+          disabled={currentPage === totalPages}
+        >
+          다음
+        </button>
+      </div>
+    );
   };
 
   return (
@@ -142,6 +161,8 @@ export default function NoticePage() {
           <div className="tab-content">
             {isLoading ? (
               <div>로딩 중...</div>
+            ) : error ? (
+              <div className="error-message">{error}</div>
             ) : (
               <>
                 <div className="notice-list">
@@ -154,27 +175,38 @@ export default function NoticePage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {noticeList.map((notice, index) => (
-                        <tr 
-                          key={notice.id}
-                          onClick={() => handleNoticeClick(notice.id)}
-                          style={{ cursor: 'pointer' }}
-                        >
-                          <td>{totalCount - (currentPage - 1) * pageSize - index}</td>
-                          <td className="title-cell">{notice.title}</td>
-                          <td>{notice.created_at || notice.date}</td>
+                      {noticeList.length === 0 ? (
+                        <tr>
+                          <td colSpan="3" style={{ textAlign: 'center', padding: '20px' }}>
+                            공지사항이 없습니다.
+                          </td>
                         </tr>
-                      ))}
+                      ) : (
+                        noticeList.map((notice, index) => {
+                          const rowNumber = (pageInfo.allPage - currentPage) * 10 + (noticeList.length - index);
+                          return (
+                            <tr 
+                              key={notice.id}
+                              onClick={() => handleNoticeClick(notice.id)}
+                              style={{ cursor: 'pointer' }}
+                            >
+                              <td>{rowNumber}</td>
+                              <td className="title-cell">{notice.title}</td>
+                              <td>{formatDate(notice.createdAt)}</td>
+                            </tr>
+                          );
+                        })
+                      )}
                     </tbody>
                   </table>
                 </div>
-                {/* 페이지네이션 - 백엔드 연동 시 활성화 */}
-                {/* <Pagination 
-                  currentPage={currentPage}
-                  totalCount={totalCount}
-                  pageSize={pageSize}
+                <Pagination 
+                  currentPage={pageInfo.curPage || currentPage}
+                  totalPages={pageInfo.allPage || 1}
+                  startPage={pageInfo.startPage || 1}
+                  endPage={pageInfo.endPage || 1}
                   onPageChange={handlePageChange}
-                /> */}
+                />
               </>
             )}
           </div>
@@ -183,71 +215,101 @@ export default function NoticePage() {
         {/* FAQ 탭 */}
         {activeTab === 'faq' && (
           <div className="tab-content">
-            <div className="faq-list">
-              {faqList.map((faq) => (
-                <div key={faq.id} className="faq-item">
-                  <div className="faq-question">
-                    <span className="faq-icon">Q</span>
-                    <span>{faq.question}</span>
-                  </div>
-                  <div className="faq-answer">
-                    <span className="faq-icon">A</span>
-                    <span>{faq.answer}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+            {isLoading ? (
+              <div>로딩 중...</div>
+            ) : error ? (
+              <div className="error-message">{error}</div>
+            ) : (
+              <div className="faq-list">
+                {faqList.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '20px' }}>FAQ가 없습니다.</div>
+                ) : (
+                  faqList.map((faq) => (
+                    <div key={faq.id} className="faq-item">
+                      <div className="faq-question">
+                        <span className="faq-icon">Q</span>
+                        <span>{faq.question}</span>
+                      </div>
+                      <div className="faq-answer">
+                        <span className="faq-icon">A</span>
+                        <span>{faq.answer}</span>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
           </div>
         )}
 
         {/* 1:1 문의 탭 */}
         {activeTab === 'inquiry' && (
           <div className="tab-content">
-              <div className="inquiry-list">
-              <table className="inquiry-table">
-                <thead>
-                  <tr>
-                    <th>번호</th>
-                    <th>제목</th>
-                    <th>상태</th>
-                    <th>작성일</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {inquiryList.map((inquiry, index) => (
-                    <tr 
-                      key={inquiry.id}
-                      onClick={() => handleInquiryClick(inquiry.id)}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      <td>{inquiryList.length - index}</td>
-                      <td className="title-cell">{inquiry.title}</td>
-                      <td>
-                        <span className={`status ${inquiry.status === '답변 완료' ? 'completed' : 'pending'}`}>
-                          {inquiry.status}
-                        </span>
-                      </td>
-                      <td>{inquiry.created_at || inquiry.date}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="inquiry-footer-section">
-              <button
-                className="btn btn-primary"
-                onClick={() => navigate('/cs/inquiryWrite')}
-                >
-                  문의 작성
-                </button>
-              </div>
-            {/* 페이지네이션 - 백엔드 연동 시 활성화 */}
-            {/* <Pagination 
-              currentPage={currentPage}
-              totalCount={totalCount}
-              pageSize={pageSize}
-              onPageChange={handlePageChange}
-            /> */}
+            {isLoading ? (
+              <div>로딩 중...</div>
+            ) : error ? (
+              <div className="error-message">{error}</div>
+            ) : (
+              <>
+                <div className="inquiry-list">
+                  <table className="inquiry-table">
+                    <thead>
+                      <tr>
+                        <th>번호</th>
+                        <th>제목</th>
+                        <th>상태</th>
+                        <th>작성일</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {inquiryList.length === 0 ? (
+                        <tr>
+                          <td colSpan="4" style={{ textAlign: 'center', padding: '20px' }}>
+                            문의 내역이 없습니다.
+                          </td>
+                        </tr>
+                      ) : (
+                        inquiryList.map((inquiry, index) => {
+                          const rowNumber = (pageInfo.allPage - currentPage) * 10 + (inquiryList.length - index);
+                          const status = inquiry.answer ? '답변 완료' : '답변 대기';
+                          return (
+                            <tr 
+                              key={inquiry.id}
+                              onClick={() => handleInquiryClick(inquiry.id)}
+                              style={{ cursor: 'pointer' }}
+                            >
+                              <td>{rowNumber}</td>
+                              <td className="title-cell">{inquiry.question || '제목 없음'}</td>
+                              <td>
+                                <span className={`status ${status === '답변 완료' ? 'completed' : 'pending'}`}>
+                                  {status}
+                                </span>
+                              </td>
+                              <td>{formatDate(inquiry.questionedAt)}</td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="inquiry-footer-section">
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => navigate('/cs/inquiryWrite')}
+                  >
+                    문의 작성
+                  </button>
+                </div>
+                <Pagination 
+                  currentPage={pageInfo.curPage || currentPage}
+                  totalPages={pageInfo.allPage || 1}
+                  startPage={pageInfo.startPage || 1}
+                  endPage={pageInfo.endPage || 1}
+                  onPageChange={handlePageChange}
+                />
+              </>
+            )}
           </div>
         )}
       </div>

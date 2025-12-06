@@ -15,7 +15,7 @@ export default function MainPage() {
   const [popularItems, setPopularItems] = useState([]);
   const [ongoingItems, setOngoingItems] = useState([]);
   const [proposalItems, setProposalItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   // // 데이터 상태
   // const [deadlineSoonItems, setDeadlineSoonItems] = useState([]);

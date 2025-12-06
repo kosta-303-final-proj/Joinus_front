@@ -2,11 +2,20 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../../css/mypage/InquiryWrite.css";
 import React, { useState } from "react";
 import { Form, FormGroup, Label, Input, Button } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { writeInquiry } from "../../services/csApi";
 
 export default function InquiryWrite() {
+    const navigate = useNavigate();
     const [mainFile, setMainFile] = useState(null);
     const [mainFileURL, setMainFileURL] = useState(null);
+    const [formData, setFormData] = useState({
+        category: '',
+        question: '',
+        orderId: ''
+    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errors, setErrors] = useState({});
 
     const handleFileUpload = (e) => {
         const file = e.target.files[0];
@@ -25,6 +34,73 @@ export default function InquiryWrite() {
         }
     };
 
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+        // 에러 초기화
+        if (errors[name]) {
+            setErrors(prev => ({
+                ...prev,
+                [name]: ''
+            }));
+        }
+    };
+
+    const validateForm = () => {
+        const newErrors = {};
+        
+        if (!formData.category) {
+            newErrors.category = '카테고리를 선택해주세요.';
+        }
+        if (!formData.question.trim()) {
+            newErrors.question = '문의 내용을 입력해주세요.';
+        }
+        if (!mainFile) {
+            newErrors.imageFile = '이미지 파일을 업로드해주세요.';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        if (!validateForm()) {
+            return;
+        }
+
+        setIsSubmitting(true);
+        try {
+            const submitFormData = new FormData();
+            submitFormData.append('category', formData.category);
+            submitFormData.append('question', formData.question);
+            if (formData.orderId) {
+                submitFormData.append('orderId', formData.orderId);
+            }
+            if (mainFile) {
+                submitFormData.append('imageFile', mainFile);
+            }
+
+            await writeInquiry(submitFormData);
+            
+            // 성공 시 문의 목록으로 이동
+            navigate('/cs/notice?tab=inquiry');
+        } catch (error) {
+            console.error('문의 작성 실패:', error);
+            alert('문의 작성 중 오류가 발생했습니다. 다시 시도해주세요.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleCancel = () => {
+        navigate('/cs/notice?tab=inquiry');
+    };
+
   return (
     <>
       {/* 제목 영역 (1020px 고정) */}
@@ -40,51 +116,68 @@ export default function InquiryWrite() {
       {/* 본문 영역 */}
       <div className="pageWrapper">
         <div className="container">
-          <Form>
+          <Form onSubmit={handleSubmit}>
             <FormGroup>
-              <Link to="/cs/notice">
+              <Link to="/cs/notice?tab=inquiry">
               <Label className="fw-bold text-end d-block">
                 <img src="/left.png" alt="뒤로가기" className="back" style={{width:'20px', height:'20px',  marginRight:"5px"}}/>
                 뒤로가기
               </Label>
               </Link>
             </FormGroup>
-            {/* 주문번호 */}
+            {/* 주문번호 (선택사항) */}
             <FormGroup className="mb-3">
-              <Label className="fw-bold text-start d-block" style={{fontSize:"16px"}}>주문번호 *</Label>
-              <Input type="text" placeholder="주문번호를 입력하세요" />
+              <Label className="fw-bold text-start d-block" style={{fontSize:"16px"}}>주문번호</Label>
+              <Input 
+                type="text" 
+                name="orderId"
+                value={formData.orderId}
+                onChange={handleInputChange}
+                placeholder="주문번호를 입력하세요 (선택사항)" 
+              />
             </FormGroup>            
 
             {/* 카테고리 */}
             <FormGroup className="mb-3">
               <Label className="fw-bold text-start d-block" style={{fontSize:"16px"}}>카테고리 *</Label>
-              <Input type="select">
-                <option>선택하세요.</option>
-                <option>공구상품문의</option>
-                <option>1:1문의</option>
-                <option>주문</option>
-                <option>취소/교환/반품</option>
-                <option>분실/파손/불량</option>
-                <option>배송관련</option>
-                <option>기타</option>
+              <Input 
+                type="select" 
+                name="category"
+                value={formData.category}
+                onChange={handleInputChange}
+                invalid={!!errors.category}
+              >
+                <option value="">선택하세요.</option>
+                <option value="GBPRODCUT">공구상품</option>
+                <option value="ORDER">주문</option>
+                <option value="CANCEL_REFUND_EXCHANGE">취소/교환/반품</option>
+                <option value="LOST_DAMAGED_DEFECTIVE">분실/파손/불량</option>
+                <option value="DELIVERY">배송 관련</option>
+                <option value="OTHER">기타</option>
               </Input>
-            </FormGroup>
-
-            {/* 제목 */}
-            <FormGroup className="mb-3">
-              <Label className="fw-bold text-start d-block" style={{fontSize:"16px"}}>제목 *</Label>
-              <Input type="text" placeholder="문의 제목을 입력하세요." />
+              {errors.category && <div className="text-danger" style={{fontSize:"14px", marginTop:"5px"}}>{errors.category}</div>}
             </FormGroup>
 
             {/* 상세 설명 */}
             <FormGroup className="mb-3">
-                <Label className="fw-bold text-start d-block" style={{fontSize:"16px"}}>상세 설명 *</Label>
-                <Input type="textarea" placeholder="상세한 내용을 입력해주세요." rows={5} style={{ resize: "none", height:"300px" }}/>
+                <Label className="fw-bold text-start d-block" style={{fontSize:"16px"}}>문의 내용 *</Label>
+                <Input 
+                  type="textarea" 
+                  name="question"
+                  value={formData.question}
+                  onChange={handleInputChange}
+                  placeholder="상세한 내용을 입력해주세요." 
+                  rows={5} 
+                  style={{ resize: "none", height:"300px"}}
+                  invalid={!!errors.question}
+                />
+                {errors.question && <div className="text-danger" style={{fontSize:"14px", marginTop:"5px"}}>{errors.question}</div>}
             </FormGroup>
 
-            {/* 상품 이미지/PDF 업로드 */}
+            {/* 상품 이미지 업로드 */}
             <FormGroup className="mb-4">
-            <Label className="fw-bold text-start d-block" style={{fontSize:"16px"}}>상품 이미지 / PDF</Label>
+            <Label className="fw-bold text-start d-block" style={{fontSize:"16px"}}>상품 이미지 *</Label>
+            {errors.imageFile && <div className="text-danger" style={{fontSize:"14px", marginBottom:"5px"}}>{errors.imageFile}</div>}
 
             <div className="bigUploadBox">
                 <div className="imageGrid">
@@ -92,21 +185,15 @@ export default function InquiryWrite() {
                 <div className="imageBox">
                     <input
                     type="file"
-                    accept="image/*,.pdf"
+                    accept="image/*"
                     onChange={handleFileUpload}
                     className="fileInput"
                     />
                     {mainFile ? (
-                    mainFile.type === "application/pdf" ? (
-                        <div style={{ textAlign: "center", fontSize: "14px", padding: "10px" }}>
-                        📄 PDF 파일<br />{mainFile.name}
-                        </div>
-                    ) : (
                         <img src={mainFileURL} alt="대표 파일" className="preview" />
-                    )
                     ) : (
                     <p className="fw-bold text-center text-secondary small">
-                        대표 이미지 / PDF<br />Click to upload
+                        이미지 업로드<br />Click to upload
                     </p>
                     )}
                 </div>
@@ -129,8 +216,21 @@ export default function InquiryWrite() {
             </FormGroup> */}
 
             <div className="d-flex gap-2 justify-content-end">
-              <Button color="secondary">취소하기</Button>
-              <Button color="primary">문의하기</Button>
+              <Button 
+                color="secondary" 
+                type="button"
+                onClick={handleCancel}
+                disabled={isSubmitting}
+              >
+                취소하기
+              </Button>
+              <Button 
+                color="primary" 
+                type="submit"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? '처리 중...' : '문의하기'}
+              </Button>
             </div>
           </Form>
         </div>
