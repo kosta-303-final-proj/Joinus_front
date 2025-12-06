@@ -1,116 +1,231 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Link, useNavigate, Outlet } from "react-router-dom";
-import { Label, Button, Card, CardBody, CardTitle, CardSubtitle, CardText } from "reactstrap";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Label, Card, CardBody, CardTitle, CardSubtitle } from "reactstrap";
+import axios from "axios";
+import { baseUrl } from "../../../config";
 
-export default function ProposalsList(){
+export default function ProposalsList() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [proposals, setProposals] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    const navigate = useNavigate();
+  const type = searchParams.get("type") || "popular";
 
-    return(
-        <>
-            {/* 제목 영역 (1020px 고정) */}
-            <div style={styles.pageWrapper}>
-              <div style={styles.container}>
+  useEffect(() => {
+    const fetchProposals = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`${baseUrl}/api/proposals`, {
+          params: { type },
+        });
 
-                {/* 제목 + 뒤로가기 영역 */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px"}}>
-                  <h3 className="mb-0 fw-bold text-start">제안 목록</h3>
+        const transformed = response.data.map((p) => ({
+          id: p.id,
+          title: p.productName,
+          category: p.category,
+          description: p.description,
+          price: p.originalPrice
+            ? `${p.originalPrice.toLocaleString()}원`
+            : "0원",
+          author: p.memberName || p.memberUsername,
+          date: p.createdAt ? p.createdAt.substring(0, 10) : "",
+          votes: p.voteCount || 0,
+          image: p.imageUrl
+            ? `${baseUrl}/imageView?filename=${p.imageUrl}`
+            : "https://picsum.photos/300/200",
+        }));
 
-                  <Link className="fw-bold d-flex align-items-center" style={{textDecoration: 'none', color: 'black', cursor: "pointer" }} to='proposalWrite'>
-                    제안하기<img src="/right.png" alt="뒤로가기" className="back" style={{ width: "20px", height: "20px", marginLeft: "5px" }}/></Link>
-                </div>
+        setProposals(transformed);
+      } catch (e) {
+        console.error("제안 목록 조회 실패:", e);
+        setProposals([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-              </div>
+    fetchProposals();
+  }, [type]);
+
+  return (
+    <>
+      {/* 제목 영역 (1020px 고정) */}
+      <div style={styles.pageWrapper}>
+        <div style={styles.container}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "20px",
+            }}
+          >
+            <h3 className="mb-0 fw-bold text-start">제안 목록</h3>
+
+            <Link
+              className="fw-bold d-flex align-items-center"
+              style={{
+                textDecoration: "none",
+                color: "black",
+                cursor: "pointer",
+              }}
+              to="proposalWrite"
+            >
+              제안하기
+              <img
+                src="/right.png"
+                alt="뒤로가기"
+                className="back"
+                style={{
+                  width: "20px",
+                  height: "20px",
+                  marginLeft: "5px",
+                }}
+              />
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* 필터 영역 (UI만 유지) */}
+      <div style={styles.pageWrapper}>
+        <div style={styles.container2}>
+          {/* 카테고리 줄 */}
+          <div
+            style={{ display: "flex", alignItems: "center", marginBottom: "15px" }}
+          >
+            <div style={{ width: "120px", fontWeight: "bold" }}>카테고리</div>
+            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+              <span style={styles.tag}>뷰티</span>
+              <span style={styles.tag}>패션</span>
+              <span style={styles.tag}>전자기기</span>
+              <span style={styles.tag}>홈&리빙</span>
+              <span style={styles.tag}>식품</span>
+              <span style={styles.tag}>스포츠</span>
             </div>
-             {/* 전체 폭 가로선 */}
-            {/* <hr style={styles.fullWidthHr} /> */}
-            
-            {/* 카테고리, 정렬, 진행상태 위치 */}
-            <div style={styles.pageWrapper}>
-                <div style={styles.container2}>
+          </div>
+          <hr style={{ color: "#B5B1B1" }} />
+          {/* 정렬 줄 */}
+          <div
+            style={{ display: "flex", alignItems: "center", marginBottom: "15px" }}
+          >
+            <div style={{ width: "120px", fontWeight: "bold" }}>정렬</div>
 
-                    {/* 카테고리 줄 */}
-                    <div style={{ display: "flex", alignItems: "center", marginBottom: "15px" }}>
-                        <div style={{ width: "120px", fontWeight: "bold" }}>카테고리</div>
-                        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                            <span style={styles.tag}>뷰티</span>
-                            <span style={styles.tag}>패션</span>
-                            <span style={styles.tag}>전자기기</span>
-                            <span style={styles.tag}>홈&리빙</span>
-                            <span style={styles.tag}>식품</span>
-                            <span style={styles.tag}>스포츠</span>
+            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+              <span style={styles.tag}>최신순</span>
+              <span style={styles.tag}>투표순</span>
+            </div>
+          </div>
+          <hr style={{ color: "#B5B1B1" }} />
+        </div>
+      </div>
+
+      {/* 목록 영역 */}
+      <div style={styles.pageWrapper}>
+        <div style={styles.container}>
+          {loading ? (
+            <p>로딩 중...</p>
+          ) : proposals.length === 0 ? (
+            <p>제안이 없습니다.</p>
+          ) : (
+            <div
+              style={{
+                display: "grid",
+                gap: "20px",
+                gridTemplateColumns: "repeat(4, 1fr)",
+              }}
+            >
+              {proposals.map((proposal) => (
+                <Card
+                  key={proposal.id}
+                  style={{
+                    width: "240px",
+                    boxShadow: "0 5px 20px rgba(88 88 88 / 20%)",
+                    border: "none",
+                  }}
+                  onClick={() =>
+                    navigate(`/proposalsList/proposalDetail/${proposal.id}`)
+                  }
+                >
+                  <img alt={proposal.title} src={proposal.image} />
+                  <CardBody>
+                    <CardTitle
+                      tag="h5"
+                      style={{ display: "flex", justifyContent: "space-between" }}
+                    >
+                      <div
+                        style={{
+                          border: "1px solid black",
+                          fontSize: "10px",
+                          padding: "5px",
+                        }}
+                      >
+                        {proposal.category}
+                      </div>
+                    </CardTitle>
+                    <CardSubtitle className="mb-2 text-muted" tag="h6">
+                      <div style={{ fontSize: "14px" }}>{proposal.title}</div>
+                    </CardSubtitle>
+                    <CardSubtitle>
+                      <div style={{ fontSize: "12px" }}>
+                        {proposal.description}
+                      </div>
+                    </CardSubtitle>
+                    <div className="fw-bold" style={{ fontSize: "24px" }}>
+                      {proposal.price}
+                    </div>
+                    <CardSubtitle>
+                      <div
+                        style={{
+                          justifyContent: "space-between",
+                          display: "flex",
+                        }}
+                      >
+                        <div>
+                          <Label style={{ fontSize: "12px" }}>
+                            제안자 {proposal.author}
+                          </Label>
                         </div>
-                    </div>
-                    <hr style={{color:"#B5B1B1"}}/>
-                    {/* 정렬 줄 */}
-                    <div style={{ display: "flex", alignItems: "center", marginBottom: "15px" }}>
-                        <div style={{ width: "120px", fontWeight: "bold" }}>정렬</div>
-
-                        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                            <span style={styles.tag}>최신순</span>
-                            <span style={styles.tag}>투표순</span>
+                        <div>
+                          <Label style={{ color: "black", fontSize: "10px" }}>
+                            {proposal.date}
+                          </Label>
                         </div>
-                    </div>
-                    <hr style={{color:"#B5B1B1"}}/>
-                    {/* 진행상태 줄 */}
-                </div>
+                      </div>
+                    </CardSubtitle>
+                    <CardSubtitle>
+                      <div
+                        style={{
+                          justifyContent: "space-between",
+                          display: "flex",
+                        }}
+                      >
+                        <div
+                          style={{ display: "flex", alignContent: "center" }}
+                        >
+                          <img
+                            src="/ddabong.png"
+                            style={{
+                              width: "20px",
+                              marginRight: "5px",
+                              fontSize: "16px",
+                            }}
+                          />
+                          <div>{proposal.votes}</div>
+                        </div>
+                      </div>
+                    </CardSubtitle>
+                  </CardBody>
+                </Card>
+              ))}
             </div>
-
-            {/* 카테고리, 정렬, 진행상태 위치 */}
-            <div style={styles.pageWrapper}>
-                <div style={styles.container} >
-                    <div style={{display:'grid', gap:"20px", gridTemplateColumns: "repeat(4, 1fr)"}}>
-                        {Array.from({ length: 8 }).map((_, idx) => (
-                        <Card key={idx} style={{width: '240px', boxShadow: "0 5px 20px rgba(88 88 88 / 20%)", border:'none' }} onClick={() => navigate(`/proposalsList/proposalDetail/${idx + 1}`)}>
-                            <img alt="Sample" src="https://picsum.photos/300/200"/>
-                            <CardBody >
-                                <CardTitle tag="h5" style={{display:'flex', justifyContent:'space-between'}}>
-                                    <div style={{border:'1px solid black', fontSize:'10px', padding:"5px"}}>카테고리</div>
-                                    {/* <div style={{backgroundColor:'#BBFFAC', color:'#0A8F30', fontSize:'10px' , padding:"5px"}}>진행중</div> */}
-                                </CardTitle>
-                                <CardSubtitle className="mb-2 text-muted" tag="h6">
-                                    <div style={{fontSize:'14px'}}>자캣 이름</div>
-                                </CardSubtitle>
-                                <CardSubtitle>
-                                    <div style={{fontSize:'12px'}}>더블 브레스티드 블레이저, 울, 프린스 오브 
-                                        웨일스, 장식 부착 없음, 라펠, 롱 슬리브, 안감
-                                        있음, 버튼...
-                                    </div>
-                                </CardSubtitle>
-                                    <div className="fw-bold" style={{fontSize:'24px'}}>10000원</div>
-                                {/* <CardSubtitle>
-                                    <div>
-                                    <img src="/CountingStars.png" style={{width:'12px', marginRight:'5px'}}/>
-                                    <Label style={{fontSize:'12px'}}>4.6</Label>
-                                    </div>
-                                </CardSubtitle> */}
-                                <CardSubtitle>
-                                    <div style={{justifyContent:'space-between', display:'flex'}}>
-                                        <div>
-                                            {/* <img src="/person.png" style={{width:'15px', marginRight:'5px'}}/> */}
-                                            <Label style={{fontSize:'12px'}}>제안자 홍길동</Label>
-                                        </div>
-                                        <div>
-                                            <Label style={{color:'black', fontSize:'10px'}}>2025-11-29</Label>
-                                        </div>
-                                    </div>
-                                </CardSubtitle>
-                                <CardSubtitle>
-                                    <div style={{justifyContent:'space-between', display:'flex'}}>
-                                        <div style={{display:'flex', alignContent:'center'}}>
-                                            <img src="/ddabong.png" style={{width:'20px', marginRight:'5px', fontSize:'16px'}}/>
-                                            <div>0</div>
-                                        </div>
-                                    </div>
-                                </CardSubtitle>
-                            </CardBody>
-                        </Card>
-                        ))}
-                    </div>
-                </div>
-            </div>
-        </>
-    )
+          )}
+        </div>
+      </div>
+    </>
+  );
 }
 
 const styles = {
