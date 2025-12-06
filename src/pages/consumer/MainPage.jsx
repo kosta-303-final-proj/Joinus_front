@@ -9,6 +9,13 @@ import { transformGbProduct, transformProposal } from '../../utils/searchDataTra
 export default function MainPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  
+  // API에서 가져온 데이터 상태
+  const [deadlineSoonItems, setDeadlineSoonItems] = useState([]);
+  const [popularItems, setPopularItems] = useState([]);
+  const [ongoingItems, setOngoingItems] = useState([]);
+  const [proposalItems, setProposalItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // 데이터 상태
   const [deadlineSoonItems, setDeadlineSoonItems] = useState([]);
