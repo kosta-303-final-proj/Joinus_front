@@ -1,69 +1,76 @@
 // final_project/src/pages/admin/Statistics.jsx
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { apiFetch } from '../../config';
 import './Statistics.css';
 
 export default function Statistics() {
-  const [startMonth, setStartMonth] = useState('2025-11');  // 추가
-  const [endMonth, setEndMonth] = useState('2025-11');      // 추가
+  const [startMonth, setStartMonth] = useState(() => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  });
+  const [endMonth, setEndMonth] = useState(() => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  });
   const [unit, setUnit] = useState('일'); // 일/주/월
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  
+  // API 데이터 상태
+  const [statisticsData, setStatisticsData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // 월별 매출 데이터 (도넛 차트용)
-  const monthlyRevenue = [
-    { month: '9월', revenue: 2200000, profit: 110000 },
-    { month: '10월', revenue: 3300000, profit: 165000 },
-    { month: '11월', revenue: 4300000, profit: 215000 }
-  ];
-
-  // 요약 지표
-  const summary = {
-    totalRevenue: 12540000, // 총 매출액 (배송비 제외)
-    totalOrders: 158, // 총 주문 수
-    netProfit: 627000 // 순이익 (매출액의 5%)
+  // API 호출 함수
+  const fetchStatistics = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const params = new URLSearchParams({
+        startMonth,
+        endMonth,
+        unit
+      });
+      const response = await apiFetch(`/api/admin/statistics?${params}`);
+      if (!response.ok) {
+        throw new Error('통계 데이터 조회 실패');
+      }
+      const data = await response.json();
+      setStatisticsData(data);
+      setCurrentPage(1); // 데이터 변경 시 첫 페이지로
+    } catch (err) {
+      console.error('통계 데이터 조회 실패:', err);
+      setError('데이터를 불러올 수 없습니다.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // 매출 상세 데이터 (단위에 따라 필터링)
-  const allSalesDetails = [
-    {
-      date: '2025-11-09',
-      orders: 24,
-      purchasePrice: 1980000,
-      pointsUsed: 35000,
-      commission: 99000,
-      salesAmount: 2044000,
-      settlementAmount: 1945000
-    },
-    {
-      date: '2025-11-08',
-      orders: 18,
-      purchasePrice: 1320000,
-      pointsUsed: 20000,
-      commission: 66000,
-      salesAmount: 1388000,
-      settlementAmount: 1300000
-    },
-    {
-      date: '2025-11-07',
-      orders: 21,
-      purchasePrice: 1580000,
-      pointsUsed: 15000,
-      commission: 79000,
-      salesAmount: 1644000,
-      settlementAmount: 1585000
-    },
-    {
-      date: '2025-11-06',
-      orders: 17,
-      purchasePrice: 1210000,
-      pointsUsed: 10000,
-      commission: 60500,
-      salesAmount: 1260500,
-      settlementAmount: 1200000
-    },
-    // 추가 데이터...
-  ];
+  // 초기 로드 및 필터 변경 시 API 호출
+  useEffect(() => {
+    fetchStatistics();
+  }, [unit]); // unit 변경 시 자동 재조회
+
+  // 조회 버튼 클릭 핸들러
+  const handleSearch = () => {
+    fetchStatistics();
+  };
+
+  // 단위 변경 핸들러
+  const handleUnitChange = (newUnit) => {
+    setUnit(newUnit);
+    // useEffect에서 자동으로 재조회됨
+  };
+
+  // 데이터 추출 (null 체크 포함)
+  const monthlyRevenue = statisticsData?.monthlyRevenue || [];
+  const summary = statisticsData?.summary || {
+    totalRevenue: 0,
+    totalOrders: 0,
+    netProfit: 0
+  };
+  const allSalesDetails = statisticsData?.salesDetails || [];
 
   // 페이지네이션 계산
   const totalPages = Math.ceil(allSalesDetails.length / itemsPerPage);
@@ -72,10 +79,12 @@ export default function Statistics() {
   const salesDetails = allSalesDetails.slice(startIndex, endIndex);
 
   // 도넛 차트 계산 (매출별)
-  const totalRevenueForChart = monthlyRevenue.reduce((sum, m) => sum + m.revenue, 0);
+  const totalRevenueForChart = monthlyRevenue.length > 0 
+    ? monthlyRevenue.reduce((sum, m) => sum + (m.revenue || 0), 0) 
+    : 1;
   const revenueChartData = monthlyRevenue.map((item, index) => {
-    const percentage = (item.revenue / totalRevenueForChart) * 100;
-    const offset = monthlyRevenue.slice(0, index).reduce((sum, m) => sum + (m.revenue / totalRevenueForChart) * 100, 0);
+    const percentage = totalRevenueForChart > 0 ? (item.revenue / totalRevenueForChart) * 100 : 0;
+    const offset = monthlyRevenue.slice(0, index).reduce((sum, m) => sum + ((m.revenue || 0) / totalRevenueForChart) * 100, 0);
     return {
       ...item,
       percentage,
@@ -84,10 +93,12 @@ export default function Statistics() {
   });
 
   // 도넛 차트 계산 (순익별)
-  const totalProfitForChart = monthlyRevenue.reduce((sum, m) => sum + m.profit, 0);
+  const totalProfitForChart = monthlyRevenue.length > 0
+    ? monthlyRevenue.reduce((sum, m) => sum + (m.profit || 0), 0)
+    : 1;
   const profitChartData = monthlyRevenue.map((item, index) => {
-    const percentage = (item.profit / totalProfitForChart) * 100;
-    const offset = monthlyRevenue.slice(0, index).reduce((sum, m) => sum + (m.profit / totalProfitForChart) * 100, 0);
+    const percentage = totalProfitForChart > 0 ? (item.profit / totalProfitForChart) * 100 : 0;
+    const offset = monthlyRevenue.slice(0, index).reduce((sum, m) => sum + ((m.profit || 0) / totalProfitForChart) * 100, 0);
     return {
       ...item,
       percentage,
@@ -179,6 +190,24 @@ export default function Statistics() {
     );
   };
 
+  // 로딩 상태
+  if (isLoading && !statisticsData) {
+    return (
+      <div className="statistics-page">
+        <div className="loading" style={{ padding: '2rem', textAlign: 'center' }}>로딩 중...</div>
+      </div>
+    );
+  }
+
+  // 에러 상태
+  if (error && !statisticsData) {
+    return (
+      <div className="statistics-page">
+        <div className="error" style={{ padding: '2rem', textAlign: 'center', color: 'red' }}>{error}</div>
+      </div>
+    );
+  }
+
   return (
     <div className="statistics-page">
       {/* 헤더 */}
@@ -190,7 +219,7 @@ export default function Statistics() {
           </p>
         </div>
         <div className="header-date">
-          기준일: 2025-11-09
+          기준일: {new Date().toISOString().slice(0, 10)}
         </div>
       </div>
 
@@ -212,36 +241,38 @@ export default function Statistics() {
             />
             </div>
             <span className="filter-note">(최대 6개월 조회)</span>
-            <button className="search-button" onClick={() => console.log('조회:', { startMonth, endMonth })}>
-            조회
+            <button className="search-button" onClick={handleSearch} disabled={isLoading}>
+            {isLoading ? '조회 중...' : '조회'}
           </button>
         </div>
       </div>
 
       {/* 기간별 매출 그래프 (도넛 차트) */}
-      <div className="chart-section">
-        <div className="chart-header">
-          <h2 className="section-title">기간별 매출 그래프</h2>
-          <span className="chart-unit">단위: 월별</span>
+      {monthlyRevenue.length > 0 && (
+        <div className="chart-section">
+          <div className="chart-header">
+            <h2 className="section-title">기간별 매출 그래프</h2>
+            <span className="chart-unit">단위: 월별</span>
+          </div>
+          <div className="donut-charts-container">
+            <DonutChart
+              data={revenueChartData}
+              title="매출별"
+              colorScheme={['#3b82f6', '#8b5cf6', '#ec4899']}
+              valueKey="revenue"
+            />
+            <DonutChart
+              data={profitChartData}
+              title="순익별"
+              colorScheme={['#10b981', '#f59e0b', '#ef4444']}
+              valueKey="profit"
+            />
+          </div>
+          <p className="formula-note">
+            매출액 = (배송비 제외) 구매가 - 포인트 + 수수료 5%
+          </p>
         </div>
-        <div className="donut-charts-container">
-          <DonutChart
-            data={revenueChartData}
-            title="매출별"
-            colorScheme={['#3b82f6', '#8b5cf6', '#ec4899']}
-            valueKey="revenue"
-          />
-          <DonutChart
-            data={profitChartData}
-            title="순익별"
-            colorScheme={['#10b981', '#f59e0b', '#ef4444']}
-            valueKey="profit"
-          />
-        </div>
-        <p className="formula-note">
-          매출액 = (배송비 제외) 구매가 - 포인트 + 수수료 5%
-        </p>
-      </div>
+      )}
 
       {/* 요약 지표 */}
       <div className="stats-section">
@@ -272,19 +303,22 @@ export default function Statistics() {
           <div className="unit-buttons">
             <button
               className={`unit-btn ${unit === '일' ? 'active' : ''}`}
-              onClick={() => setUnit('일')}
+              onClick={() => handleUnitChange('일')}
+              disabled={isLoading}
             >
               일
             </button>
             <button
               className={`unit-btn ${unit === '주' ? 'active' : ''}`}
-              onClick={() => setUnit('주')}
+              onClick={() => handleUnitChange('주')}
+              disabled={isLoading}
             >
               주
             </button>
             <button
               className={`unit-btn ${unit === '월' ? 'active' : ''}`}
-              onClick={() => setUnit('월')}
+              onClick={() => handleUnitChange('월')}
+              disabled={isLoading}
             >
               월
             </button>
@@ -322,17 +356,19 @@ export default function Statistics() {
                 ))
               )}
             </tbody>
-            <tfoot>
-              <tr className="table-total">
-                <td className="total-label">합계</td>
-                <td className="number-cell">{allSalesDetails.reduce((sum, item) => sum + item.orders, 0)}</td>
-                <td className="number-cell">{formatCurrency(allSalesDetails.reduce((sum, item) => sum + item.purchasePrice, 0))}</td>
-                <td className="number-cell">{formatCurrency(allSalesDetails.reduce((sum, item) => sum + item.pointsUsed, 0))}</td>
-                <td className="number-cell">{formatCurrency(allSalesDetails.reduce((sum, item) => sum + item.commission, 0))}</td>
-                <td className="number-cell sales-amount">{formatCurrency(allSalesDetails.reduce((sum, item) => sum + item.salesAmount, 0))}</td>
-                <td className="number-cell settlement-amount">{formatCurrency(allSalesDetails.reduce((sum, item) => sum + item.settlementAmount, 0))}</td>
-              </tr>
-            </tfoot>
+            {allSalesDetails.length > 0 && (
+              <tfoot>
+                <tr className="table-total">
+                  <td className="total-label">합계</td>
+                  <td className="number-cell">{allSalesDetails.reduce((sum, item) => sum + (item.orders || 0), 0)}</td>
+                  <td className="number-cell">{formatCurrency(allSalesDetails.reduce((sum, item) => sum + (item.purchasePrice || 0), 0))}</td>
+                  <td className="number-cell">{formatCurrency(allSalesDetails.reduce((sum, item) => sum + (item.pointsUsed || 0), 0))}</td>
+                  <td className="number-cell">{formatCurrency(allSalesDetails.reduce((sum, item) => sum + (item.commission || 0), 0))}</td>
+                  <td className="number-cell sales-amount">{formatCurrency(allSalesDetails.reduce((sum, item) => sum + (item.salesAmount || 0), 0))}</td>
+                  <td className="number-cell settlement-amount">{formatCurrency(allSalesDetails.reduce((sum, item) => sum + (item.settlementAmount || 0), 0))}</td>
+                </tr>
+              </tfoot>
+            )}
           </table>
         </div>
         <div className="table-notes">
@@ -341,33 +377,35 @@ export default function Statistics() {
         </div>
 
         {/* 페이지네이션 */}
-        <div className="pagination">
-          <button
-            className="pagination-button"
-            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-            disabled={currentPage === 1}
-          >
-            이전
-          </button>
-          <div className="pagination-numbers">
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <button
-                key={page}
-                className={`pagination-number ${currentPage === page ? 'active' : ''}`}
-                onClick={() => setCurrentPage(page)}
-              >
-                {page}
-              </button>
-            ))}
+        {totalPages > 0 && (
+          <div className="pagination">
+            <button
+              className="pagination-button"
+              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+              disabled={currentPage === 1}
+            >
+              이전
+            </button>
+            <div className="pagination-numbers">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  className={`pagination-number ${currentPage === page ? 'active' : ''}`}
+                  onClick={() => setCurrentPage(page)}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+            <button
+              className="pagination-button"
+              onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+              disabled={currentPage === totalPages}
+            >
+              다음
+            </button>
           </div>
-          <button
-            className="pagination-button"
-            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-            disabled={currentPage === totalPages}
-          >
-            다음
-          </button>
-        </div>
+        )}
       </div>
     </div>
   );
