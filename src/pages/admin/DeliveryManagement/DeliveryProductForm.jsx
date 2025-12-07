@@ -1,13 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getApprovedSupplierList, createSupplyProduct } from '../../../services/supplyApi';
 import './DeliveryProductForm.css';
 
-const approvedVendors = [
-  { id: 1, name: '해외직구 트레이딩' },
-  { id: 2, name: '생활잡화 마트' },
-  { id: 3, name: '주방용품 전문' }
-];
-
 export default function DeliveryProductForm() {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     productName: '',
     vendorId: '',
@@ -17,6 +14,27 @@ export default function DeliveryProductForm() {
     deliveryDate: '',
     note: ''
   });
+  const [vendors, setVendors] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // 승인된 업체 목록 로드
+  useEffect(() => {
+    const fetchVendors = async () => {
+      setIsLoading(true);
+      try {
+        const data = await getApprovedSupplierList('', '전체', 'name');
+        setVendors(data || []);
+      } catch (err) {
+        console.error('업체 목록 조회 실패:', err);
+        alert('업체 목록을 불러올 수 없습니다.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchVendors();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,23 +53,33 @@ export default function DeliveryProductForm() {
     setForm(updated);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.productName || !form.vendorId || !form.quantity || !form.unitPrice) {
       alert('필수 항목을 모두 입력하세요.');
       return;
     }
-    alert('납품 상품이 등록되었습니다. (추후 API 연동 예정)');
-    console.log('등록 값', form);
-    setForm({
-      productName: '',
-      vendorId: '',
-      quantity: '',
-      unitPrice: '',
-      totalPrice: '',
-      deliveryDate: '',
-      note: ''
-    });
+
+    setIsSubmitting(true);
+    try {
+      const productData = {
+        productName: form.productName,
+        supplierId: Number(form.vendorId),
+        quantity: Number(form.quantity),
+        unitPrice: Number(form.unitPrice),
+        deliveryDate: form.deliveryDate ? new Date(form.deliveryDate).toISOString() : null,
+        memo: form.note || ''
+      };
+
+      await createSupplyProduct(productData);
+      alert('납품 상품이 등록되었습니다.');
+      navigate('/admin/suppliy/products');
+    } catch (err) {
+      console.error('상품 등록 실패:', err);
+      alert('상품 등록에 실패했습니다.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -86,11 +114,12 @@ export default function DeliveryProductForm() {
               value={form.vendorId}
               onChange={handleChange}
               required
+              disabled={isLoading}
             >
-              <option value="">선택하세요</option>
-              {approvedVendors.map((vendor) => (
+              <option value="">{isLoading ? '로딩 중...' : '선택하세요'}</option>
+              {vendors.map((vendor) => (
                 <option key={vendor.id} value={vendor.id}>
-                  {vendor.name}
+                  {vendor.companyName}
                 </option>
               ))}
             </select>
@@ -159,19 +188,23 @@ export default function DeliveryProductForm() {
         </div>
 
         <div className="form-actions">
-          <button type="reset" onClick={() => setForm({
-            productName: '',
-            vendorId: '',
-            quantity: '',
-            unitPrice: '',
-            totalPrice: '',
-            deliveryDate: '',
-            note: ''
-          })}>
+          <button 
+            type="reset" 
+            onClick={() => setForm({
+              productName: '',
+              vendorId: '',
+              quantity: '',
+              unitPrice: '',
+              totalPrice: '',
+              deliveryDate: '',
+              note: ''
+            })}
+            disabled={isSubmitting}
+          >
             초기화
           </button>
-          <button type="submit" className="primary-btn">
-            등록하기
+          <button type="submit" className="primary-btn" disabled={isSubmitting}>
+            {isSubmitting ? '등록 중...' : '등록하기'}
           </button>
         </div>
       </form>

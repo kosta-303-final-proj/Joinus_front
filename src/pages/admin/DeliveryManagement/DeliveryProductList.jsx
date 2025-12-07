@@ -1,78 +1,75 @@
-import { useMemo, useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { getApprovedSupplierList, getSupplyProductList } from '../../../services/supplyApi';
 import './DeliveryProductList.css';
 
-const approvedVendors = [
-  { id: 1, name: '해외직구 트레이딩' },
-  { id: 2, name: '생활잡화 마트' },
-  { id: 3, name: '주방용품 전문' }
-];
-
-const deliveryRecords = [
-  {
-    id: 1001,
-    productName: '친환경 텀블러 세트',
-    vendorId: 1,
-    vendorName: '해외직구 트레이딩',
-    category: '생활용품',
-    quantity: 300,
-    unitPrice: 8000,
-    deliveryDate: '2025-02-05',
-    status: '납품 완료',
-    memo: '2월 공구'
-  },
-  {
-    id: 1002,
-    productName: '주방 멀티쿠커',
-    vendorId: 3,
-    vendorName: '주방용품 전문',
-    category: '주방/식기',
-    quantity: 120,
-    unitPrice: 52000,
-    deliveryDate: '2025-02-12',
-    status: '검수 중',
-    memo: '주방 릴레이'
-  },
-  {
-    id: 1003,
-    productName: '휴대용 공기청정기',
-    vendorId: 2,
-    vendorName: '생활잡화 마트',
-    category: '가전/기타',
-    quantity: 200,
-    unitPrice: 35000,
-    deliveryDate: '2025-02-03',
-    status: '입고 예정',
-    memo: '회원 리워드'
-  }
-];
+// 날짜 포맷팅 함수
+const formatDate = (timestamp) => {
+  if (!timestamp) return '';
+  const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
 
 export default function DeliveryProductList() {
   const [vendorId, setVendorId] = useState('전체');
   const [status, setStatus] = useState('전체');
   const [keyword, setKeyword] = useState('');
+  const [records, setRecords] = useState([]);
+  const [vendors, setVendors] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const filteredRecords = useMemo(() => {
-    return deliveryRecords.filter((record) => {
-      const vendorMatch =
-        vendorId === '전체' || record.vendorId === Number(vendorId);
-      const statusMatch =
-        status === '전체' || record.status === status;
-      const keywordMatch =
-        keyword === '' ||
-        record.productName.includes(keyword) ||
-        record.vendorName.includes(keyword);
-      return vendorMatch && statusMatch && keywordMatch;
-    });
+  // 승인된 업체 목록 로드 (드롭다운용)
+  useEffect(() => {
+    const fetchVendors = async () => {
+      try {
+        const data = await getApprovedSupplierList('', '전체', 'name');
+        setVendors(data || []);
+      } catch (err) {
+        console.error('업체 목록 조회 실패:', err);
+      }
+    };
+
+    fetchVendors();
+  }, []);
+
+  // 납품 상품 목록 조회
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const selectedVendorId = vendorId === '전체' ? null : Number(vendorId);
+        const data = await getSupplyProductList(selectedVendorId, status, keyword);
+        setRecords(data || []);
+      } catch (err) {
+        console.error('납품 상품 목록 조회 실패:', err);
+        setError('데이터를 불러올 수 없습니다.');
+        setRecords([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    // 디바운싱: 검색어 입력 후 500ms 후에 API 호출
+    const timer = setTimeout(() => {
+      fetchProducts();
+    }, keyword ? 500 : 0);
+
+    return () => clearTimeout(timer);
   }, [vendorId, status, keyword]);
 
-  const totalQuantity = filteredRecords.reduce(
-    (sum, item) => sum + item.quantity,
-    0
-  );
-  const totalAmount = filteredRecords.reduce(
-    (sum, item) => sum + item.quantity * item.unitPrice,
-    0
-  );
+  // 총 수량/금액 계산
+  const { totalQuantity, totalAmount } = useMemo(() => {
+    const quantity = records.reduce((sum, item) => sum + (item.quantity || 0), 0);
+    const amount = records.reduce(
+      (sum, item) => sum + (item.quantity || 0) * (item.unitPrice || 0),
+      0
+    );
+    return { totalQuantity: quantity, totalAmount: amount };
+  }, [records]);
 
   return (
     <div className="delivery-product-list-page">
@@ -93,9 +90,9 @@ export default function DeliveryProductList() {
             onChange={(e) => setVendorId(e.target.value)}
           >
             <option value="전체">전체</option>
-            {approvedVendors.map((vendor) => (
+            {vendors.map((vendor) => (
               <option value={vendor.id} key={vendor.id}>
-                {vendor.name}
+                {vendor.companyName}
               </option>
             ))}
           </select>
@@ -125,50 +122,56 @@ export default function DeliveryProductList() {
 
       <div className="table-card">
         <div className="table-info">
-          <span>총 {filteredRecords.length}건</span>
+          <span>총 {records.length}건</span>
           <span>총 수량 {totalQuantity.toLocaleString()}개</span>
           <span>총 금액 {totalAmount.toLocaleString()}원</span>
         </div>
-        <table className="delivery-table">
-          <thead>
-            <tr>
-              <th>상품명</th>
-              <th>납품 업체</th>
-              <th>카테고리</th>
-              <th>수량</th>
-              <th>단가</th>
-              <th>납품일</th>
-              <th>상태</th>
-              <th>비고</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredRecords.length === 0 ? (
+        {isLoading ? (
+          <div className="loading">로딩 중...</div>
+        ) : error ? (
+          <div className="error">{error}</div>
+        ) : (
+          <table className="delivery-table">
+            <thead>
               <tr>
-                <td colSpan="8" className="no-data">
-                  조회된 납품 이력이 없습니다.
-                </td>
+                <th>상품명</th>
+                <th>납품 업체</th>
+                <th>카테고리</th>
+                <th>수량</th>
+                <th>단가</th>
+                <th>납품일</th>
+                <th>상태</th>
+                <th>비고</th>
               </tr>
-            ) : (
-              filteredRecords.map((record) => (
-                <tr key={record.id}>
-                  <td>{record.productName}</td>
-                  <td>{record.vendorName}</td>
-                  <td>{record.category}</td>
-                  <td>{record.quantity.toLocaleString()}개</td>
-                  <td>{record.unitPrice.toLocaleString()}원</td>
-                  <td>{record.deliveryDate}</td>
-                  <td>
-                    <span className={`status-chip status-${record.status}`}>
-                      {record.status}
-                    </span>
+            </thead>
+            <tbody>
+              {records.length === 0 ? (
+                <tr>
+                  <td colSpan="8" className="no-data">
+                    조회된 납품 이력이 없습니다.
                   </td>
-                  <td>{record.memo || '-'}</td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                records.map((record) => (
+                  <tr key={record.id}>
+                    <td>{record.productName}</td>
+                    <td>{record.supplierName}</td>
+                    <td>{record.category || '-'}</td>
+                    <td>{(record.quantity || 0).toLocaleString()}개</td>
+                    <td>{(record.unitPrice || 0).toLocaleString()}원</td>
+                    <td>{formatDate(record.deliveryDate)}</td>
+                    <td>
+                      <span className={`status-chip status-${record.status?.replace(/\s/g, '') || ''}`}>
+                        {record.status || '-'}
+                      </span>
+                    </td>
+                    <td>{record.memo || '-'}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );

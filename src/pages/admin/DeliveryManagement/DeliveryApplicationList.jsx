@@ -1,74 +1,41 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getApplicationList } from '../../../services/supplyApi';
 import './DeliveryApplicationList.css';
 
-const mockApplications = [
-  {
-    id: 1,
-    companyName: '친환경용품 상사',
-    businessNumber: '123-45-67890',
-    manager: '김지연',
-    email: 'eco@example.com',
-    phone: '010-1111-2222',
-    category: '생활용품',
-    appliedDate: '2025-01-15',
-    status: '신청',
-    formData: {
-      address: '서울시 강남구',
-      description: '친환경 생활용품 전문 납품 업체입니다.'
-    }
-  },
-  {
-    id: 2,
-    companyName: '해외직구 트레이딩',
-    businessNumber: '234-56-78901',
-    manager: '박서윤',
-    email: 'global@example.com',
-    phone: '010-2222-3333',
-    category: '가전/기타',
-    appliedDate: '2025-01-14',
-    status: '승인',
-    formData: {
-      address: '서울시 서초구',
-      description: '해외 직구 상품 납품 전문'
-    }
-  },
-  {
-    id: 3,
-    companyName: '주방용품 전문',
-    businessNumber: '456-78-90123',
-    manager: '최민수',
-    email: 'kitchen@example.com',
-    phone: '010-4444-5555',
-    category: '주방/식기',
-    appliedDate: '2025-01-13',
-    status: '반려',
-    rejectionReason: '필수 서류 미비',
-    formData: {
-      address: '서울시 마포구',
-      description: '주방용품 전문 납품'
-    }
-  }
-];
-
 const FILTERS = ['전체', '신청', '승인', '반려'];
+
+// 날짜 포맷팅 함수
+const formatDate = (timestamp) => {
+  if (!timestamp) return '';
+  const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
 
 export default function DeliveryApplicationList() {
   const navigate = useNavigate();
   const [applications, setApplications] = useState([]);
   const [filter, setFilter] = useState('전체');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const load = async () => {
       setIsLoading(true);
-      await new Promise((r) => setTimeout(r, 200)); // 모킹
-      const filtered =
-        filter === '전체'
-          ? mockApplications
-          : mockApplications.filter((item) => item.status === filter);
-      setApplications(filtered);
-      setIsLoading(false);
+      setError(null);
+      try {
+        const data = await getApplicationList(filter);
+        setApplications(data || []);
+      } catch (err) {
+        console.error('신청 목록 조회 실패:', err);
+        setError('데이터를 불러올 수 없습니다.');
+        setApplications([]);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     load();
@@ -78,17 +45,16 @@ export default function DeliveryApplicationList() {
     navigate(`/admin/suppliy/application/${id}`);
   };
 
-  const summary = useMemo(
-    () =>
-      FILTERS.reduce((acc, key) => {
-        if (key === '전체') return acc;
-        acc[key] = mockApplications.filter(
-          (app) => app.status === key
-        ).length;
-        return acc;
-      }, {}),
-    []
-  );
+  // 상태별 통계 계산
+  const summary = useMemo(() => {
+    const stats = { 신청: 0, 승인: 0, 반려: 0 };
+    applications.forEach((app) => {
+      if (stats.hasOwnProperty(app.status)) {
+        stats[app.status]++;
+      }
+    });
+    return stats;
+  }, [applications]);
 
   return (
     <div className="delivery-application-list-page">
@@ -125,6 +91,8 @@ export default function DeliveryApplicationList() {
       <div className="list-section">
         {isLoading ? (
           <div className="loading">로딩 중...</div>
+        ) : error ? (
+          <div className="error">{error}</div>
         ) : (
           <div className="table-container">
             <table className="application-table">
@@ -159,12 +127,12 @@ export default function DeliveryApplicationList() {
                           {item.companyName}
                         </button>
                       </td>
-                      <td>{item.businessNumber}</td>
+                      <td>{item.businessNumber || '-'}</td>
                       <td>{item.manager}</td>
-                      <td>{item.email}</td>
+                      <td>{item.email || '-'}</td>
                       <td>{item.phone}</td>
-                      <td>{item.category}</td>
-                      <td>{item.appliedDate}</td>
+                      <td>{item.category || '-'}</td>
+                      <td>{formatDate(item.appliedDate)}</td>
                       <td>
                         <span
                           className={`status-badge ${
