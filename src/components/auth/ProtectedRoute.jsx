@@ -12,6 +12,10 @@ export default function ProtectedRoute({ children, requiredRoles = null }) {
   
   // 로그인 안 되어 있으면 로그인 페이지로 리다이렉트
   if (!accessToken) {
+    // 관리자 권한이 필요한 경우 관리자 로그인 페이지로 리다이렉트
+    if (requiredRoles && (requiredRoles.includes('ROLE_ADMIN') || requiredRoles.includes('ROLE_MANAGER'))) {
+      return <Navigate to="/admin/login" replace />;
+    }
     return <Navigate to="/login" replace />;
   }
 

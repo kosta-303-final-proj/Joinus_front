@@ -6,6 +6,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import MainPage from './pages/consumer/MainPage';
 import SearchResult from './pages/consumer/SearchResult';
 import Login from './pages/auth/Login';
+import AdminLogin from './pages/admin/AdminLogin';
 import SignUp from './pages/auth/SignUp';
 import FindId from './pages/auth/FindId';
 import FindPassword from './pages/auth/FindPassword';
@@ -115,6 +116,7 @@ function AppContent() {
 
             {/* 인증 페이지 */}
             <Route path="/login" element={<Login />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/findId" element={<FindId />} />
             <Route path="/findPw" element={<FindPassword />} />
