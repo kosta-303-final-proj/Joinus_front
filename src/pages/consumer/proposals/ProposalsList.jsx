@@ -29,13 +29,13 @@ export default function ProposalsList() {
       .then((res) => {
         const transformed = res.data.map((p) => ({
           id: p.id,
-          title: p.productName,
+          productName: p.productName,
           category: p.category,
           description: p.description,
-          price: p.originalPrice
+          originalPrice: p.originalPrice
             ? `${p.originalPrice.toLocaleString()}원`
             : "0원",
-          author: p.memberName || p.memberUsername,
+          memberUsername: p.memberName || p.memberUsername,
           date: p.createdAt ? p.createdAt.substring(0, 10) : "",
           votes: p.voteCount || 0,
           image: p.imageUrl
@@ -170,7 +170,7 @@ export default function ProposalsList() {
                     <div style={{display:'grid', gap:"20px", gridTemplateColumns: "repeat(4, 1fr)"}}>
                         {proposals.map((p) => (
                         <Card key={p.id} style={{width: '240px', boxShadow: "0 5px 20px rgba(88 88 88 / 20%)", border:'none' }} onClick={() => navigate(`/proposalsList/proposalDetail/${p.id}`)}>
-                            <img src={`${baseUrl}/imageView?filename=${p.imageUrl}`}/>
+                            <img src={p.image}/>
                             <CardBody >
                                 <CardTitle tag="h5" style={{display:'flex', justifyContent:'space-between'}}>
                                     <div style={{border:'1px solid black', fontSize:'10px', padding:"5px"}}>{p.category}</div>
@@ -180,10 +180,21 @@ export default function ProposalsList() {
                                     <div style={{fontSize:'14px'}}>{p.productName}</div>
                                 </CardSubtitle>
                                 <CardSubtitle>
-                                    <div style={{fontSize:'12px'}}>{p.description}
+                                    <div
+                                      style={{
+                                        fontSize: '12px',
+                                        display: '-webkit-box',
+                                        WebkitLineClamp: 3,      // 최대 3줄
+                                        WebkitBoxOrient: 'vertical',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        lineHeight: '1.4em',     // 줄 높이 조정
+                                        maxHeight: '4.2em',      // lineHeight * 3
+                                      }}
+                                    >{p.description}
                                     </div>
                                 </CardSubtitle>
-                                    <div className="fw-bold" style={{fontSize:'24px'}}>{p.originalPrice}원</div>
+                                    <div className="fw-bold" style={{fontSize:'24px'}}>{p.originalPrice}</div>
                                 {/* <CardSubtitle>
                                     <div style={{display:'flex', justifyItems:'center'}}>
                                     <img src="/CountingStars.png" style={{width:'12px',height:'12px', marginRight:'5px'}}/>

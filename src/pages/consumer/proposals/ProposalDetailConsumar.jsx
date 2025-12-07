@@ -5,7 +5,7 @@ import { baseUrl, myAxios } from "../../../config";
 
 export default function ProposalDetailConsumar() {
     const {id} = useParams();
-    const [proposal, setPropsal] = useState({id:id,category:'',description:'',productName:'',memberName:'',originalPrice:'',createAt:'',originalSiteUrl:'',abroadShippingCost:'',imageUrl:'' });
+    const [proposal, setPropsal] = useState({id:id,category:'',description:'',productName:'',memberName:'',originalPrice:'',createdAt:'',originalSiteUrl:'',abroadShippingCost:'',imageUrl:'' });
     const total = 15;
     const joined = 10;
     const percentage = (joined/total) * 100;
@@ -35,10 +35,6 @@ export default function ProposalDetailConsumar() {
                     <img src="/left.png" style={{width:'30px'}}/><h3 className="mb-0 fw-bold text-start">목록으로</h3>
                   </Link>
                 </div>
-
-                <div>
-                  
-                </div>
               </div>
             </div>
 
@@ -46,7 +42,7 @@ export default function ProposalDetailConsumar() {
               <div style={styles.container}>
                 <div style={{ display: "flex",alignContent:'space-between' , marginBottom: "20px" ,gap:'20px'}}>
                     <div>
-                        <img src={`${baseUrl}/imageView?filename=${proposal.imageUrl}`} style={{width:'500px', height:"500px", marginBottom:'30px', borderRadius:'10px'}}/>
+                        <img src={`${baseUrl}/imageView?filename=${proposal.imageUrl}`}  style={{width:'500px', height:"500px", marginBottom:'30px', borderRadius:'10px'}}/>
                     </div>
                     <div style={{width:"500px",  border:'1px solid black', padding:'20px', borderRadius:'10px'}}>
                         <div style={{ display:'flex', justifyContent: 'space-between', marginBottom:'10px'}}>
@@ -58,7 +54,7 @@ export default function ProposalDetailConsumar() {
                         </div>
                         <div style={{display:'flex'}}>
                             <Label style={{fontSize:"12px", marginRight:'10px'}}>작성자 : {proposal.memberName}</Label>
-                            <Label style={{fontSize:"12px"}}>{proposal.createAt}</Label>
+                            <Label style={{fontSize:"12px"}}>{proposal.createdAt}</Label>
                         </div>
                         <div>
                             <Label style={{fontSize:"24px"}}>{proposal.originalPrice + proposal.abroadShippingCost}원</Label>
@@ -104,15 +100,17 @@ export default function ProposalDetailConsumar() {
               <div style={styles.container}>
                 <div style={{ display: "flex", gap: "45px", flexWrap: "wrap" }}>
                   {proposal.subImageUrls &&
+                    Array.isArray(proposal.subImageUrls) &&
                     proposal.subImageUrls
-                      .filter(img => img !== proposal.imageUrl) // 대표 이미지는 제외
+                      .filter(img => img && img !== proposal.imageUrl) // 대표 이미지 제외
                       .map((img, idx) => (
-                    <img
-                      key={idx}
-                      src={`${baseUrl}/imageView?filename=${img}`}
-                      style={{ width: "220px" }}
-                    />
-                  ))}
+                        <img
+                          key={idx}
+                          src={`${baseUrl}/imageView?filename=${img}`}
+                          style={{ width: "220px" }}
+                        />
+                      ))
+                  }
                 </div>
               </div>
             </div>
