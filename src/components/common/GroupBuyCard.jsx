@@ -59,7 +59,15 @@ export default function GroupBuyCard({
       onClick={handleClick}
     >
       {image && image !== '이미지' ? (
-        <img alt={title || '상품'} src={image} style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
+        <img 
+          alt={title || '상품'} 
+          src={image} 
+          style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = 'https://picsum.photos/300/200';
+          }}
+        />
       ) : (
         <div style={{ width: '100%', height: '200px', backgroundColor: '#e0e0e0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <span style={{ color: '#999' }}>이미지</span>

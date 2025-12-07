@@ -337,6 +337,7 @@ function AppContent() {
             {/* 제안 */}
             <Route path="/proposalsList" element={<ProposalsList />} />
             <Route path="/proposalsList/proposalWrite" element={<ProposalWrite />} />
+            <Route path='/proposalDetail/:id' element={<ProposalDetailConsumar />} />
             <Route path='/proposalsList/proposalDetail/:id' element={<ProposalDetailConsumar />} />
             <Route path="/proposalsList/proposalModify/:id" element={<ProposalModify />} />
 
