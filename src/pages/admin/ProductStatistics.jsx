@@ -1,95 +1,72 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { apiFetch } from '../../config';
 import './ProductStatistics.css';
 
 export default function ProductStatistics() {
-  const [startDate, setStartDate] = useState('2025-11-01');
-  const [endDate, setEndDate] = useState('2025-11-13');
+  // 초기 날짜 설정 (최근 30일)
+  const getInitialDates = () => {
+    const today = new Date();
+    const end = new Date(today);
+    const start = new Date(today);
+    start.setDate(today.getDate() - 30);
+    return {
+      start: start.toISOString().split('T')[0],
+      end: end.toISOString().split('T')[0]
+    };
+  };
+
+  const initialDates = getInitialDates();
+  const [startDate, setStartDate] = useState(initialDates.start);
+  const [endDate, setEndDate] = useState(initialDates.end);
   const [category, setCategory] = useState('전체');
   const [vendor, setVendor] = useState('전체');
   const [searchKeyword, setSearchKeyword] = useState('');
   const [sortBy, setSortBy] = useState('매출 높은 순');
 
-  // 매출별 Top 상품
-  const revenueTopProducts = [
-    { name: '에코 아이스박스 세트', revenue: 128500000 },
-    { name: '콜드브루 대용량팩', revenue: 75210000 },
-    { name: '슬립케어 매트', revenue: 62440000 },
-    { name: '프리미엄 홈트 세트', revenue: 58300000 },
-    { name: '멀티 주방 수납장', revenue: 41560000 }
-  ];
+  // API 데이터 상태
+  const [productStatisticsData, setProductStatisticsData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // 건수별 Top 상품
-  const countTopProducts = [
-    { name: '데일리 텀블러 4종', count: 4820 },
-    { name: '슬립케어 매트', count: 3970 },
-    { name: '콜드브루 대용량팩', count: 3420 },
-    { name: '멀티 주방 수납장', count: 2640 },
-    { name: '에코 아이스박스 세트', count: 2140 }
-  ];
-
-  // 수수료별 Top 상품
-  const commissionTopProducts = [
-    { name: '프리미엄 홈트 세트', commission: 18920000 },
-    { name: '에코 아이스박스 세트', commission: 12850000 },
-    { name: '콜드브루 대용량팩', commission: 9020000 },
-    { name: '슬립케어 매트', commission: 6240000 },
-    { name: '멀티 주방 수납장', commission: 4980000 }
-  ];
-
-  // 상품 목록 데이터
-  const products = [
-    {
-      code: 'PRD-2025-001',
-      name: '에코 아이스박스 세트',
-      category: '생활용품',
-      vendor: '에코포장연구소',
-      revenue: 128500000,
-      count: 2140,
-      commission: 12850000
-    },
-    {
-      code: 'PRD-2025-002',
-      name: '콜드브루 대용량팩',
-      category: '식품',
-      vendor: '콜드브루팩토리',
-      revenue: 75210000,
-      count: 3420,
-      commission: 9020000
-    },
-    {
-      code: 'PRD-2025-003',
-      name: '슬립케어 매트',
-      category: '생활용품',
-      vendor: '슬립케어랩',
-      revenue: 62440000,
-      count: 3970,
-      commission: 6240000
-    },
-    {
-      code: 'PRD-2025-004',
-      name: '프리미엄 홈트 세트',
-      category: '디지털/가전',
-      vendor: '핏스토리',
-      revenue: 58300000,
-      count: 1920,
-      commission: 9860000
-    },
-    {
-      code: 'PRD-2025-005',
-      name: '멀티 주방 수납장',
-      category: '주방/식기',
-      vendor: '키친웨어컴퍼니',
-      revenue: 41560000,
-      count: 2640,
-      commission: 4980000
+  // API 호출 함수
+  const fetchProductStatistics = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const params = new URLSearchParams({
+        startDate,
+        endDate,
+        category: category === '전체' ? '' : category,
+        vendor: vendor === '전체' ? '' : vendor,
+        keyword: searchKeyword,
+        sortBy
+      });
+      const response = await apiFetch(`/api/admin/statistics/product?${params}`);
+      if (!response.ok) {
+        throw new Error('상품별 통계 데이터 조회 실패');
+      }
+      const data = await response.json();
+      setProductStatisticsData(data);
+    } catch (err) {
+      console.error('상품별 통계 데이터 조회 실패:', err);
+      setError('데이터를 불러올 수 없습니다.');
+    } finally {
+      setIsLoading(false);
     }
-  ];
-
-  const formatCurrency = (amount) => {
-    return `₩${amount.toLocaleString()}`;
   };
 
-  const handleQuickDate = (type) => {
+  // 초기 로드
+  useEffect(() => {
+    fetchProductStatistics();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 조회 버튼 클릭 핸들러
+  const handleSearch = () => {
+    fetchProductStatistics();
+  };
+
+  // 빠른 날짜 선택 핸들러
+  const handleQuickDate = async (type) => {
     const today = new Date();
     const end = new Date(today);
     let start = new Date(today);
@@ -108,9 +85,65 @@ export default function ProductStatistics() {
         return;
     }
 
-    setStartDate(start.toISOString().split('T')[0]);
-    setEndDate(end.toISOString().split('T')[0]);
+    const newStartDate = start.toISOString().split('T')[0];
+    const newEndDate = end.toISOString().split('T')[0];
+    
+    setStartDate(newStartDate);
+    setEndDate(newEndDate);
+    
+    // 날짜 변경 후 API 호출
+    setIsLoading(true);
+    setError(null);
+    try {
+      const params = new URLSearchParams({
+        startDate: newStartDate,
+        endDate: newEndDate,
+        category: category === '전체' ? '' : category,
+        vendor: vendor === '전체' ? '' : vendor,
+        keyword: searchKeyword,
+        sortBy
+      });
+      const response = await apiFetch(`/api/admin/statistics/product?${params}`);
+      if (!response.ok) {
+        throw new Error('상품별 통계 데이터 조회 실패');
+      }
+      const data = await response.json();
+      setProductStatisticsData(data);
+    } catch (err) {
+      console.error('상품별 통계 데이터 조회 실패:', err);
+      setError('데이터를 불러올 수 없습니다.');
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  // 데이터 추출 (null 체크 포함)
+  const revenueTopProducts = productStatisticsData?.revenueTopProducts || [];
+  const countTopProducts = productStatisticsData?.countTopProducts || [];
+  const commissionTopProducts = productStatisticsData?.commissionTopProducts || [];
+  const products = productStatisticsData?.products || [];
+
+  const formatCurrency = (amount) => {
+    return `₩${amount.toLocaleString()}`;
+  };
+
+  // 로딩 상태
+  if (isLoading && !productStatisticsData) {
+    return (
+      <div className="product-statistics-page">
+        <div className="loading" style={{ padding: '2rem', textAlign: 'center' }}>로딩 중...</div>
+      </div>
+    );
+  }
+
+  // 에러 상태
+  if (error && !productStatisticsData) {
+    return (
+      <div className="product-statistics-page">
+        <div className="error" style={{ padding: '2rem', textAlign: 'center', color: 'red' }}>{error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="product-statistics-page">
@@ -123,7 +156,7 @@ export default function ProductStatistics() {
           </p>
         </div>
         <div className="header-date">
-          기준일: 2025-11-13
+          기준일: {new Date().toISOString().slice(0, 10)}
         </div>
       </div>
 
@@ -155,23 +188,30 @@ export default function ProductStatistics() {
             <button
               className="quick-date-btn"
               onClick={() => handleQuickDate('7days')}
+              disabled={isLoading}
             >
               최근 7일
             </button>
             <button
               className="quick-date-btn"
               onClick={() => handleQuickDate('30days')}
+              disabled={isLoading}
             >
               최근 30일
             </button>
             <button
               className="quick-date-btn"
               onClick={() => handleQuickDate('month')}
+              disabled={isLoading}
             >
               이번 달
             </button>
-            <button className="quick-date-btn">
-              직접 설정
+            <button 
+              className="quick-date-btn"
+              onClick={handleSearch}
+              disabled={isLoading}
+            >
+              {isLoading ? '조회 중...' : '조회'}
             </button>
           </div>
         </div>
@@ -182,36 +222,48 @@ export default function ProductStatistics() {
         <div className="top-product-card">
           <h3 className="top-product-title">매출별 Top 상품</h3>
           <div className="top-product-list">
-            {revenueTopProducts.map((product, index) => (
-              <div key={index} className="top-product-item">
-                <div className="product-name">{product.name}</div>
-                <div className="product-value">매출 {formatCurrency(product.revenue)}</div>
-              </div>
-            ))}
+            {revenueTopProducts.length > 0 ? (
+              revenueTopProducts.map((product, index) => (
+                <div key={index} className="top-product-item">
+                  <div className="product-name">{product.name || '-'}</div>
+                  <div className="product-value">매출 {formatCurrency(product.revenue || 0)}</div>
+                </div>
+              ))
+            ) : (
+              <div className="no-data">데이터가 없습니다.</div>
+            )}
           </div>
         </div>
 
         <div className="top-product-card">
           <h3 className="top-product-title">건수별 매출 Top 상품</h3>
           <div className="top-product-list">
-            {countTopProducts.map((product, index) => (
-              <div key={index} className="top-product-item">
-                <div className="product-name">{product.name}</div>
-                <div className="product-value">결제건수 {product.count.toLocaleString()}건</div>
-              </div>
-            ))}
+            {countTopProducts.length > 0 ? (
+              countTopProducts.map((product, index) => (
+                <div key={index} className="top-product-item">
+                  <div className="product-name">{product.name || '-'}</div>
+                  <div className="product-value">결제건수 {(product.count || 0).toLocaleString()}건</div>
+                </div>
+              ))
+            ) : (
+              <div className="no-data">데이터가 없습니다.</div>
+            )}
           </div>
         </div>
 
         <div className="top-product-card">
           <h3 className="top-product-title">수수료별 매출 Top 상품</h3>
           <div className="top-product-list">
-            {commissionTopProducts.map((product, index) => (
-              <div key={index} className="top-product-item">
-                <div className="product-name">{product.name}</div>
-                <div className="product-value">수수료 {formatCurrency(product.commission)}</div>
-              </div>
-            ))}
+            {commissionTopProducts.length > 0 ? (
+              commissionTopProducts.map((product, index) => (
+                <div key={index} className="top-product-item">
+                  <div className="product-name">{product.name || '-'}</div>
+                  <div className="product-value">수수료 {formatCurrency(product.commission || 0)}</div>
+                </div>
+              ))
+            ) : (
+              <div className="no-data">데이터가 없습니다.</div>
+            )}
           </div>
         </div>
       </div>
@@ -277,7 +329,9 @@ export default function ProductStatistics() {
               <option value="건수 낮은 순">건수 낮은 순</option>
             </select>
           </div>
-          <button className="search-button">조회</button>
+          <button className="search-button" onClick={handleSearch} disabled={isLoading}>
+            {isLoading ? '조회 중...' : '조회'}
+          </button>
         </div>
       </div>
 
@@ -297,17 +351,23 @@ export default function ProductStatistics() {
               </tr>
             </thead>
             <tbody>
-              {products.map((product, index) => (
-                <tr key={index}>
-                  <td>{product.code}</td>
-                  <td>{product.name}</td>
-                  <td>{product.category}</td>
-                  <td>{product.vendor}</td>
-                  <td className="number-cell">{formatCurrency(product.revenue)}</td>
-                  <td className="number-cell">{product.count.toLocaleString()}건</td>
-                  <td className="number-cell">{formatCurrency(product.commission)}</td>
+              {products.length === 0 ? (
+                <tr>
+                  <td colSpan="7" className="no-data">데이터가 없습니다.</td>
                 </tr>
-              ))}
+              ) : (
+                products.map((product, index) => (
+                  <tr key={index}>
+                    <td>{product.code || '-'}</td>
+                    <td>{product.name || '-'}</td>
+                    <td>{product.category || '-'}</td>
+                    <td>{product.vendor || '-'}</td>
+                    <td className="number-cell">{formatCurrency(product.revenue || 0)}</td>
+                    <td className="number-cell">{(product.count || 0).toLocaleString()}건</td>
+                    <td className="number-cell">{formatCurrency(product.commission || 0)}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
