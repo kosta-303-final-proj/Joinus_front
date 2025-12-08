@@ -1,30 +1,64 @@
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { getDeliveryDetail } from '../../services/supplyApi';
 import './DeliveryDetail.css';
+
+// 날짜 포맷팅 함수
+const formatDate = (timestamp) => {
+  if (!timestamp) return '';
+  const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
 
 export default function DeliveryDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [deliveryData, setDeliveryData] = useState({
+    companyName: '',
+    businessNumber: '',
+    managerName: '',
+    managerPhone: '',
+    managerEmail: '',
+    category: '',
+    productName: '',
+    productDescription: '',
+    supplyPrice: '',
+    minQuantity: '',
+    deliveryPeriod: '',
+    currentStock: '',
+    proposalLink: '',
+    additionalNotes: '',
+    appliedDate: '',
+    status: ''
+  });
 
-  // 더미 데이터 (실제로는 API에서 ID로 가져옴)
-  const deliveryData = {
-    id: id,
-    companyName: '친환경용품 상사',
-    businessNumber: '123-45-67890',
-    managerName: '김지연 과장',
-    managerPhone: '010-1111-2222',
-    managerEmail: 'eco@example.com',
-    category: '생활용품',
-    productName: '친환경 텀블러 500ml 세트',
-    productDescription: '친환경 소재로 제작된 텀블러 세트입니다. BPA 프리 소재로 건강에 안전하며, 보온/보냉 기능이 뛰어납니다. 20-30대 직장인 및 학생층을 타겟으로 하며, 온라인 쇼핑몰에서 월 평균 500개 판매 실적을 보유하고 있습니다.',
-    supplyPrice: '8,000원',
-    minQuantity: '100개',
-    deliveryPeriod: '주문 확정 후 7일 이내 출고 가능',
-    currentStock: '현재 창고 재고 300개 보유',
-    proposalLink: 'https://example.com/proposal-detail',
-    additionalNotes: '희망 판매 방식: 공동구매 진행 시 최소 100개 단위로 주문 가능. 가격 조건: 100개 이상 주문 시 단가 8,000원, 200개 이상 주문 시 단가 7,500원. 공동구매 진행 희망 일정: 2025년 12월 중순 이후 가능.',
-    receivedDate: '2025-10-15',
-    status: '승인 대기'
-  };
+  useEffect(() => {
+    const fetchDeliveryDetail = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const data = await getDeliveryDetail(id);
+        setDeliveryData({
+          ...data,
+          appliedDate: formatDate(data.appliedDate)
+        });
+      } catch (err) {
+        console.error('납품 상세 조회 실패:', err);
+        setError('데이터를 불러올 수 없습니다.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchDeliveryDetail();
+    }
+  }, [id]);
 
   const handleBack = () => {
     navigate('/admin/deliveryManagement');
@@ -45,6 +79,29 @@ export default function DeliveryDetail() {
       navigate('/admin/deliveryManagement');
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="delivery-detail-page">
+        <div className="delivery-detail-container">
+          <div className="loading">로딩 중...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="delivery-detail-page">
+        <div className="delivery-detail-container">
+          <div className="error">{error}</div>
+          <button className="back-button" onClick={handleBack}>
+            &lt; 목록으로
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="delivery-detail-page">
@@ -92,13 +149,13 @@ export default function DeliveryDetail() {
             </div>
             <div className="info-item">
               <label className="info-label">접수일</label>
-              <div className="info-value">{deliveryData.receivedDate}</div>
+              <div className="info-value">{deliveryData.appliedDate || '-'}</div>
             </div>
             <div className="info-item">
               <label className="info-label">상태</label>
               <div className="info-value">
-                <span className={`status-badge status-${deliveryData.status === '승인 대기' ? 'pending' : deliveryData.status === '보류' ? 'hold' : 'approved'}`}>
-                  {deliveryData.status}
+                <span className={`status-badge status-${deliveryData.status === '신청' ? 'pending' : deliveryData.status === '반려' ? 'hold' : 'approved'}`}>
+                  {deliveryData.status || '-'}
                 </span>
               </div>
             </div>
@@ -127,11 +184,11 @@ export default function DeliveryDetail() {
             </div>
             <div className="info-item">
               <label className="info-label">예상 납기</label>
-              <div className="info-value">{deliveryData.deliveryPeriod}</div>
+              <div className="info-value">{deliveryData.deliveryPeriod || '-'}</div>
             </div>
             <div className="info-item">
               <label className="info-label">현재 보유 재고</label>
-              <div className="info-value">{deliveryData.currentStock}</div>
+              <div className="info-value">{deliveryData.currentStock || '-'}</div>
             </div>
             <div className="info-item full-width">
               <label className="info-label">제안 상세 페이지 링크</label>
@@ -154,7 +211,7 @@ export default function DeliveryDetail() {
 
         {/* 액션 버튼 */}
         <div className="detail-actions">
-          {deliveryData.status === '승인 대기' && (
+          {deliveryData.status === '신청' && (
             <>
               <button className="btn-hold" onClick={handleHold}>
                 보류
@@ -164,7 +221,7 @@ export default function DeliveryDetail() {
               </button>
             </>
           )}
-          {deliveryData.status === '보류' && (
+          {deliveryData.status === '반려' && (
             <button className="btn-approve" onClick={handleApprove}>
               승인
             </button>
