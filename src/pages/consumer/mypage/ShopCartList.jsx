@@ -1,8 +1,10 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Label, FormGroup, Input, Button, Pagination, PaginationItem, PaginationLink } from "reactstrap";
 import '../../../css/mypage/ShopCartList.css';
+import { useState } from "react";
 
 export default function ShopCartList() {
+  const [cartList, setCartList] = useState([]);
   return (
     <div className="container">
       <div className="fw-bold d-block" style={{ fontSize: "20px", margin: "20px auto" }}>장바구니</div>
@@ -14,24 +16,24 @@ export default function ShopCartList() {
         <Label className="headerLabel" style={{ margin: "0 40px 0 0" }}>가격</Label>
         <Label className="headerLabel" style={{ margin: "0 45px 0 0" }}>수량</Label>
         <Label className="headerLabel" style={{ margin: "0 30px 0 0" }}>구매가</Label>
-        <Label className="headerLabel" style={{ margin: "0 45px 0 0" }}>배송비</Label>
         <Label className="headerLabel" style={{ margin: "0 35px 0 0" }}>선택</Label>
       </FormGroup>
       <hr style={{ margin: "0 auto 5px auto" }} />
       {/* 상품 리스트 */}
       <div className="productList">
-          <FormGroup  check className="productItem">
-            <img src="/note.png" alt="상품 이미지" className="productImg" />
-            <div className="productName">ASUS 비보북 S 16 M3607KA-SH035W (SSD 512GB)</div>
-            <div className="productPrice">1,090,000원</div>
-            <div className="productQuantity">1</div>
-            <div className="productTotal">1,090,000원</div>
-            <div className="productShipping">3,000원</div>
+        {cartList.map(item=>(
+          <FormGroup  check className="productItem" key={item.cartId}>
+            <img src={item.thumbnailPath} alt="상품 이미지" className="productImg" />
+            <div className="productName">{item.productName}</div>
+            <div className="productPrice">{item.price}원</div>
+            <div className="productQuantity">{item.quantity}</div>
+            <div className="productTotal">{item.price * item.quantity}원</div>
             <div className="buttonGroup">
               <Button size="sm" className="buttonPrimary" style={{width:"70px"}}>결제</Button>
               <Button size="sm" className="buttonSecondary">삭제</Button>
             </div>
           </FormGroup>
+          ))}
       </div>
       <hr style={{ margin: "5px auto" }} />
 
