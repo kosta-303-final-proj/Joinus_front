@@ -38,6 +38,24 @@ export const getApplicationDetail = async (id) => {
 };
 
 /**
+ * 납품 상세 조회
+ * @param {number} id - 납품 ID
+ * @returns {Promise<Object>} 납품 상세 정보
+ */
+export const getDeliveryDetail = async (id) => {
+  try {
+    const response = await apiFetch(`/api/admin/delivery/detail/${id}`);
+    if (!response.ok) {
+      throw new Error('납품 상세 조회 실패');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('납품 상세 조회 실패:', error);
+    throw error;
+  }
+};
+
+/**
  * 납품 신청 승인
  * @param {number} id - 신청 ID
  * @returns {Promise<boolean>} 성공 여부
