@@ -1,15 +1,15 @@
 import { Card, CardHeader, CardBody, CardTitle, CardText } from "reactstrap";
 import '../../../css/mypage/UserInfo.css'
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import { myAxios } from "../../../config";
 
 export default function UserInfo() {
-  const [username] = useParams('1');
+  const username = "kakao_4436272679";
   const [member, setMember] = useState({username:username, grade:'', pointBalance:'', name:''});
 
   const getUserInfo = ()=>{
-    myAxios().get(`/consumerInfo=${username}`)
+    
+    myAxios().get(`/consumerInfo?username=${username}`)
     .then(res=>{
       console.log(res)
       setMember(res.data)
@@ -36,7 +36,7 @@ export default function UserInfo() {
           <div style={{ flex: 1 }}>
             
             {/* 아이디 */}
-            <CardTitle tag="h5" style={{ fontSize:"12px", marginBottom:"8px" }}>
+            <CardTitle tag="h5" style={{ fontSize:"12px", marginBottom:"8px",border:'none' }}>
               아이디 : {member.username}
             </CardTitle>
 
@@ -50,7 +50,7 @@ export default function UserInfo() {
           {/* 오른쪽 영역 : 보유 포인트 */}
           <div style={{ textAlign: "right", minWidth: "150px" }}>
             <div style={{ fontSize:"12px" }}>
-              보유 포인트 : {member.pointBalance}+P
+              보유 포인트 : {member.pointBalance}P
             </div>
           </div>
         </CardBody>

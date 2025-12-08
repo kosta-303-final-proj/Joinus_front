@@ -117,6 +117,8 @@ const filteredProposals = proposals.filter((p) => {
     };
   }, [loading, hasMore]);
 
+  
+
   return (
     <>
       {/* 제목 영역 (1020px 고정) */}
@@ -132,26 +134,9 @@ const filteredProposals = proposals.filter((p) => {
           >
             <h3 className="mb-0 fw-bold text-start">제안 목록</h3>
 
-            <Link
-              className="fw-bold d-flex align-items-center"
-              style={{
-                textDecoration: "none",
-                color: "black",
-                cursor: "pointer",
-              }}
-              to="proposalWrite"
-            >
+            <Link className="fw-bold d-flex align-items-center"style={{textDecoration: "none", color: "black",cursor: "pointer",}}to="proposalWrite">
               제안하기
-              <img
-                src="/right.png"
-                alt="뒤로가기"
-                className="back"
-                style={{
-                  width: "20px",
-                  height: "20px",
-                  marginLeft: "5px",
-                }}
-              />
+              <img  src="/right.png"alt="뒤로가기"className="back"style={{ width: "20px", height: "20px",marginLeft: "5px",}}/>
             </Link>
           </div>
         </div>
@@ -163,14 +148,6 @@ const filteredProposals = proposals.filter((p) => {
           {/* 카테고리 줄 */}
           <div style={{ display: "flex", alignItems: "center", marginBottom: "15px" }}>
             <div style={{ width: "120px", fontWeight: "bold" }}>카테고리</div>
-            {/* <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-              <span style={styles.tag}>뷰티</span>
-              <span style={styles.tag}>패션</span>
-              <span style={styles.tag}>전자기기</span>
-              <span style={styles.tag}>홈&리빙</span>
-              <span style={styles.tag}>식품</span>
-              <span style={styles.tag}>스포츠</span>
-            </div> */}
             <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
               {allCategories.slice(1).map((category) => (
                 <span
@@ -202,50 +179,19 @@ const filteredProposals = proposals.filter((p) => {
                 <div style={styles.container} >
                     <div style={{display:'grid', gap:"20px", gridTemplateColumns: "repeat(4, 1fr)"}}>
                         {filteredProposals.map((p) => (
-                        <Card
-                          key={p.id}
-                          style={{
-                            width: "240px",
-                            boxShadow: "0 5px 20px rgba(88 88 88 / 20%)",
-                            border: "none",
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "space-between",
-                            height: "415px", // 카드 전체 높이 고정
-                          }}
+                        <Card key={p.id} style={{width: "240px", boxShadow: "0 5px 20px rgba(88 88 88 / 20%)",border: "none",display: "flex",flexDirection: "column",
+                            justifyContent: "space-between",height: "415px",}}
                           onClick={() => navigate(`/proposalsList/proposalDetail/${p.id}`)}
                         >
                           {/* 이미지 영역 */}
-                          <div
-                            style={{
-                              height: "180px", // 이미지 영역 고정
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              backgroundColor: "#f5f5f5",
-                            }}
-                          >
-                            <img
-                              src={p.image}
-                              style={{
-                                maxWidth: "100%",
-                                maxHeight: "100%",
-                                objectFit: "contain", // 절대 잘리지 않음
-                              }}
-                            />
+                          <div style={{ height: "180px",  display: "flex",justifyContent: "center",alignItems: "center", backgroundColor: "#f5f5f5", }}>
+                            <img src={p.image}style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", }} />
                           </div>
 
                           {/* 카드 본문 영역 */}
                           <CardBody style={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
                             {/* 제목 & 카테고리 */}
-                            <CardTitle
-                              tag="h5"
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                marginBottom: "5px",
-                              }}
-                            >
+                            <CardTitle tag="h5" style={{ display: "flex",justifyContent: "space-between", marginBottom: "5px", }}>
                               <div style={{ border: "1px solid black", fontSize: "10px", padding: "5px" }}>
                                 {p.category}
                               </div>
@@ -258,19 +204,8 @@ const filteredProposals = proposals.filter((p) => {
 
                             {/* 설명 */}
                             <CardSubtitle style={{  }}>
-                              <div
-                                style={{
-                                  fontSize: "12px",
-                                  display: "-webkit-box",
-                                  WebkitLineClamp: 2, // 최대 3줄
-                                  WebkitBoxOrient: "vertical",
-                                  overflow: "hidden",
-                                  textOverflow: "ellipsis",
-                                  lineHeight: "1.4em",
-                                  maxHeight: "4.2em",
-                                  marginTop: "4px"
-                                }}
-                              >
+                              <div style={{ fontSize: "12px",display: "-webkit-box",WebkitLineClamp: 2,WebkitBoxOrient: "vertical",overflow: "hidden",
+                                  textOverflow: "ellipsis",lineHeight: "1.4em",maxHeight: "4.2em",marginTop: "4px"}}>
                                 {p.description}
                               </div>
                             </CardSubtitle>
@@ -291,7 +226,10 @@ const filteredProposals = proposals.filter((p) => {
                             {/* 투표 */}
                             <CardSubtitle>
                               <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                                <img src="/ddabong.png" style={{ width: "20px" }} />
+                                <img 
+                                    src={p.isDdabong ? "/colorddabong.png" : "/ddabong.png"} 
+                                    style={{ width: "20px" }} 
+                                  />
                                 <div>{p.votes}</div>
                               </div>
                             </CardSubtitle>

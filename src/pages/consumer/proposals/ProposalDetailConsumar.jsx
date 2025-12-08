@@ -9,22 +9,38 @@ export default function ProposalDetailConsumar() {
     const total = 15;
     const joined = 10;
     const percentage = (joined/total) * 100;
+    const [voteCount, setVoteCount] = useState(0);
+    const [isDdabong, setIsDdabong] = useState(false);
 
 
     const getProposal = () => {
-      myAxios().get(`/proposalDetail?id=${id}`)
-      .then(res=>{
-        console.log(res)
-        setPropsal(res.data)
-      })
-      .catch(err=>{
-        console.log(err)
-      })
-    }
+      myAxios()
+        .get(`/proposalDetail?id=${id}`) // Proposal 불러오기
+        .then(res => {
+          const data = res.data;
+          console.log(data)
+          setPropsal(data);
+
+          // voteCount와 isDdabong 초기화
+          setVoteCount(data.voteCount || 0);  // DB에 있는 투표 수
+          setIsDdabong(data.isDdabong || false); // DB에서 해당 유저 투표 여부
+        })
+        .catch(err => console.log(err));
+    };
 
     useEffect(()=>{
       getProposal();
     }, [])
+
+    const handleVote = () => {
+    myAxios().get("/proposalDdabong", { params: { proposalId: id, username: "kakao_4436272679" } })
+      .then(res => {
+        const voted = res.data; // true or false
+        setIsDdabong(voted);
+        setVoteCount(prev => voted ? prev + 1 : prev - 1); // voteCount 직접 계산
+      })
+      .catch(err => console.log(err));
+  };
 
     return(
         <>
@@ -88,9 +104,13 @@ export default function ProposalDetailConsumar() {
                             
                             <div style={{display:"flex",alignItems: "center", justifyContent:'space-between'}}>
                                 <div style={{display:'flex'}}>
-                                  <img src="/ddabong.png" style={{width:"25px", height:'25px', marginRight:'10px'}}/>
-                                  <div style={{fontSize:'24px', marginRight:'20px'}}>0</div>
-                                  <Button style={{backgroundColor:'#739FF2', width:"120px", height:"35px", fontSize:"16px", padding:"0", border:'none', marginRight:'10px'}}>투표하기</Button>
+                                  <img src={isDdabong ? "/colorddabong.png" : "/ddabong.png"} style={{width:"25px", height:'25px', marginRight:'10px'}}/>
+                                  <div style={{fontSize:'24px', marginRight:'20px'}}>{voteCount}</div>
+                                  <Button style={{backgroundColor:'#739FF2', width:"120px", height:"35px", fontSize:"16px", padding:"0", border:'none', marginRight:'10px'}}
+                                    onClick={handleVote}
+                                  >
+                                    {isDdabong ? "취소하기" : "투표하기"}
+                                  </Button>
                                 </div>
                                 <div>
                                   <Link to={`/proposalsList/proposalModify/${proposal.id}`}>

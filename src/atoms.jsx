@@ -1,9 +1,7 @@
 import { atomWithStorage, createJSONStorage } from 'jotai/utils';
 // 제안(지성)
-const initProposal = ({id:'',memberUsername:'',productName:'',originalSiteUrl:'',originalPrice:'',abroadShippingCost:'',category:'',description:'',imageUrl:'',additionalImagesFileId:''
-                        ,voteCount:'',status:'',rejectReason:'',gbProductId:''});
+const initMember = ({username:'',email:'',grade:'',name:'',nickname:'',phone:'',point_balance:'',role:''});
 
-
-
-
-export const proposalAtom = atomWithStorage('proposal', initProposal, createJSONStorage(()=>sessionStorage));
+export const tokenAtom = atomWithStorage("token", null, createJSONStorage(()=>sessionStorage));
+export const fcmTokenAtom = atomWithStorage("fcmToken", null, createJSONStorage(()=>sessionStorage));
+export const memberAtom = atomWithStorage('member', initMember, createJSONStorage(()=>sessionStorage));
