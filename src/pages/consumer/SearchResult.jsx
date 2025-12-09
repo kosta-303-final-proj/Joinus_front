@@ -6,7 +6,7 @@ import { searchProducts } from '../../services/searchApi';
 import { transformProposal, transformGbProduct } from '../../utils/searchDataTransform';
 
 export default function SearchResult() {
-  /* 필터 상태 */
+  /* 필터 상태: 어떤 타입/카테고리/가격대를 선택했는지 보관 */
   const [selectedType, setSelectedType] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [selectedPriceRange, setSelectedPriceRange] = useState([]);
@@ -34,12 +34,12 @@ export default function SearchResult() {
   const [isPriceOpen, setIsPriceOpen] = useState(false);
   
 
-  // 데이터 로딩 (백엔드 API 연동)
+  // 검색 조건이 바뀔 때마다 백엔드 검색 API 호출
   useEffect(() => {
     const fetchSearchResults = async () => {
       setIsLoading(true);
       try {
-        // 검색 파라미터 구성
+        // 검색 파라미터 구성: 선택하지 않은 것은 null로 보내 필터 미적용
         const searchParams = {
           keyword: searchKeyword || null,
           categories: selectedCategory.length > 0 ? selectedCategory : null,
@@ -134,7 +134,7 @@ export default function SearchResult() {
             <span className="dropdown-arrow">{isCategoryOpen ? '▲' : '▼'}</span>
           </button>
           {isCategoryOpen && (
-            <div className="dropdown-menu">
+            <div className="sr-dropdown-menu">
               <label className="dropdown-checkbox">
                 <input
                   type="checkbox"
@@ -189,7 +189,7 @@ export default function SearchResult() {
             <span className="dropdown-arrow">{isPriceOpen ? '▲' : '▼'}</span>
           </button>
           {isPriceOpen && (
-            <div className="dropdown-menu">
+            <div className="sr-dropdown-menu">
               <label className="dropdown-checkbox">
                 <input
                   type="checkbox"

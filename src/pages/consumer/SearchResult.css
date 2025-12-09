@@ -76,7 +76,7 @@
 }
 
 /* 드롭다운 메뉴 */
-.dropdown-menu {
+.sr-dropdown-menu {
   position: absolute;
   top: calc(100% + 4px);
   left: 0;
