@@ -7,6 +7,32 @@ export default function MypagePoints() {
   const [tab, setTab] = useState("all");
   const [pointList, setPointList] = useState([]);
 
+  // 현재 페이지
+  const [currentPage, setCurrentPage] = useState(1);
+  
+  // 페이지당 표시할 개수
+  const itemsPerPage = 10;
+
+// 1. reason_type 한국어 매핑
+  const reasonText = {
+    SIGNUP: "회원가입 축하 포인트 적립",
+    SIGNUP_WITH_RECOMMENDER: "추천인 입력 포인트 적립",
+    RECOMMEND_REWARD: "추천인 보상 포인트 적립",
+    REVIEW: "텍스트 리뷰 포인트 적립",
+    PHOTO_REVIEW: "포토 리뷰 포인트 적립",
+    PROPOSAL_APPROVED: "공동구매 제안 승인 포인트 적립",
+    SHARE_PURCHASE: "공동구매 공유 포인트 적립",
+    PURCHASE: "구매 포인트 적립",
+    USE: "포인트 사용",
+    CANCEL_REFUND: "주문취소/교환,반품 포인트 회수",
+  };
+
+  // 2. 날짜 변환 함수 추가
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    return dateString.slice(0, 10); // "YYYY-MM-DD"만 추출
+  };
+
   const getPointList = () => {
     axios
     .get("http://localhost:8080"+`/mypage/point?username=ehgns0311`)
@@ -22,11 +48,25 @@ useEffect(()=> {
   getPointList();
 },[]);
 
+  // 필터링
 const filteredList = pointList.filter((p) => {
   if (tab === "save") return !p.amount.startsWith("-");   // 적립만
   if (tab === "use") return p.amount.startsWith("-");     // 사용만
   return true; // 전체
 });
+
+ // 페이징 처리
+  const totalPages = Math.ceil(filteredList.length / itemsPerPage);
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
+  const currentItems = filteredList.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handlePageChange = (pageNum) => {
+    if (pageNum < 1 || pageNum > totalPages) return;
+    setCurrentPage(pageNum);
+  };
 
   return (
     <>
@@ -59,14 +99,17 @@ const filteredList = pointList.filter((p) => {
 
      {/* 포인트 목록 */}
 <div className="points-list">
-{filteredList.map((p) => (
+{currentItems.map((p) => (
     <div className="points-item" key={p.id}>
       <div className="points-info">
-        {p.reason_type}
-        <div className="points-date">
-          {p.created_at} | 주문번호 {p.order_id}
-        </div>
-      </div>
+         {/* reason_type 한국어로 출력 */}
+              {reasonText[p.reason_type] || p.reason_type}
+
+              <div className="points-date">
+                {/* 날짜 포맷 변경 */}
+                {formatDate(p.created_at)} | 주문번호 {p.order_id}
+              </div>
+            </div>
 
       {/* 금액 + / - 표시 */}
       {p.amount.startsWith("-") ? (
@@ -78,15 +121,31 @@ const filteredList = pointList.filter((p) => {
   ))}
 </div>
 
-            {/* 페이지네이션 */}
+    {/* 페이징 UI */}
       <Pagination className="paginationContainer">
-        <PaginationItem><PaginationLink first href="#" /></PaginationItem>
-        <PaginationItem><PaginationLink previous href="#" /></PaginationItem>
-        {[1,2,3,4,5].map(num => (
-          <PaginationItem key={num}><PaginationLink href="#">{num}</PaginationLink></PaginationItem>
+        <PaginationItem disabled={currentPage === 1}>
+          <PaginationLink first onClick={() => handlePageChange(1)} />
+        </PaginationItem>
+
+        <PaginationItem disabled={currentPage === 1}>
+          <PaginationLink previous onClick={() => handlePageChange(currentPage - 1)} />
+        </PaginationItem>
+
+        {[...Array(totalPages)].map((_, i) => (
+          <PaginationItem key={i} active={currentPage === i + 1}>
+            <PaginationLink onClick={() => handlePageChange(i + 1)}>
+              {i + 1}
+            </PaginationLink>
+          </PaginationItem>
         ))}
-        <PaginationItem><PaginationLink next href="#" /></PaginationItem>
-        <PaginationItem><PaginationLink last href="#" /></PaginationItem>
+
+        <PaginationItem disabled={currentPage === totalPages}>
+          <PaginationLink next onClick={() => handlePageChange(currentPage + 1)} />
+        </PaginationItem>
+
+        <PaginationItem disabled={currentPage === totalPages}>
+          <PaginationLink last onClick={() => handlePageChange(totalPages)} />
+        </PaginationItem>
       </Pagination>
 
       {/* 안내 박스 */}
