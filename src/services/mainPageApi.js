@@ -6,14 +6,14 @@ import { myAxios } from '../config';
 export const getMainPageData = async () => {
   try {
     const [deadlineSoon, popular, ongoing, popularProposals] = await Promise.all([
-      myAxios().get('/api/main-page/deadline-soon'),
+      myAxios().get('/api/main-page/deadline-soon'),  // 백앤드 API 호출
       myAxios().get('/api/main-page/popular'),
       myAxios().get('/api/main-page/ongoing'),
       myAxios().get('/api/main-page/popular-proposals')
     ]);
 
     return {
-      deadlineSoon: deadlineSoon.data || [],
+      deadlineSoon: deadlineSoon.data || [], 
       popular: popular.data || [],
       ongoing: ongoing.data || [],
       popularProposals: popularProposals.data || []

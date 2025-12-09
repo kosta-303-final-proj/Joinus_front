@@ -11,17 +11,21 @@ export default function GBProductList() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // URL에서 type 파라미터 추출
+  // type 파라미터가 없으면 ongoing로 설정
   const type = searchParams.get("type") || "ongoing";
 
+  // useEffect가 컴포넌트 마운트될 때 실행
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${baseUrl}/api/gb-products`, {
-          params: { type },
+        const response = await axios.get(`${baseUrl}/api/gb-products`, {  // API응답이 올 때까지 대기 후 결과 받음
+          params: { type },  
         });
 
         // GbProductDto -> 화면 카드용 데이터로 변환
+        // 받아온 공구 상품 데이터를 프론트엔드 카드 UI에 맞는 형식으로 변환하는 부분
         const transformed = response.data.map((p) => ({
           id: p.id,
           title: p.name,
@@ -38,6 +42,7 @@ export default function GBProductList() {
             : "https://picsum.photos/300/200",
         }));
 
+        // 변환된 데이터를 products 상태에 저장
         setProducts(transformed);
       } catch (e) {
         console.error("공구 목록 조회 실패:", e);

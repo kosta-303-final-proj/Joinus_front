@@ -14,7 +14,7 @@ export default function GroupBuyCard({
   onClick,
   category,
   status = '진행중',
-  description,
+  // description,
   rating,
   currentParticipants,
   maxParticipants,
@@ -97,11 +97,11 @@ export default function GroupBuyCard({
           {title}
         </CardSubtitle>
 
-        {description && (
+        {/* {description && (
           <CardSubtitle style={{ fontSize: '12px', color: '#666', marginBottom: '12px', lineHeight: '1.4' }}>
             {description}
           </CardSubtitle>
-        )}
+        )} */}
 
         {price && (
           <div className="fw-bold" style={{ fontSize: '24px', marginBottom: '12px' }}>
