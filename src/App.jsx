@@ -346,12 +346,12 @@ function AppContent() {
             <Route path='/pay' element={<Pay />} />
             <Route path="/payComplate" element={<PayComplete />} />
             <Route path="/gbProductList" element={<GBProductList />} />
-            <Route path="/gbProductDetail/:id/*" element={<GBProductDetail />}>
-              <Route index element={<DetailInfo />} />
-              <Route path="detailInfo" element={<DetailInfo />} />
-              <Route path="reviews" element={<Reviews />} />
-              <Route path='qAndA' element={<QAndA />} />
-              <Route path="policy" element={<Policy />} />
+            <Route path="/gbProductDetail/:id" element={<GBProductDetail />}>
+                <Route index element={<DetailInfo />} />
+                <Route path="detailInfo" element={<DetailInfo />} />
+                <Route path="policy" element={<Policy />} />
+                <Route path="reviews" element={<Reviews />} />
+                <Route path="qAndA" element={<QAndA />} />
             </Route>
           </Routes>
         </main>

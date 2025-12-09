@@ -1,9 +1,11 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, Outlet } from "react-router-dom";
 import { Label, } from "reactstrap";
 export default function DetailInfo(){
     const { id } = useParams();
+    // const [detail, setDetail] = useState({ product: {}, category: {}, thumbnailFile: {}, images: [], options: []});
     return(
         <>
+        <div>
             <div style={styles.pageWrapper}>
                 <div style={styles.container}>
                     <div style={{display: 'flex',justifyContent: 'space-between',alignItems: 'center',width: '860px',}}>
@@ -42,7 +44,8 @@ export default function DetailInfo(){
                   <hr/>
                 </div>
             </div>
-            
+            <Outlet context={{ id }} />
+            </div>
         </>
     )
 }

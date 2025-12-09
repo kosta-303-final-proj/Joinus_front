@@ -147,7 +147,7 @@ export default function GBProductList() {
                   }}
                   onClick={() => navigate(`/gbProductDetail/${item.id}`)}
                 >
-                  <img alt={item.title} src={item.image} />
+                  <img src={item.image} />
                   <CardBody>
                     <CardTitle
                       tag="h5"

@@ -180,7 +180,7 @@ const filteredProposals = proposals.filter((p) => {
                     <div style={{display:'grid', gap:"20px", gridTemplateColumns: "repeat(4, 1fr)"}}>
                         {filteredProposals.map((p) => (
                         <Card key={p.id} style={{width: "240px", boxShadow: "0 5px 20px rgba(88 88 88 / 20%)",border: "none",display: "flex",flexDirection: "column",
-                            justifyContent: "space-between",height: "415px",}}
+                            justifyContent: "space-between",height: "390px",}}
                           onClick={() => navigate(`/proposalsList/proposalDetail/${p.id}`)}
                         >
                           {/* 이미지 영역 */}
@@ -198,17 +198,19 @@ const filteredProposals = proposals.filter((p) => {
                             </CardTitle>
 
                             {/* 제품명 */}
-                            <CardSubtitle className="mb-1 text-muted" tag="h6" style={{ fontSize: "14px", minHeight: "20px", height:'40px' }}>
+                            <CardSubtitle className="mb-1 text-muted" tag="h6" style={{ fontSize: "14px", minHeight: "20px", height:'40px',WebkitLineClamp: 2,WebkitBoxOrient: "vertical",overflow: "hidden",
+                              textOverflow: "ellipsis",lineHeight: "1.4em",maxHeight: "4.2em",marginTop: "4px"
+                             }}>
                               {p.productName}
                             </CardSubtitle>
 
                             {/* 설명 */}
-                            <CardSubtitle style={{  }}>
+                            {/* <CardSubtitle style={{  }}>
                               <div style={{ fontSize: "12px",display: "-webkit-box",WebkitLineClamp: 2,WebkitBoxOrient: "vertical",overflow: "hidden",
                                   textOverflow: "ellipsis",lineHeight: "1.4em",maxHeight: "4.2em",marginTop: "4px"}}>
                                 {p.description}
                               </div>
-                            </CardSubtitle>
+                            </CardSubtitle> */}
 
                             {/* 가격 */}
                             <div className="fw-bold" style={{ fontSize: "24px", marginBottom: "10px", minHeight: "30px" }}>

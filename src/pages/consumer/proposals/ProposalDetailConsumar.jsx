@@ -83,10 +83,7 @@ export default function ProposalDetailConsumar() {
                             <Label className="fw-bold" style={{fontSize:'12px', marginTop:'0', display:"flex",gap:'10px' }}>원사이트
                                  <div style={{fontSize:'10px', color:'#ACA5A5'}}>
                                     <Button style={{ backgroundColor: '#739FF2', width: "70px", height: "25px",
-                                      fontSize: "12px",
-                                      padding: "0",
-                                      border: 'none'
-                                      }}
+                                      fontSize: "12px",padding: "0",border: 'none'}}
                                       onClick={() => window.open(proposal.originalSiteUrl, "_blank")}>바로가기</Button>
                                  </div>
                             </Label>

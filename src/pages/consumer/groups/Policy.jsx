@@ -1,6 +1,6 @@
 import  {React, useState } from 'react';
 import {  Accordion,  AccordionBody,  AccordionHeader,  AccordionItem, Label } from 'reactstrap';
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, Outlet } from "react-router-dom";
 
 export default function Policy(){
     const { id } = useParams();
@@ -14,7 +14,7 @@ export default function Policy(){
     };
     return(
         <>
-            
+            <div>
             <div style={styles.pageWrapper}>
                 <div style={styles.container}>
                     <div style={{display: 'flex',justifyContent: 'space-between',alignItems: 'center',width: '860px',}}>
@@ -108,6 +108,8 @@ export default function Policy(){
                 </div>
             </div>
             <hr style={{marginTop:'0'}}/>
+            <Outlet context={{ id }} />
+            </div>
         </>
     )
 }

@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams,Outlet } from "react-router-dom";
 import { Label } from "reactstrap";
 import { useState } from "react";
 import InquiryModal from "./InquiryModal";
@@ -28,6 +28,7 @@ export default function QAndA(){
     ];
     return(
         <>
+        <div>
             <div style={styles.pageWrapper}>
                 <div style={styles.container}>
                     <div style={{display: 'flex',justifyContent: 'space-between',alignItems: 'center',width: '860px',}}>
@@ -130,7 +131,8 @@ export default function QAndA(){
                     {modalOpen && <InquiryModal onClose={() => setModalOpen(false)} />}
                 </div>
             </div>
-            
+             <Outlet context={{ id }} />
+            </div>
         </>
     )
 }
