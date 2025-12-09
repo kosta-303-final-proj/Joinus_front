@@ -326,7 +326,7 @@ export default function MainPage() {
                 title={item.title}
                 category={item.category}
                 status={item.status}
-                description={item.description}
+                // description={item.description}
                 price={item.price}
                 rating={item.rating}
                 currentParticipants={item.currentParticipants}
@@ -362,7 +362,7 @@ export default function MainPage() {
                 title={item.title}
                 category={item.category}
                 status={item.status}
-                description={item.description}
+                // description={item.description}
                 price={item.price}
                 rating={item.rating}
                 currentParticipants={item.currentParticipants}
@@ -397,7 +397,7 @@ export default function MainPage() {
                 title={item.title}
                 category={item.category}
                 status={item.status}
-                description={item.description}
+                // description={item.description}
                 price={item.price}
                 rating={item.rating}
                 currentParticipants={item.currentParticipants}
@@ -434,7 +434,7 @@ export default function MainPage() {
                 title={item.title}
                 category={item.category}
                 status={item.status}
-                description={item.description}
+                // description={item.description}
                 price={item.price}
                 rating={item.rating}
                 currentParticipants={item.currentParticipants}
