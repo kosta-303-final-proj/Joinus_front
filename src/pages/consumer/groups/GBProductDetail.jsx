@@ -38,7 +38,6 @@ export default function GBProductDetail() {
 
 
     const getProduct =()=>{
-      console.log("ID 확인:", id);
       myAxios().get(`/gbProductDetail/${id}`)
       .then(res=>{
         console.log(res)
@@ -58,7 +57,30 @@ export default function GBProductDetail() {
       acc[opt.groupName].push(opt);
       return acc;
   }, {});
-     
+
+  const submit = (optionId = null, quantity = 1) => {
+    // 테스트용으로 임의 회원 지정
+    const username = "kakao_4436272679";  // 임의 회원 username
+
+    myAxios().post(`/cartList`, {
+      username: username,
+      productId: detail.product.id,
+      optionId: optionId,
+      quantity: quantity
+    })
+    .then(res => {
+      if (res.status === 200 || res.status === 201) {
+        alert("장바구니에 추가되었습니다.");
+      } else {
+        alert("장바구니 추가 실패");
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      alert("장바구니 추가 중 오류가 발생했습니다.");
+    });
+  }
+
 
     return(
         <>
@@ -97,7 +119,7 @@ export default function GBProductDetail() {
                         <div>
                             <Label style={{fontSize:"24px"}}>{((detail.product.price || 0) + (detail.product.abroadShippingCost || 0)).toLocaleString()}원</Label>
                         </div>
-                        <hr style={{width:"460px", alignItems:'center', margin:'10px 0 10px 0'}}/>
+                        <hr style={{width:"460px", alignItems:'center', margin:'20px 0 20px 0'}}/>
                         <div style={{display:'flex'}}>
                             <img src="/clock.png" style={{width:'25px', marginRight:'10px'}}/>
                             <Label style={{color:'red', fontSize:'14px'}}> {timeLeft || (detail.product && detail.product.endDate ? detail.product.endDate.substring(0, 10) : "")}
@@ -113,10 +135,10 @@ export default function GBProductDetail() {
                                 <div style={{width: `${((detail.product.participants || 0) / (detail.product.minParticipants || 0)).toLocaleString() * 100}%`, height:'100%',backgroundColor: '#007BFF',}}></div>
                             </div>
                         </div>
-                        <hr style={{width:"460px", alignItems:'center', margin:'10px 0 10px 0'}}/>
+                        <hr style={{width:"460px", alignItems:'center', margin:'20px 0 20px 0'}}/>
                         <div>
                             <Label className="fw-bold" style={{fontSize:'12px', marginTop:'0'}}>옵션선택
-                                 <div style={{fontSize:'10px', color:'#ACA5A5'}}>옵션에 따라 가격이 변동될 수 있음</div>
+                                 <div style={{fontSize:'10px', color:'#ACA5A5',margin:'10px 0 10px 0'}}>옵션에 따라 가격이 변동될 수 있음</div>
                             </Label>
                            {/* 나중에 옵션 map으로 돌려 */}
                             {Object.entries(optionGroups).map(([groupName, options], idx) => (
@@ -128,25 +150,27 @@ export default function GBProductDetail() {
                                 </Input>
                               </FormGroup>
                             ))}
-                            <hr style={{width:"460px", alignItems:'center', margin:'10px 0 10px 0'}}/>
+                            <hr style={{width:"460px", alignItems:'center', margin:'20px 0 20px 0'}}/>
                             <div style={{}}>
                                 <div style={{fontSize:'12px', marginTop:'0'}}>상품 가격 {((detail.product.price || 0) + (detail.product.abroadShippingCost || 0)).toLocaleString()}원</div>
                                 <div style={{fontSize:'12px', marginTop:'0'}}>국내 배송비 {(detail.product.shippingAmount || 0).toLocaleString()}원</div>
                                 <div className="fw-bold" style={{fontSize:'12px', marginTop:'0'}}>최종 상품 가격 {((detail.product.price || 0) + (detail.product.abroadShippingCost || 0)+ (detail.product.shippingAmount || 0)).toLocaleString()} 원</div>
                                 <div style={{fontSize:'12px', marginTop:'0'}}>※ 해외 배송 2주~3주 소용, 국내 배송 2-3일 소요</div>
                             </div>
-                            <hr style={{width:"460px", alignItems:'center', margin:'10px 0 10px 0'}}/>
+                            <hr style={{width:"460px", alignItems:'center', margin:'20px 0 20px 0'}}/>
                             <div style={{display:'flex', gap:'10px',alignItems: "center"}}>
                                 <div className="fw-bold" style={{fontSize:'14px'}}>원사이트</div>
                                 <Button style={{backgroundColor:'#739FF2', width:"70px", height:"25px", fontSize:"12px", padding:"0", border:'none'}}
                                   onClick={() => window.open(detail.product.originalSiteUrl, "_blank")}
                                 >바로가기</Button>
                             </div>
-                            <hr style={{width:"460px", alignItems:'center', margin:'10px 0 10px 0'}}/>
+                            <hr style={{width:"460px", alignItems:'center', margin:'20px 0 20px 0'}}/>
                             <div style={{display:"flex",alignItems: "center", marginTop:'20px'}}>
                                 <img src="/heart.png" style={{width:"25px", height:'25px', marginRight:'20px'}}/>
                                 <img src="/share.png" style={{width:"25px", height:'25px', marginRight:'40px'}}/>
-                                <Button style={{backgroundColor:'#739FF2', width:"120px", height:"35px", fontSize:"16px", padding:"0", border:'none', marginRight:'10px'}}>장바구니</Button>
+                                <Button style={{backgroundColor:'#739FF2', width:"120px", height:"35px", fontSize:"16px", padding:"0", border:'none', marginRight:'10px'}}
+                                  onClick={() => submit()}
+                                >장바구니</Button>
                                 <Link to='/pay'>
                                   <Button style={{backgroundColor:'#F7F7F7', width:"120px", height:"35px", fontSize:"16px", padding:"0", color:'black', border:'1px solid black'}}>참여하기</Button>
                                 </Link>

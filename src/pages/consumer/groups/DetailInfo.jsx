@@ -1,8 +1,26 @@
+import { useEffect, useState } from "react";
 import { Link, useParams, Outlet } from "react-router-dom";
 import { Label, } from "reactstrap";
+import { myAxios } from "../../../config";
 export default function DetailInfo(){
     const { id } = useParams();
-    // const [detail, setDetail] = useState({ product: {}, category: {}, thumbnailFile: {}, images: [], options: []});
+    const [detail, setDetail] = useState({ product: {}, category: {}, thumbnailFile: {}, images: [], options: []});
+
+    const getProduct =()=>{
+          myAxios().get(`/gbProductDetail/${id}`)
+          .then(res=>{
+            console.log(res)
+            setDetail(res.data)
+          })
+          .catch(err=>{
+            console.log(err)
+          })
+        }
+    
+        useEffect(()=>{
+          getProduct();
+        },[])
+
     return(
         <>
         <div>
@@ -29,7 +47,7 @@ export default function DetailInfo(){
                 <div style={styles.container}>
                     <div style={{padding:'0 20px'}}>
                         <Label style={{fontSize:'24px'}}>상품 설명</Label>
-                      <div>애플 정품 에어팟 프로 2세대입니다. 액티브 노이즈 캔슬링 기능이 업그레이드 되었으며, 최대 6시간 재생 시간을 지원합니다.MagSafe 충전 케이스가 포함되어 있습니다.</div> <br/>
+                      <div>{detail.product.description}</div> <br/>
                       <div className="fw-bold" style={{fontSize:'16px'}}>제안 링크</div>
                       <div>https://www.coupang.com/vp/products/8941702848?itemId=26149371639&vendorI333a0</div>
                     </div>
