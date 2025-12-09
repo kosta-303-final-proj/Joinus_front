@@ -90,9 +90,6 @@
   color: var(--deep-text);
 }
 
-/* ==============================
-   JOINus 공통 페이지네이션 스타일 (Points 페이지 적용)
-============================== */
 .paginationContainer {
   display: flex;
   justify-content: center;
