@@ -76,9 +76,6 @@ export default function InquiryDetail() {
         {/* 헤더 */}
         <div className="detail-header">
           <h1 className="page-title">1:1 문의</h1>
-          <button className="back-button" onClick={() => navigate('/cs/notice?tab=inquiry')}>
-            ← 뒤로가기
-          </button>
         </div>
 
         {/* 문의 카드 */}
