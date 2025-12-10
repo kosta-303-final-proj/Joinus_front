@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { myAxios } from '../../config';
 import Header from './Header';
 import SearchFilter from './SearchFilter';
+import ParticipantsModal from './ParticipantsModal';
 import NotificationModal from './NotificationModal';
 import '../../styles/components/button.css';
 import '../../styles/components/table.css';
@@ -17,6 +18,8 @@ export default function GbProductMngList() {
   const [sortBy, setSortBy] = useState('시작날짜-최신순');
   const [selectedItems, setSelectedItems] = useState([]);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [showParticipantsModal, setShowParticipantsModal] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState(null);
 
   // 실제 데이터 State
   const [gbProducts, setGbProducts] = useState([]);
@@ -108,6 +111,18 @@ export default function GbProductMngList() {
     fetchProducts();
   }, [activeTab, pagination.page, sortBy]);
 
+  // 참여인원 모달
+  const handleViewParticipants = (productId) => {
+    setSelectedProductId(productId);
+    setShowParticipantsModal(true);
+  };
+
+  // 모달 닫기
+  const handleCloseModal = () => {
+    setShowParticipantsModal(false);
+    setSelectedProductId(null);
+  };
+
   // 검색
   const handleSearch = (searchFilters) => {
     setFilters(searchFilters);
@@ -155,12 +170,12 @@ export default function GbProductMngList() {
 
   // 공구 수정 새 창
   const handleEdit = (productId) => {
-  window.open(
-    `/admin/gbProductCreate?id=${productId}`,
-    'gbProductEdit',
-    'width=1200,height=900,scrollbars=yes,resizable=yes'
-  );
-};
+    window.open(
+      `/admin/gbProductCreate?id=${productId}`,
+      'gbProductEdit',
+      'width=1200,height=900,scrollbars=yes,resizable=yes'
+    );
+  };
 
   // 공구 등록 완료 시 목록 새로고침
   useEffect(() => {
@@ -297,8 +312,8 @@ export default function GbProductMngList() {
                       <td>{product.participants || 0}</td>
                       <td>
                         <span className={`status-badge ${product.status === 'ONGOING' ? 'blue' :
-                            product.status === 'DRAFT' ? 'gray' :
-                              'green'
+                          product.status === 'DRAFT' ? 'gray' :
+                            'green'
                           }`}>
                           {getStatusLabel(product.status)}
                         </span>
@@ -380,6 +395,13 @@ export default function GbProductMngList() {
           }}
         />
       )}
+
+      {showParticipantsModal && (
+      <ParticipantsModal
+        productId={selectedProductId}
+        onClose={handleCloseModal}
+      />
+    )}
     </div>
   );
 }

@@ -131,12 +131,18 @@ const ProposalMngList = () => {
                   <tr key={proposal.id}>
                     <td>{proposal.id}</td>
                     <td>{proposal.voteCount}</td>
-                    <td className="title-cell">{proposal.productName}</td>
+                    <td
+                      className="title-cell"
+                      style={{ cursor: 'pointer' }}
+                      //제안상세 완료시 이 부분 수정하기
+                      // onClick={() => navigate(`/admin/proposalDetail/${proposal.id}`)}
+                    >
+                      {proposal.productName}</td>
                     <td>{proposal.memberUsername}</td>
                     <td>{proposal.createdAt ? proposal.createdAt.substring(0, 10) : 'N/A'}</td>
                     <td>
-                      <span className={`status-badge ${proposal.status === '반려' ? 'rejected' : 'pending'}`}>
-                        {proposal.status}
+                      <span className={`status-badge ${proposal.status === 'REJECTED' ? 'rejected' : 'pending'}`}>
+                        {proposal.statusDescription}  {/* 한글로 표시됨 */}
                       </span>
                     </td>
                   </tr>
