@@ -75,29 +75,29 @@ export default function ProposalDetailConsumar() {
                         <div>
                             <Label style={{fontSize:"24px"}}>{proposal.originalPrice + proposal.abroadShippingCost}원</Label>
                         </div>
-                        <hr style={{width:"460px", alignItems:'center', margin:'10px 0 10px 0'}}/>
+                        <hr style={{width:"460px", alignItems:'center', margin:'15px 0 15px 0'}}/>
                         <div className="fw-bold" style={{fontSize:'14px', padding:'0 10px 0 10px'}}>상품 상세 설명</div>
                         <div style={{fontSize:'14px', padding:'0 10px 0 10px',whiteSpace: 'pre-wrap'}}>{proposal.description}</div>
                         <hr style={{width:"460px", alignItems:'center', margin:'10px 0 10px 0'}}/>
                         <div>
-                            <Label className="fw-bold" style={{fontSize:'12px', marginTop:'0', display:"flex",gap:'10px' }}>원사이트
+                            <Label className="fw-bold" style={{fontSize:'12px', marginTop:'0', display:"flex",gap:'10px',alignItems:'center' }}>원사이트
                                  <div style={{fontSize:'10px', color:'#ACA5A5'}}>
                                     <Button style={{ backgroundColor: '#739FF2', width: "70px", height: "25px",
                                       fontSize: "12px",padding: "0",border: 'none'}}
                                       onClick={() => window.open(proposal.originalSiteUrl, "_blank")}>바로가기</Button>
                                  </div>
                             </Label>
-                            <hr style={{width:"460px", alignItems:'center', margin:'10px 0 10px 0'}}/>
+                            <hr style={{width:"460px", alignItems:'center', margin:'15px 0 15px 0'}}/>
                             <div>
                                 <div style={{fontSize:'12px', marginTop:'0'}}>원래 가격 : {proposal.originalPrice}</div>
                                 <div style={{fontSize:'12px', marginTop:'0'}}>해외 배송비 : {proposal.abroadShippingCost}</div>
                             </div>
-                            <hr style={{width:"460px", alignItems:'center', margin:'10px 0 10px 0'}}/>
+                            <hr style={{width:"460px", alignItems:'center', margin:'15px 0 15px 0'}}/>
                             <div style={{display:'flex', gap:'10px',alignItems: "center"}}>
                                 <div className="fw-bold" style={{fontSize:'14px'}}>공구 상세 URL</div>
                                 <Button style={{backgroundColor:'#739FF2', width:"70px", height:"25px", fontSize:"12px", padding:"0", border:'none'}}>바로가기</Button>
                             </div>
-                            <hr style={{width:"460px", alignItems:'center', margin:'10px 0 10px 0'}}/>
+                            <hr style={{width:"460px", alignItems:'center', margin:'15px 0 15px 0'}}/>
                             
                             <div style={{display:"flex",alignItems: "center", justifyContent:'space-between'}}>
                                 <div style={{display:'flex'}}>

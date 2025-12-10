@@ -1,10 +1,28 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Label, FormGroup, Input, Button, Pagination, PaginationItem, PaginationLink } from "reactstrap";
 import '../../../css/mypage/ShopCartList.css';
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { myAxios } from "../../../config";
 
 export default function ShopCartList() {
+
   const [cartList, setCartList] = useState([]);
+
+  useEffect(() => {
+    const fetchCartList = async () => {
+      try {
+        const username = "kakao_4436272679";
+        const response = await myAxios().get(`/cartList`, {
+          params: { username }
+        });
+        setCartList(response.data);
+      } catch (error) {
+        console.error("장바구니 조회 실패", error);
+      }
+    };
+    fetchCartList();
+  }, []);
+
   return (
     <div className="container">
       <div className="fw-bold d-block" style={{ fontSize: "20px", margin: "20px auto" }}>장바구니</div>
@@ -23,7 +41,7 @@ export default function ShopCartList() {
       <div className="productList">
         {cartList.map(item=>(
           <FormGroup  check className="productItem" key={item.cartId}>
-            <img src={item.thumbnailPath} alt="상품 이미지" className="productImg" />
+            <img src={item.thumbnailPath} className="productImg" />
             <div className="productName">{item.productName}</div>
             <div className="productPrice">{item.price}원</div>
             <div className="productQuantity">{item.quantity}</div>
