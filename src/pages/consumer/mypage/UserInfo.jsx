@@ -4,7 +4,10 @@ import { useEffect, useState } from "react";
 import { myAxios } from "../../../config";
 
 export default function UserInfo() {
-  const username = "kakao_4436272679";
+
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const username = userInfo?.username;  
+
   const [member, setMember] = useState({username:username, grade:'', pointBalance:'', name:''});
 
   const getUserInfo = ()=>{
@@ -26,7 +29,7 @@ export default function UserInfo() {
       <Card style={{ width:"860px" }}>
         <CardHeader className="CardHeaderCss">
           <div style={{ marginTop:"5px", color:"#2D81EF", fontSize:"16px" }}>
-            {member.name} 환영합니다.
+            {member.name}님 환영합니다.
           </div>
         </CardHeader>
 
