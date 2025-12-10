@@ -1,5 +1,6 @@
 import React from "react";
 import "./MypageMain.css";
+import { Link } from "react-router-dom";
 
 export default function MypageMain() {
   return (
@@ -8,7 +9,7 @@ export default function MypageMain() {
       <div className="main-card">
         <h3 className="main-card-title">
           최근 주문목록
-          <a href="#" className="main-more">더보기 &gt;</a>
+         <Link to="/mypage/orderList" className="main-more">더보기 &gt;</Link>
         </h3>
 
         <table className="main-table">
@@ -46,7 +47,7 @@ export default function MypageMain() {
       <div className="main-card">
         <h3 className="main-card-title">
           관심상품
-          <a href="#" className="main-more">더보기 &gt;</a>
+         <Link to="/mypage/interestList" className="main-more">더보기 &gt;</Link>
         </h3>
 
         <div className="main-product-item">
@@ -66,11 +67,11 @@ export default function MypageMain() {
         </div>
       </div>
 
-      {/* 참여중인 제안 */}
+      {/* 공동구매 요청 */}
       <div className="main-card">
         <h3 className="main-card-title">
-          참여중인 제안
-          <a href="#" className="main-more">더보기 &gt;</a>
+          공동구매 요청
+          <Link to="/mypage/suggestions" className="main-more">더보기 &gt;</Link>
         </h3>
 
         <div className="main-product-item">
