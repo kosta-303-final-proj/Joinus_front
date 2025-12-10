@@ -58,28 +58,29 @@ export default function GBProductDetail() {
       return acc;
   }, {});
 
-  const submit = (optionId = null, quantity = 1) => {
-    // 테스트용으로 임의 회원 지정
-    const username = "kakao_4436272679";  // 임의 회원 username
+  const [selectedOptions, setSelectedOptions] = useState({});
 
-    myAxios().post(`/cartList`, {
-      username: username,
-      productId: detail.product.id,
-      optionId: optionId,
-      quantity: quantity
+  const submit = (quantity = 1) => {
+    const username = "kakao_4436272679";
+
+    const selectedIds = Object.values(selectedOptions); // 선택된 모든 옵션
+    if (selectedIds.includes("") || selectedIds.length !== Object.keys(optionGroups).length) {
+        alert("모든 옵션을 선택해주세요");
+        return;
+    }
+
+    myAxios().post(`/addCart`, {
+        username: username,
+        gbProductId: detail.product.id,
+        gbProductOptionIds: selectedIds.map(id => Number(id)), // 여러 옵션 전달
+        quantity: quantity
     })
-    .then(res => {
-      if (res.status === 200 || res.status === 201) {
-        alert("장바구니에 추가되었습니다.");
-      } else {
-        alert("장바구니 추가 실패");
-      }
-    })
+    .then(res => alert("장바구니에 추가되었습니다."))
     .catch(err => {
-      console.error(err);
-      alert("장바구니 추가 중 오류가 발생했습니다.");
+        console.error(err);
+        alert("장바구니 추가 중 오류 발생");
     });
-  }
+}
 
 
     return(
@@ -142,13 +143,23 @@ export default function GBProductDetail() {
                             </Label>
                            {/* 나중에 옵션 map으로 돌려 */}
                             {Object.entries(optionGroups).map(([groupName, options], idx) => (
-                              <FormGroup key={idx}>
-                                <Input type="select" style={{height:'30px', fontSize:'12px'}}>
-                                  {options.map(opt => (
-                                    <option key={opt.id} value={opt.id}>{opt.name}</option>
-                                  ))}
-                                </Input>
-                              </FormGroup>
+                                <FormGroup key={idx}>
+                                    <Input
+                                        type="select"
+                                        value={selectedOptions[groupName] || ""}
+                                        onChange={(e) => {
+                                            setSelectedOptions(prev => ({
+                                                ...prev,
+                                                [groupName]: e.target.value
+                                            }));
+                                        }}
+                                    >
+                                        <option value="" disabled>{groupName}</option>
+                                        {options.map(opt => (
+                                            <option key={opt.id} value={opt.id}>{opt.name}</option>
+                                        ))}
+                                    </Input>
+                                </FormGroup>
                             ))}
                             <hr style={{width:"460px", alignItems:'center', margin:'20px 0 20px 0'}}/>
                             <div style={{}}>
@@ -182,7 +193,7 @@ export default function GBProductDetail() {
             </div>
             <div style={styles.pageWrapper}>
                 <div style={styles.container}>
-                    <div>
+                    <div style={{ display: "flex", gap: "45px", flexWrap: "wrap" }}>
                         {detail.images.map((img, idx) => (
                           <img key={idx} src={`${baseUrl}/files/${img.fileName}`} style={{width:"220px"}} />
                         ))}

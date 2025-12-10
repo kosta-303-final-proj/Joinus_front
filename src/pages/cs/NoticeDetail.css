@@ -1,250 +1,226 @@
 .notice-detail-page {
-  /* background와 min-height는 App.css에서 상속 */
-  padding: 40px 24px;
+  padding: 48px 24px;
+  background: #f6f7fb;
+  min-height: calc(100vh - 80px);
 }
 
 .notice-detail-container {
-  max-width: 1220px;
+  max-width: 960px;
   margin: 0 auto;
 }
 
-/* 헤더 */
 .detail-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 32px;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
 .page-title {
+  margin: 0;
   font-size: 28px;
-  font-weight: 700;
-  color: #222;
+  font-weight: 800;
+  color: #1f2430;
 }
 
-.back-button {
-  padding: 10px 20px;
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 500;
-  color: #666;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.back-button:hover {
-  background: var(--color-bg);
-  border-color: #999;
-}
-
-/* 공지 카드 */
-.notice-card {
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 40px;
-  margin-bottom: 24px;
-}
-
-/* 제목 영역 */
-.notice-title-section {
-  padding-bottom: 24px;
-  border-bottom: 2px solid #f0f0f0;
-  margin-bottom: 32px;
-}
-
-.notice-category {
+.meta {
   display: inline-block;
-  padding: 4px 12px;
-  background: #f0f0f0;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #666;
-  margin-bottom: 12px;
+  margin-top: 8px;
+  font-size: 13px;
+  color: #9aa0ae;
 }
 
-.notice-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: #222;
-  margin-bottom: 12px;
-  line-height: 1.4;
+.header-actions {
+  display: flex;
+  gap: 10px;
 }
 
-.notice-date {
-  font-size: 14px;
-  color: #999;
+.card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e8ebf3;
+  padding: 32px;
+  box-shadow: 0 12px 30px rgba(20, 40, 90, 0.06);
 }
 
-/* 본문 영역 */
-.notice-body {
-  line-height: 1.8;
-  color: #333;
+.skeleton-card {
+  display: grid;
+  gap: 14px;
 }
 
-.notice-intro {
+.skeleton {
+  background: linear-gradient(90deg, #f3f5f9 25%, #e8ebf3 37%, #f3f5f9 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+  border-radius: 6px;
+}
+
+.skeleton.title { height: 28px; width: 60%; }
+.skeleton.meta { height: 16px; width: 30%; }
+.skeleton.body { height: 160px; width: 100%; }
+
+@keyframes shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+.error-card {
+  color: #d12c2c;
+  border: 1px solid #f1c4c4;
+  background: #fff7f7;
+}
+
+.notice-content {
+  margin-bottom: 28px;
+}
+
+.content-text {
+  margin: 0;
   font-size: 15px;
-  color: #333;
-  margin-bottom: 32px;
+  line-height: 1.9;
+  color: #2f3342;
   white-space: pre-line;
 }
 
-.notice-section {
-  margin-bottom: 32px;
+.image-section {
+  margin-top: 12px;
+}
+
+.section-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
 }
 
 .section-title {
+  margin: 0;
   font-size: 16px;
   font-weight: 700;
-  color: #222;
-  margin-bottom: 16px;
+  color: #1f2430;
 }
 
-.section-items {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.section-items li {
-  position: relative;
-  padding-left: 20px;
-  margin-bottom: 12px;
-  font-size: 14px;
-  color: #555;
-  line-height: 1.6;
-}
-
-.section-items li:before {
-  content: '•';
-  position: absolute;
-  left: 0;
-  color: #739FF2;
-  font-weight: bold;
-}
-
-.notice-footer {
-  font-size: 14px;
-  color: #666;
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 1px solid #f0f0f0;
-  white-space: pre-line;
-}
-
-/* 정부 이미지 섹션 */
-.government-images-section {
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 32px;
-  margin-bottom: 24px;
-}
-
-.images-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: #222;
-  margin-bottom: 20px;
-}
-
-.image-accordions {
-  display: flex;
-  flex-direction: column;
+.image-grid {
+  display: grid;
   gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
-.accordion-item {
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
+.image-card {
   overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid #e8ebf3;
+  background: #f9fbff;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+  padding: 0;
+  cursor: zoom-in;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.accordion-header {
+.image-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(20, 40, 90, 0.12);
+}
+
+.image-card img {
+  display: block;
   width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px;
-  background: #fafafa;
-  border: none;
-  cursor: pointer;
-  transition: background 0.2s;
+  height: 260px;
+  object-fit: contain;
+  background: white;
 }
 
-.accordion-header:hover {
-  background: #f0f0f0;
-}
-
-.accordion-icon {
-  font-size: 12px;
-  color: #999;
-}
-
-.accordion-title {
-  flex: 1;
-  text-align: left;
-  font-size: 14px;
-  color: #333;
-}
-
-.accordion-badge {
-  padding: 4px 8px;
-  background: #739FF2;
-  color: white;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-/* 푸터 */
 .detail-footer {
   display: flex;
   justify-content: center;
-  padding: 24px 0;
+  padding: 24px 0 8px;
+}
+
+.image-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  padding: 20px;
+  backdrop-filter: blur(2px);
+}
+
+.image-modal {
+  position: relative;
+  max-width: 1080px;
+  width: min(90vw, 1080px);
+  max-height: 90vh;
+  background: #0f172a;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+.image-modal img {
+  display: block;
+  width: 100%;
+  max-height: 72vh;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #0b1324;
+}
+
+.close-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.close-button:hover {
+  background: rgba(255, 255, 255, 0.22);
 }
 
 .list-button {
-  padding: 12px 32px;
-  background: #739FF2;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  font-weight: 600;
-  color: white;
+  padding: 12px 28px;
+  border: 1px solid #dfe3ed;
+  background: white;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #3b4861;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s ease;
 }
 
 .list-button:hover {
-  background: #4a8ae3;
+  background: #f7f9fc;
+  transform: translateY(-1px);
 }
 
-/* 반응형 */
 @media (max-width: 768px) {
-  .notice-detail-container {
-    padding: 24px 16px;
+  .notice-detail-page {
+    padding: 32px 16px;
   }
 
   .detail-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 16px;
   }
 
-  .notice-card {
-    padding: 24px 20px;
+  .header-actions {
+    width: 100%;
   }
 
-  .notice-title {
-    font-size: 20px;
-  }
-
-  .government-images-section {
-    padding: 24px 20px;
+  .card {
+    padding: 24px;
   }
 }
 
