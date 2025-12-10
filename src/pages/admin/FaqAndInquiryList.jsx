@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { myAxios } from '../../config';
 import Header from './Header';
 import SearchFilter from './SearchFilter';
 import { ChevronDown, ChevronUp } from 'lucide-react';
@@ -13,84 +14,49 @@ const FaqAndInquiryList = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('FAQ');
     const [inquiryFilter, setInquiryFilter] = useState('전체');
-    const [currentPage, setCurrentPage] = useState(1);
+
+    const [faqCurrentPage, setFaqCurrentPage] = useState(0);
     const [expandedFaq, setExpandedFaq] = useState(null);
 
-    // FAQ 데이터
-    const faqs = [
-        {
-            id: 1,
-            question: 'Q. 공동구매 언제 환불이 가능한가요?',
-            answer: '공동 최저 수 이상이 달성되지 않을 때는 즉 자동으로 환불이 가능합니다.',
-            date: '2024-10-09'
-        },
-        {
-            id: 2,
-            question: 'Q. 공동구매 교환이 가능한가요?',
-            answer: '네, 상품 수령 후 7일 이내에 교환 신청이 가능합니다.',
-            date: '2024-10-09'
-        },
-        {
-            id: 3,
-            question: 'Q. 공동구매 상품은 언제 배송이 시작되나요?',
-            answer: '최저 인원 달성 후 발주가 진행되며, 약 2-3주 후 배송이 시작됩니다.',
-            date: '2024-10-09'
-        },
-        {
-            id: 4,
-            question: 'Q. 공동구매  교환이 가능한가요?',
-            answer: '네, 상품 수령 후 7일 이내에 교환 신청이 가능합니다.',
-            date: '2024-10-09'
-        },
-        {
-            id: 5,
-            question: 'Q. 공동구매  교환이 가능한가요?',
-            answer: '네, 상품 수령 후 7일 이내에 교환 신청이 가능합니다.',
-            date: '2024-10-09'
-        },
-    ];
+    const [faqPage, setFaqPage] = useState({
+        content: [], // FaqDto 목록
+        totalPages: 0,
+        totalElements: 0,
+        number: 0,
+    });
 
-    // 1:1 문의 데이터
-    const inquiries = [
-        {
-            id: 1,
-            type: '배송',
-            inquiryType: '1:1문의',
-            title: '배송이 아직도 안 와요',
-            content: '주문한지 2주가 넘었는데 아직도 배송이 안 옵니다. 언제쯤 받을 수 있나요?',
-            author: 'hong1234',
-            date: '2025-10-24',
-            status: '답변대기',
-            orderNumber: 'ORD-20251020-001' // 주문번호
-        },
-        {
-            id: 2,
-            type: '주문',
-            inquiryType: '1:1문의',
-            title: '주문 취소 하고 싶어요',
-            content: '실수로 주문했는데 취소 가능한가요?',
-            author: 'kim5678',
-            date: '2025-10-24',
-            status: '답변대기',
-            orderNumber: 'ORD-20251021-002'
-        },
-        {
-            id: 3,
-            type: '상품 문의',
-            inquiryType: '공구상품',
-            title: '이 제품 색상 옵션 있나요?',
-            content: '사진에는 파란색만 있는데 다른 색상도 주문 가능한가요?',
-            author: 'park9012',
-            date: '2025-10-23',
-            status: '답변완료',
-            productUrl: '/admin/gbProductMngList/123', // 공구 상품 URL
-            answer: '안녕하세요. 현재 파란색 외에 빨간색, 검정색도 주문 가능합니다. 옵션 선택에서 확인하실 수 있습니다.'
-        },
-    ];
+    // const filteredInquiries = inquiryFilter === '전체'
+    //     ? inquiries
+    //     : inquiries.filter(i => i.status === '답변대기');
 
-    const filteredInquiries = inquiryFilter === '전체'
-        ? inquiries
-        : inquiries.filter(i => i.status === '답변대기');
+    // FAQ 데이터 조회
+    const fetchFaqList = useCallback(async (page) => {
+        try {
+            const params = {
+                page: page,
+                size: 10,
+            };
+            const response = await myAxios().get('/admin/faqList', { params });
+            setFaqPage(response.data);
+            setFaqCurrentPage(page);
+        } catch (error) {
+            console.error("FAQ 목록 조회 실패:", error);
+        }
+    }, []);
+
+    // FAQ 탭일 때만 데이터 로딩
+    useEffect(() => {
+        if (activeTab === 'FAQ') {
+            fetchFaqList(faqCurrentPage);
+        }
+    }, [activeTab, faqCurrentPage, fetchFaqList]); // activeTab이나 페이지 변경 시 재요청
+
+    //  FAQ 페이지 변경 핸들러
+    const handleFaqPageChange = (pageNumber) => {
+        if (pageNumber >= 0 && pageNumber < faqPage.totalPages) {
+            setFaqCurrentPage(pageNumber);
+        }
+    };
 
     const toggleFaq = (id) => {
         setExpandedFaq(expandedFaq === id ? null : id);
@@ -102,7 +68,7 @@ const FaqAndInquiryList = () => {
 
     return (
         <div className="admin-layout">
-            
+
             <div className="main-content">
                 <Header title="문의 내역" />
 
@@ -156,7 +122,7 @@ const FaqAndInquiryList = () => {
                                         ) : (
                                             faqs.map((faq) => (
                                                 <React.Fragment key={faq.id}>
-                                                    
+
                                                     {/* 질문 행 */}
                                                     <tr
                                                         onClick={() => toggleFaq(faq.id)}
@@ -222,7 +188,7 @@ const FaqAndInquiryList = () => {
                                 <button className="page-btn">3</button>
                             </div>
 
-                            
+
                         </>
                     )}
                     {/* =============== 문의 탭 =================*/}
