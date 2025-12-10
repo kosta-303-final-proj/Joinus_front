@@ -6,20 +6,20 @@ export default function MypageProfileEdit() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
-    userId: "ehgns0311",
+    username: "ehgns0311",
     password: "",
-    nickname: "박도훈",
+    name: "박도훈",
+    nickname: "도훈이",
     phone: "010-5241-8372",
     email: "ehgns0311@example.com",
-    address: "서울특별시 강남구 테헤란로 212, 3층",
     birth: "1998-06-12",
-    gender: "남성",
-    recommender: "dekdjf0312"
+    gender: "M",
+    recommenderUsername: "dekdjf0312",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSave = () => {
@@ -29,19 +29,20 @@ export default function MypageProfileEdit() {
 
   return (
     <>
-
-      {/* 타이틀 */}
       <div className="profileedit-title-row">
         <div className="profileedit-page-title">개인정보 수정</div>
       </div>
 
       <div className="profileedit-info-box">
 
+        {/* 아이디 */}
         <div className="profileedit-form-group">
           <label>아이디</label>
-          <input type="text" value={form.userId} readOnly />
+          <input type="text" value={form.username} readOnly />
         </div>
 
+
+        {/* 비밀번호 */}
         <div className="profileedit-form-group">
           <label>비밀번호 변경</label>
           <input
@@ -53,6 +54,18 @@ export default function MypageProfileEdit() {
           />
         </div>
 
+        {/* 이름 */}
+        <div className="profileedit-form-group">
+          <label>이름</label>
+          <input
+            type="text"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+          />
+        </div>
+
+        {/* 닉네임 */}
         <div className="profileedit-form-group">
           <label>닉네임</label>
           <input
@@ -63,6 +76,7 @@ export default function MypageProfileEdit() {
           />
         </div>
 
+        {/* 연락처 */}
         <div className="profileedit-form-group">
           <label>연락처</label>
           <input
@@ -73,6 +87,7 @@ export default function MypageProfileEdit() {
           />
         </div>
 
+        {/* 이메일 */}
         <div className="profileedit-form-group">
           <label>이메일</label>
           <input
@@ -83,39 +98,30 @@ export default function MypageProfileEdit() {
           />
         </div>
 
-        <div className="profileedit-form-group">
-          <label>주소</label>
-          <input
-            type="text"
-            name="address"
-            value={form.address}
-            onChange={handleChange}
-          />
-        </div>
-
+        {/* 생년월일 */}
         <div className="profileedit-form-group">
           <label>생년월일</label>
           <input
-            type="text"
+            type="date"
             name="birth"
             value={form.birth}
             onChange={handleChange}
           />
         </div>
 
+        {/* 성별 */}
         <div className="profileedit-form-group">
           <label>성별</label>
-          <input
-            type="text"
-            name="gender"
-            value={form.gender}
-            onChange={handleChange}
-          />
+          <select name="gender" value={form.gender} onChange={handleChange}>
+            <option value="M">남성</option>
+            <option value="F">여성</option>
+          </select>
         </div>
 
+        {/* 추천인 ID */}
         <div className="profileedit-form-group">
           <label>추천인 ID</label>
-          <input type="text" value={form.recommender} readOnly />
+          <input type="text" value={form.recommenderUsername} readOnly />
         </div>
 
         <div className="profileedit-btn-wrap">
@@ -123,7 +129,6 @@ export default function MypageProfileEdit() {
             수정 완료
           </button>
         </div>
-
       </div>
     </>
   );

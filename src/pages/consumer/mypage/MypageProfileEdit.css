@@ -24,8 +24,8 @@
 
 .profileedit-page-title {
   font-size: 20px;
-  margin-bottom:20px;
-  margin-top:20px;
+  margin-bottom: 20px;
+  margin-top: 20px;
   font-weight: 800;
 }
 
@@ -99,3 +99,30 @@
 .profileedit-btn-save:hover {
   opacity: 0.85;
 }
+
+
+ /* Select Box (성별) */
+.profileedit-form-group select {
+  flex: 1;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 15px;
+  background: #fff;
+  color: #000;
+  appearance: none; 
+  cursor: pointer;
+}
+
+.profileedit-form-group select:focus {
+  border-color: var(--intel-blue);
+  outline: none;
+}
+
+.profileedit-form-group select {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg width='12' height='12' viewBox='0 0 20 20' fill='gray' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 7L10 12L15 7' stroke='gray' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 14px;
+}
+
