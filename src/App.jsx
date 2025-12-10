@@ -126,7 +126,7 @@ function AppContent() {
             {/* 고객센터 */}
             <Route path="/cs/notice" element={<Notice />} />
             <Route path="/cs/notice/:id" element={<NoticeDetail />} />
-            <Route path="/cs/inquiry/:id" element={<MyInquiryDetail />} />
+            <Route path="/cs/inquiry/:id" element={<InquiryDetail />} />
             <Route path="/cs/inquiryWrite" element={<InquiryWrite />} /> {/* 임시 */}
 
             {/* 납품문의 */}
