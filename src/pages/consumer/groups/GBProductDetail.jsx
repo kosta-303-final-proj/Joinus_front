@@ -86,16 +86,28 @@ export default function GBProductDetail() {
 }
 
     const handleWishList = () => {
-      myAxios().get("/product/productHeart", {params:{gbProductId: id, username: "kakao_4436272679"}})
-        .then(res=>{
-          const wishlisted = res.data;
-          setIsHeart(wishlisted)
-          setWishCount(prev => wishlisted ? prev + 1 : prev -1);
-        })
-        .catch(err=>{
-          console.log(err);
-        })
+      myAxios().get("/product/productHeart", {
+        params: { gbProductId: id, username: "kakao_4436272679" }
+      })
+      .then(res => {
+        setIsHeart(res.data.isHeart);
+        setWishCount(res.data.wishCount);
+      })
+      .catch(err => console.log(err));
     }
+
+    useEffect(() => {
+      myAxios()
+        .get("/product/productHeart/status", {
+          params: { productId: id, username: "kakao_4436272679" }  // gbProductId → productId
+        })
+        .then(res => {
+          setIsHeart(res.data);  // true/false
+          setWishCount(res.data.wishCount); // 서버에서 받은 최신 숫자
+        })
+        .catch(err => console.log(err));
+    }, [id]);
+
 
     return(
         <>
@@ -170,7 +182,7 @@ export default function GBProductDetail() {
                                     >
                                         <option value="" disabled>{groupName}</option>
                                         {options.map(opt => (
-                                            <option key={opt.id} value={opt.id}>{opt.name}</option>
+                                            <option key={opt.id} value={opt.id}>{opt.name.replace(/ /g, "\u00A0").padEnd(80, "\u00A0")}(+{opt.price})</option>
                                         ))}
                                     </Input>
                                 </FormGroup>
