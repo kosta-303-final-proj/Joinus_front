@@ -1,19 +1,16 @@
-import "bootstrap/dist/css/bootstrap.min.css";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Label, Card, CardBody, CardTitle, CardSubtitle } from "reactstrap";
-import axios from "axios";
-import { baseUrl,myAxios } from "../../../config";
+import { baseUrl, myAxios } from "../../../config";
+import GroupBuyCard from '../../../components/common/GroupBuyCard';
+import { transformProposal } from '../../../utils/searchDataTransform';
+import '../MainPage.css';
 
 export default function ProposalsList() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   const [proposals, setProposals] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
-  const observerRef = useRef(null);
+  const [loading, setLoading] = useState(true);
 
   const type = searchParams.get("type") || "popular";
 
@@ -39,83 +36,38 @@ export default function ProposalsList() {
     }
   };
 
-// 필터링 적용
-const filteredProposals = proposals.filter((p) => {
-  if (selectCategory.includes("전체")) return true;
-  return selectCategory.includes(p.category);
-  });
-
-  const fetchProposals = () => {
-    if (!hasMore) return;
-    setLoading(true);
-
-    myAxios()
-      .get(`/proposalList`, {
-        params: { page, type },
-      })
-      .then((res) => {
-        const transformed = res.data.map((p) => ({
-          id: p.id,
-          productName: p.productName,
-          category: p.category,
-          description: p.description,
-          originalPrice: p.originalPrice
-            ? `${p.originalPrice.toLocaleString()}원`
-            : "0원",
-          memberUsername: p.memberName || p.memberUsername,
-          date: p.createdAt ? p.createdAt.substring(0, 10) : "",
-          votes: p.voteCount || 0,
-          image: p.imageUrl
-            ? `${baseUrl}/imageView?filename=${p.imageUrl}`
-            : "https://picsum.photos/300/200",
-        }));
-
-        // 페이지 누적
-        setProposals((prev) => [...prev, ...transformed]);
-
-        if (transformed.length === 0) {
-          setHasMore(false);
-        }
-      })
-      .catch((e) => {
-        console.error("제안 목록 조회 실패:", e);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+  const handleSortClick = (sort) => {
+    setSelectedSort(sort);
+    // TODO: 정렬 로직 구현
   };
 
- 
-  useEffect(() => {
-    setProposals([]);
-    setPage(0);
-    setHasMore(true);
-  }, [type]);
+  // 필터링 적용
+  const filteredProposals = proposals.filter((p) => {
+    if (selectCategory.includes("전체")) return true;
+    return selectCategory.includes(p.category);
+  });
 
   useEffect(() => {
-    fetchProposals();
-  }, [page]);
+    const fetchProposals = async () => {
+      try {
+        setLoading(true);
+        const response = await myAxios().get('/api/proposals', {
+          params: { type },
+        });
 
-  useEffect(() => {
-    if (loading) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          setPage((p) => p + 1);
-        }
-      },
-      { threshold: 1 }
-    );
-
-    if (observerRef.current) {
-      observer.observe(observerRef.current);
-    }
-
-    return () => {
-      if (observerRef.current) observer.unobserve(observerRef.current);
+        // transformProposal을 사용하여 데이터 변환
+        const transformed = response.data.map(transformProposal);
+        setProposals(transformed);
+      } catch (e) {
+        console.error("제안 목록 조회 실패:", e);
+        setProposals([]);
+      } finally {
+        setLoading(false);
+      }
     };
-  }, [loading, hasMore]);
+
+    fetchProposals();
+  }, [type]);
 
   
 
@@ -176,71 +128,32 @@ const filteredProposals = proposals.filter((p) => {
       </div>
 
         <div style={styles.pageWrapper}>
-                <div style={styles.container} >
-                    <div style={{display:'grid', gap:"20px", gridTemplateColumns: "repeat(4, 1fr)"}}>
-                        {filteredProposals.map((p) => (
-                        <Card key={p.id} style={{width: "240px", boxShadow: "0 5px 20px rgba(88 88 88 / 20%)",border: "none",display: "flex",flexDirection: "column",
-                            justifyContent: "space-between",height: "390px",}}
-                          onClick={() => navigate(`/proposalsList/proposalDetail/${p.id}`)}
-                        >
-                          {/* 이미지 영역 */}
-                          <div style={{ height: "180px",  display: "flex",justifyContent: "center",alignItems: "center", backgroundColor: "#f5f5f5", }}>
-                            <img src={p.image}style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", }} />
-                          </div>
-
-                          {/* 카드 본문 영역 */}
-                          <CardBody style={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
-                            {/* 제목 & 카테고리 */}
-                            <CardTitle tag="h5" style={{ display: "flex",justifyContent: "space-between", marginBottom: "5px", }}>
-                              <div style={{ border: "1px solid black", fontSize: "10px", padding: "5px" }}>
-                                {p.category}
-                              </div>
-                            </CardTitle>
-
-                            {/* 제품명 */}
-                            <CardSubtitle className="mb-1 text-muted" tag="h6" style={{ fontSize: "14px", minHeight: "20px", height:'40px',WebkitLineClamp: 2,WebkitBoxOrient: "vertical",overflow: "hidden",
-                              textOverflow: "ellipsis",lineHeight: "1.4em",maxHeight: "4.2em",marginTop: "4px"
-                             }}>
-                              {p.productName}
-                            </CardSubtitle>
-
-                            {/* 설명 */}
-                            {/* <CardSubtitle style={{  }}>
-                              <div style={{ fontSize: "12px",display: "-webkit-box",WebkitLineClamp: 2,WebkitBoxOrient: "vertical",overflow: "hidden",
-                                  textOverflow: "ellipsis",lineHeight: "1.4em",maxHeight: "4.2em",marginTop: "4px"}}>
-                                {p.description}
-                              </div>
-                            </CardSubtitle> */}
-
-                            {/* 가격 */}
-                            <div className="fw-bold" style={{ fontSize: "24px", marginBottom: "10px", minHeight: "30px" }}>
-                              {p.originalPrice}
-                            </div>
-
-                            {/* 제안자 & 날짜 */}
-                            <CardSubtitle style={{ marginBottom: "5px" }}>
-                              <div style={{ justifyContent: "space-between", display: "flex" }}>
-                                <Label style={{ fontSize: "12px" }}>제안자 : {p.memberUsername}</Label>
-                                <Label style={{ color: "black", fontSize: "10px" }}>{p.date}</Label>
-                              </div>
-                            </CardSubtitle>
-
-                            {/* 투표 */}
-                            <CardSubtitle>
-                              <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                                <img 
-                                    src={p.isDdabong ? "/colorddabong.png" : "/ddabong.png"} 
-                                    style={{ width: "20px" }} 
-                                  />
-                                <div>{p.votes}</div>
-                              </div>
-                            </CardSubtitle>
-                          </CardBody>
-                        </Card>
-                      ))}
-                    </div>
-                </div>
-            </div>
+          <div style={styles.container}>
+            {loading ? (
+              <div style={{ textAlign: 'center', padding: '50px' }}>로딩 중...</div>
+            ) : filteredProposals.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '20px' }}>데이터가 없습니다.</div>
+            ) : (
+              <div className="card-grid" style={{ gap: "20px" }}>
+                {filteredProposals.map((p) => (
+                  <GroupBuyCard
+                    key={p.id}
+                    image={p.image}
+                    title={p.title}
+                    category={p.category}
+                    status={p.status}
+                    price={p.price}
+                    rating={p.rating}
+                    currentParticipants={p.currentParticipants}
+                    maxParticipants={p.maxParticipants}
+                    productId={p.id}
+                    isProposal={true}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
     </>
   );
 }
