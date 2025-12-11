@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Home, User, LogOut } from 'lucide-react';
 import { myAxios } from '../../config';
@@ -8,71 +8,89 @@ const Header = ({ title = "페이지 제목" }) => {
   const navigate = useNavigate();
   const [showUserMenu, setShowUserMenu] = useState(false);
 
-  // 로그아웃 처리 함수
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  useEffect(() => {
+    // 사이드바 상태 체크
+    const checkSidebar = () => {
+      const sidebar = document.querySelector('.sidebar');
+      const isCollapsed = sidebar?.classList.contains('collapsed');
+      setSidebarCollapsed(isCollapsed);
+    };
+    checkSidebar();
+
+    // DOM 변경 감지 (사이드바 토글 시)
+    const observer = new MutationObserver(checkSidebar);
+    const sidebar = document.querySelector('.sidebar');
+    
+    if (sidebar) {
+      observer.observe(sidebar, { 
+        attributes: true, 
+        attributeFilter: ['class'] 
+      });
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+
   const handleLogout = async () => {
     setShowUserMenu(false);
 
     try {
-      // 1. 백엔드 로그아웃 API 호출 (예시)
-      // 백엔드에서 토큰 무효화 처리가 필요하다면 이 부분을 사용.
-      // await myAxios().post('/admin/logout'); 
-
-      // 2. 클라이언트 측 토큰/정보 제거
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
-      // 세션 정보 등을 관리하는 상태도 여기서 초기화해야.
-
       alert("로그아웃되었습니다.");
-
     } catch (error) {
       console.error("로그아웃 중 오류 발생:", error);
-      // 오류가 발생해도 사용자 경험을 위해 강제로 토큰 삭제 후 이동
     } finally {
-      // 3. 관리자 로그인 페이지로 이동
       navigate('/admin/login');
     }
   };
 
-  // 홈 버튼 클릭 핸들러
   const handleHomeClick = () => {
-    // 메뉴가 열려있다면 닫기
     setShowUserMenu(false);
-    // 메인 페이지로 이동
     navigate('/');
   };
 
   return (
-    <header className="admin-header">
-      {/* 왼쪽: 홈 아이콘 */}
-      <div className="header-left">
-        <button className="home-btn"
+    <header 
+      className="admin-header"
+      style={{
+        paddingLeft: sidebarCollapsed ? '103px' : '293px'
+      }}
+    >
+      <div className="admin-header-left">
+        <button 
+          className="admin-header-home-btn"
           title="홈으로"
-          onClick={handleHomeClick}>
+          onClick={handleHomeClick}
+        >
           <Home size={20} />
         </button>
-        <h1 className="page-title">{title}</h1>
+        <h1 className="admin-header-title">{title}</h1>
       </div>
 
-      {/* 오른쪽: 로그인 관련 메뉴 */}
-      <div className="header-right">
-        <div className="user-menu-container">
+      {/*  오른쪽 */}
+      <div className="admin-header-right">
+        <div className="admin-header-user-menu-container">
           <button
-            className="user-btn"
+            className="admin-header-user-btn"
             onClick={() => setShowUserMenu(!showUserMenu)}
           >
             <User size={20} />
           </button>
 
-          {/* 드롭다운 메뉴 */}
+          {/*  드롭다운 */}
           {showUserMenu && (
-            <div className="user-dropdown">
-              <div className="user-info">
-                <p className="user-name">관리자</p>
-                <p className="user-email">admin@joinus.com</p>
+            <div className="admin-header-user-dropdown">
+              <div className="admin-header-user-info">
+                <p className="admin-header-user-name">관리자</p>
+                <p className="admin-header-user-email">admin@joinus.com</p>
               </div>
-              <div className="user-menu-divider"></div>
+              <div className="admin-header-user-divider"></div>
               <button
-                className="user-menu-item"
+                className="admin-header-user-menu-item"
                 onClick={handleLogout}
               >
                 <LogOut size={16} />

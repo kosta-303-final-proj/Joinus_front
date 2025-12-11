@@ -1,27 +1,54 @@
+// ========================================
 // 사용법
-// 1. simple
+// ========================================
+
+// 1. simple (기본 옵션 사용, 초기화 버튼 없음)
 {/* <SearchFilter 
   variant="simple"
   onSearch={handleSearch}
 /> */}
-// 2. withDate
+
+// 2. simple (커스텀 옵션, 초기화 버튼 있음)
+{/* <SearchFilter 
+  variant="simple"
+  searchOptions={[
+    { value: 'question', label: '문의 내용' },
+    { value: 'memberUsername', label: '작성자' }
+  ]}
+  showResetButton={true}  // 
+  onSearch={handleSearch}
+  onReset={handleReset}
+/> */}
+
+// 3. withDate (기간 검색 포함, 초기화 버튼 필수)
 {/* <SearchFilter 
   variant="withDate"
+  searchOptions={[
+    { value: 'orderId', label: '주문번호' },
+    { value: 'memberName', label: '구매자명' }
+  ]}
+  showResetButton={true}  //
   onSearch={handleSearch}
+  onReset={handleReset}
 /> */}
-// 3. withTabs (Ex. 교환/반품 관리 페이지)
+
+// 4. withTabs (탭 포함, 초기화 버튼 필수)
 {/* <SearchFilter 
   variant="withTabs"
-  tabs={['교환신청', '교환승인', '교환완료', '교환거절']} <<필요한 만큼 기재하시면 됩니다!!
-  secondTabs={['반품신청', '반품승인', '반품완료', '반품거절']}  <<필요한 만큼 기재하시면 됩니다!!
+  tabs={['교환신청', '교환승인', '교환완료', '교환거절']}
+  secondTabs={['반품신청', '반품승인', '반품완료', '반품거절']}
+  searchOptions={[
+    { value: 'orderId', label: '주문번호' },
+    { value: 'productName', label: '상품명' }
+  ]}
+  showResetButton={true}  // 
   onSearch={handleSearch}
   onReset={handleReset}
 /> */}
 
 import React, { useState } from 'react';
 import { 
-  Input, Button, Label,
-  Nav, NavItem, NavLink 
+  Input, Button, Label 
 } from 'reactstrap';
 import './SearchFilter.css';
 
@@ -29,11 +56,17 @@ function SearchFilter({
   variant = 'simple',
   tabs = [],
   secondTabs = [],
+  searchOptions = [ 
+    { value: 'title', label: '제목' },
+    { value: 'id', label: 'ID' },
+    { value: 'content', label: '내용' }
+  ],
+  showResetButton = false,  // ✅ 초기화 버튼 표시 여부
   onSearch,
   onReset
 }) {
   
-  const [searchType, setSearchType] = useState('게시글 제목');
+  const [searchType, setSearchType] = useState(searchOptions[0]?.value || '');
   const [searchKeyword, setSearchKeyword] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -54,7 +87,7 @@ function SearchFilter({
   };
   
   const handleReset = () => {
-    setSearchType('게시글 제목');
+    setSearchType(searchOptions[0]?.value || '');
     setSearchKeyword('');
     setStartDate('');
     setEndDate('');
@@ -64,19 +97,19 @@ function SearchFilter({
   };
   
   return (
-    <div className="search-filter-box">
+    <div className="admin-search-filter-box">
       
        {/* 탭 (withTabs일 때만) */}
       {variant === 'withTabs' && tabs.length > 0 && (
         <>
           {/* 교환 탭 */}
-          <div className="filter-section">
+          <div className="admin-search-filter-section">
             <Label>교환</Label>
-            <div className="pill-tabs">
+            <div className="admin-search-filter-pill-tabs">
               {tabs.map(tab => (
                 <button
                   key={tab}
-                  className={`pill-tab ${activeTab === tab ? 'active' : ''}`}
+                  className={`admin-search-filter-pill-tab ${activeTab === tab ? 'active' : ''}`}
                   onClick={() => setActiveTab(tab)}
                 >
                   {tab}
@@ -87,13 +120,13 @@ function SearchFilter({
           
           {/* 반품 탭 */}
           {secondTabs.length > 0 && (
-            <div className="filter-section">
+            <div className="admin-search-filter-section">
               <Label>반품</Label>
-              <div className="pill-tabs">
+              <div className="admin-search-filter-pill-tabs">
                 {secondTabs.map(tab => (
                   <button
                     key={tab}
-                    className={`pill-tab ${activeSecondTab === tab ? 'active' : ''}`}
+                    className={`admin-search-filter-pill-tab ${activeSecondTab === tab ? 'active' : ''}`}
                     onClick={() => setActiveSecondTab(tab)}
                   >
                     {tab}
@@ -107,9 +140,9 @@ function SearchFilter({
       
       {/* 기간 선택 (withDate, withTabs일 때만) */}
       {(variant === 'withDate' || variant === 'withTabs') && (
-        <div className="filter-section">
+        <div className="admin-search-filter-section">
           <Label>기간</Label>
-          <div className="date-range">
+          <div className="admin-search-filter-date-range">
             <Input 
               type="date"
               value={startDate}
@@ -126,17 +159,19 @@ function SearchFilter({
       )}
       
       {/* 검색 (공통) */}
-      <div className="filter-section">
+      <div className="admin-search-filter-section">
         <Label>검색 분류</Label>
-        <div className="search-row">
+        <div className="admin-search-filter-search-row">
           <Input 
             type="select"
             value={searchType}
             onChange={(e) => setSearchType(e.target.value)}
           >
-            <option>제목</option>
-            <option>ID</option>
-            <option>내용</option>
+            {searchOptions.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
           </Input>
           
           <Input 
@@ -150,13 +185,21 @@ function SearchFilter({
       </div>
       
       {/* 버튼 */}
-      <div className="filter-buttons">
-        <Button color="primary" className="search-btn" onClick={handleSearch}>
+      <div className="admin-search-filter-buttons">
+        <Button 
+          color="primary" 
+          className="admin-search-filter-search-btn" 
+          onClick={handleSearch}
+        >
           검색
         </Button>
-        <Button outline onClick={handleReset}>
-          설정 초기화
-        </Button>
+        
+        {/* 초기화 버튼 (조건부 렌더링) */}
+        {showResetButton && (
+          <Button outline onClick={handleReset}>
+            설정 초기화
+          </Button>
+        )}
       </div>
       
     </div>

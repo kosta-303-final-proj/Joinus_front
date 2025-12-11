@@ -1,68 +1,120 @@
-import React, { useState } from 'react';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { myAxios } from '../../config';
 import Header from './Header';
 import '../../styles/components/button.css';
 import './admin-common.css';
 import './AdminInquiryDetail.css';
 
-const InquiryDetail = () => {
+const AdminInquiryDetail = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { id } = useParams();
-  const inquiry = location.state?.inquiry;
+  const { type, id } = useParams();  // ✅ type, id 받기
+  
+  const [inquiry, setInquiry] = useState(null);
+  const [answer, setAnswer] = useState('');
+  const [loading, setLoading] = useState(true);
 
-  const [answer, setAnswer] = useState(inquiry?.answer || '');
+  // ========================================
+  // 상세 조회
+  // ========================================
+  useEffect(() => {
+    const fetchInquiry = async () => {
+      try {
+        setLoading(true);
+        // ✅ 수정된 URL
+        const response = await myAxios().get(`/admin/inquiryDetail/${type}/${id}`);
+        setInquiry(response.data);
+        setAnswer(response.data.answer || '');
+      } catch (error) {
+        console.error('문의 조회 실패:', error);
+        alert('문의를 불러오는데 실패했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const isAnswered = inquiry?.status === '답변완료';
+    fetchInquiry();
+  }, [type, id]);
 
-  const handleSubmit = () => {
-    console.log('답변 등록:', { inquiryId: id, answer });
-    // API 호출 후 목록으로 돌아가기
-    navigate('/admin/faqAndInquiryList');
-  };
+  // ========================================
+  // 답변 등록
+  // ========================================
+  const handleSubmit = async () => {
+    if (!answer.trim()) {
+      alert('답변을 입력해주세요.');
+      return;
+    }
 
-  const handleSave = () => {
-    console.log('임시 저장:', { inquiryId: id, answer });
+    try {
+      // ✅ 수정된 URL
+      await myAxios().post(`/admin/inquiryDetail/${type}/${id}/answer`, {
+        answer: answer
+      });
+      alert('답변이 등록되었습니다.');
+      navigate('/admin/faqAndInquiryList');
+    } catch (error) {
+      console.error('답변 등록 실패:', error);
+      alert('답변 등록에 실패했습니다.');
+    }
   };
 
   const handleCancel = () => {
     navigate('/admin/faqAndInquiryList');
   };
 
-  if (!inquiry) {
-    return <div>문의를 찾을 수 없습니다.</div>;
+  if (loading) {
+    return (
+      <div className="admin-layout">
+        <div className="main-content">
+          <div className="content-area">로딩 중...</div>
+        </div>
+      </div>
+    );
   }
+
+  if (!inquiry) {
+    return (
+      <div className="admin-layout">
+        <div className="main-content">
+          <div className="content-area">문의를 찾을 수 없습니다.</div>
+        </div>
+      </div>
+    );
+  }
+
+  const isAnswered = inquiry.status === 'ANSWERED';
 
   return (
     <div className="admin-layout">
-      
       <div className="main-content">
-        <Header title="문의 답변하기" />
+        <Header title={isAnswered ? "문의 상세" : "문의 답변하기"} />
         
         <div className="content-area">
           <div className="inquiry-detail-container">
+            
             {/* 문의 정보 */}
             <div className="inquiry-info-section">
-              <div className="info-row">
-                <div className="info-label">제목</div>
-                <div className="info-value">{inquiry.title}</div>
-              </div>
-
+              
+              {/* 문의 유형 */}
               <div className="info-row">
                 <div className="info-label">문의 유형</div>
-                <div className="info-value">{inquiry.type}</div>
+                <div className="info-value">
+                  {inquiry.type === 'QNA' 
+                    ? '상품문의' 
+                    : (inquiry.categoryDescription || '1:1문의')}
+                </div>
               </div>
 
-              {/* 공구 상품 문의일 때 */}
-              {inquiry.inquiryType === '공구상품' && inquiry.productUrl && (
+              {/* 공구 상품 (있을 때만) */}
+              {inquiry.gbProductId && (
                 <div className="info-row">
-                  <div className="info-label">공구 상품 url</div>
+                  <div className="info-label">공구 상품</div>
                   <div className="info-value">
                     <a 
-                      href={inquiry.productUrl} 
+                      href={`/gbProduct/${inquiry.gbProductId}`}
                       onClick={(e) => {
                         e.preventDefault();
-                        navigate(inquiry.productUrl);
+                        window.open(`/gbProduct/${inquiry.gbProductId}`, '_blank');
                       }}
                       style={{ 
                         color: '#3b82f6', 
@@ -70,46 +122,55 @@ const InquiryDetail = () => {
                         cursor: 'pointer'
                       }}
                     >
-                      상품 보기
+                      {inquiry.gbProductName}
                     </a>
                   </div>
                 </div>
               )}
 
-              {/* 1:1 문의이고 주문번호 있을 때 */}
-              {inquiry.inquiryType === '1:1문의' && inquiry.orderNumber && (
+              {/* 주문번호 (INQUIRY + 주문 있을 때) */}
+              {inquiry.type === 'INQUIRY' && inquiry.orderId && (
                 <div className="info-row">
                   <div className="info-label">주문 번호</div>
-                  <div className="info-value">{inquiry.orderNumber}</div>
+                  <div className="info-value">{inquiry.orderId}</div>
                 </div>
               )}
 
+              {/* 작성자 */}
               <div className="info-row">
                 <div className="info-label">작성자</div>
-                <div className="info-value">{inquiry.author}</div>
+                <div className="info-value">{inquiry.memberUsername}</div>
               </div>
 
+              {/* 작성 날짜 */}
               <div className="info-row">
                 <div className="info-label">작성 날짜</div>
-                <div className="info-value">{inquiry.date}</div>
-              </div>
-
-              <div className="info-row column">
-                <div className="info-label">문의 내용</div>
-                <div className="info-value content">
-                  {inquiry.content}
+                <div className="info-value">
+                  {new Date(inquiry.questionedAt).toLocaleString('ko-KR')}
                 </div>
               </div>
 
-              {/* 이미지 첨부 (옵션) */}
-              {inquiry.image && (
+              {/* 문의 내용 */}
+              <div className="info-row column">
+                <div className="info-label">문의 내용</div>
+                <div className="info-value content">
+                  {inquiry.question}
+                </div>
+              </div>
+
+              {/* 이미지 (INQUIRY + 이미지 있을 때) */}
+              {inquiry.type === 'INQUIRY' && inquiry.imageFileId && (
                 <div className="info-row">
-                  <div className="info-label">이미지<br/>(민원 사진 첨부하기)</div>
+                  <div className="info-label">첨부 이미지</div>
                   <div className="info-value">
                     <img 
-                      src={inquiry.image} 
+                      src={`/api/file/${inquiry.imageFileId}`}
                       alt="문의 이미지" 
-                      style={{ maxWidth: '300px', border: '1px solid #e5e7eb' }}
+                      style={{ 
+                        maxWidth: '400px', 
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '4px'
+                      }}
                     />
                   </div>
                 </div>
@@ -137,10 +198,7 @@ const InquiryDetail = () => {
                     취소
                   </button>
                   <button className="btn-primary" onClick={handleSubmit}>
-                    등록
-                  </button>
-                  <button className="btn-secondary" onClick={handleSave}>
-                    저장
+                    답변 등록
                   </button>
                 </>
               )}
@@ -157,4 +215,4 @@ const InquiryDetail = () => {
   );
 };
 
-export default InquiryDetail;
+export default AdminInquiryDetail;

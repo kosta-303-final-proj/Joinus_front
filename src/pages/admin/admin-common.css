@@ -20,6 +20,10 @@
   margin-left: 70px;
 }
 
+.admin-layout:has(.sidebar.collapsed) .admin-header {
+  padding-left: 103px;
+}
+
 .content-area {
   padding: var(--spacing-8);
 }

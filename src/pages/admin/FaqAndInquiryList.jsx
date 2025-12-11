@@ -7,36 +7,46 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import '../../styles/components/button.css';
 import '../../styles/components/table.css';
 import './admin-common.css';
-import './FaqAndInquiryList.css'
-
+import './FaqAndInquiryList.css';
 
 const FaqAndInquiryList = () => {
     const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState('FAQ');
-    const [inquiryFilter, setInquiryFilter] = useState('전체');
 
+    // 기본 탭: 문의
+    const [activeTab, setActiveTab] = useState('문의');
+
+    // ========== FAQ 관련 ==========
     const [faqCurrentPage, setFaqCurrentPage] = useState(0);
     const [expandedFaq, setExpandedFaq] = useState(null);
-
     const [faqPage, setFaqPage] = useState({
-        content: [], // FaqDto 목록
+        content: [],
         totalPages: 0,
         totalElements: 0,
         number: 0,
     });
 
-    // const filteredInquiries = inquiryFilter === '전체'
-    //     ? inquiries
-    //     : inquiries.filter(i => i.status === '답변대기');
+    // ========== 문의 관련 ==========
+    const [inquiryFilter, setInquiryFilter] = useState('전체');
+    const [inquiryCurrentPage, setInquiryCurrentPage] = useState(0);
+    const [searchKeyword, setSearchKeyword] = useState('');
+    const [searchType, setSearchType] = useState('question');
+    const [inquiryPage, setInquiryPage] = useState({
+        content: [],
+        totalPages: 0,
+        totalElements: 0,
+        number: 0,
+    });
 
+    // ========================================
     // FAQ 데이터 조회
+    // ========================================
     const fetchFaqList = useCallback(async (page) => {
         try {
             const params = {
                 page: page,
                 size: 10,
             };
-            const response = await myAxios().get('/admin/faqList', { params });
+            const response = await myAxios().get('/admin/faqList', { params });  // ✅ 수정!
             setFaqPage(response.data);
             setFaqCurrentPage(page);
         } catch (error) {
@@ -44,95 +54,166 @@ const FaqAndInquiryList = () => {
         }
     }, []);
 
-    // FAQ 탭일 때만 데이터 로딩
+    // ========================================
+    // 문의 조회
+    // ========================================
+    const fetchInquiryList = async (page, status, type, keyword) => {
+    try {
+        const params = {
+            page: page,
+            size: 10,
+            status: status === '전체' ? null : status,
+            searchType: type,
+            searchKeyword: keyword || null
+        };
+        const response = await myAxios().get('/admin/inquiryList', { params });
+        setInquiryPage(response.data);
+        setInquiryCurrentPage(page);
+    } catch (error) {
+        console.error("문의 목록 조회 실패:", error);
+    }
+};
+
+    // ========================================
+    // FAQ 탭 활성화 시 데이터 로딩
+    // ========================================
     useEffect(() => {
         if (activeTab === 'FAQ') {
             fetchFaqList(faqCurrentPage);
         }
-    }, [activeTab, faqCurrentPage, fetchFaqList]); // activeTab이나 페이지 변경 시 재요청
+    }, [activeTab, faqCurrentPage, fetchFaqList]);
 
-    //  FAQ 페이지 변경 핸들러
+    // ========================================
+    // 문의 탭 활성화 시 데이터 로딩
+    // ========================================
+    useEffect(() => {
+        if (activeTab === '문의') {
+            fetchInquiryList(inquiryCurrentPage, inquiryFilter, searchType, searchKeyword);
+        }
+    }, [activeTab, inquiryCurrentPage, inquiryFilter, searchType, searchKeyword]);
+
+    // ========================================
+    // FAQ 페이지 변경
+    // ========================================
     const handleFaqPageChange = (pageNumber) => {
         if (pageNumber >= 0 && pageNumber < faqPage.totalPages) {
             setFaqCurrentPage(pageNumber);
         }
     };
 
+    // ========================================
+    // 문의 페이지 변경
+    // ========================================
+    const handleInquiryPageChange = (pageNumber) => {
+        if (pageNumber >= 0 && pageNumber < inquiryPage.totalPages) {
+            setInquiryCurrentPage(pageNumber);
+        }
+    };
+
+    // ========================================
+    // FAQ 아코디언 토글
+    // ========================================
     const toggleFaq = (id) => {
         setExpandedFaq(expandedFaq === id ? null : id);
     };
 
-    const handleInquiryDetail = (id) => {
-        navigate(`/inquiry/${id}`);
+    // ========================================
+    // 문의 필터 변경
+    // ========================================
+    const handleInquiryFilterChange = (filter) => {
+        setInquiryFilter(filter);
+        setInquiryCurrentPage(0);  // 첫 페이지로
+    };
+
+    // ========================================
+    // 문의 검색
+    // ========================================
+
+    const handleInquirySearch = (filters) => {
+        setSearchType(filters.searchType || 'question');
+        setSearchKeyword(filters.searchKeyword || '');
+        setInquiryCurrentPage(0);
     };
 
     return (
         <div className="admin-layout">
-
             <div className="main-content">
                 <Header title="문의 내역" />
 
                 <div className="content-area">
 
-                    {/* 탭 */}
+                    {/* ========== 메인 탭 (FAQ / 문의) ========== */}
                     <div className="tabs-container">
                         <div className="tabs">
                             <button
                                 className={`tab ${activeTab === 'FAQ' ? 'active' : ''}`}
-                                onClick={() => setActiveTab('FAQ')}
+                                onClick={() => {
+                                    setActiveTab('FAQ');
+                                    setFaqCurrentPage(0);  // 페이지 초기화
+                                }}
                             >
                                 FAQ
                             </button>
                             <button
                                 className={`tab ${activeTab === '문의' ? 'active' : ''}`}
-                                onClick={() => setActiveTab('문의')}
+                                onClick={() => {
+                                    setActiveTab('문의');
+                                    setInquiryCurrentPage(0);  // 페이지 초기화
+                                }}
                             >
                                 문의
                             </button>
                         </div>
                     </div>
 
-                    {/* FAQ 탭 */}
+                    {/* ========================================
+                        FAQ 탭
+                    ======================================== */}
                     {activeTab === 'FAQ' && (
                         <>
                             {/* 테이블 */}
                             <div className="table-container">
                                 <table className="admin-table">
                                     <colgroup>
-                                        <col style={{ width: '30px' }} />
-                                        <col style={{ width: 'auto' }} />
                                         <col style={{ width: '80px' }} />
-                                        <col style={{ width: '40px' }} />
+                                        <col style={{ width: 'auto' }} />
+                                        <col style={{ width: '120px' }} />
+                                        <col style={{ width: '80px' }} />
                                     </colgroup>
                                     <thead>
                                         <tr>
                                             <th>번호</th>
-                                            <th>내용</th>
+                                            <th>질문</th>
                                             <th>작성 날짜</th>
                                             <th>작업</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {faqs.length === 0 ? (
+                                        {faqPage.content.length === 0 ? (
                                             <tr>
                                                 <td colSpan="4" className="empty-state">
                                                     <p>등록된 FAQ가 없습니다.</p>
                                                 </td>
                                             </tr>
                                         ) : (
-                                            faqs.map((faq) => (
+                                            faqPage.content.map((faq) => (
                                                 <React.Fragment key={faq.id}>
-
                                                     {/* 질문 행 */}
                                                     <tr
                                                         onClick={() => toggleFaq(faq.id)}
                                                         style={{ cursor: 'pointer' }}
+                                                        className={expandedFaq === faq.id ? 'faq-expanded' : ''}
                                                     >
                                                         <td>{faq.id}</td>
                                                         <td className="title-cell" style={{ textAlign: 'left' }}>
-                                                            {faq.question}
+                                                            <span style={{ fontWeight: 500 }}>Q.</span> {faq.question}
+                                                            {expandedFaq === faq.id ? (
+                                                                <ChevronUp size={16} style={{ marginLeft: '10px', verticalAlign: 'middle' }} />
+                                                            ) : (
+                                                                <ChevronDown size={16} style={{ marginLeft: '10px', verticalAlign: 'middle' }} />
+                                                            )}
                                                         </td>
-                                                        <td>{faq.date}</td>
+                                                        <td>{faq.createdAt ? faq.createdAt.substring(0, 10) : 'N/A'}</td>
                                                         <td>
                                                             <button
                                                                 className="btn-secondary"
@@ -147,15 +228,13 @@ const FaqAndInquiryList = () => {
                                                         </td>
                                                     </tr>
 
-                                                    {/* 답변 행 (아코디언 확장 시) */}
+                                                    {/* 답변 행 */}
                                                     {expandedFaq === faq.id && (
                                                         <tr className="faq-answer-row">
                                                             <td colSpan="4" className="faq-answer-cell">
                                                                 <div className="faq-answer-content">
                                                                     <strong className="answer-label">A.</strong>
-                                                                    <div className="answer-text">
-                                                                        {faq.answer}
-                                                                    </div>
+                                                                    <div className="answer-text">{faq.answer}</div>
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -171,6 +250,7 @@ const FaqAndInquiryList = () => {
                             <div style={{
                                 display: 'flex',
                                 justifyContent: 'flex-end',
+                                marginTop: '16px',
                                 marginBottom: '16px'
                             }}>
                                 <button
@@ -182,38 +262,49 @@ const FaqAndInquiryList = () => {
                             </div>
 
                             {/* 페이지네이션 */}
-                            <div className="pagination">
-                                <button className="page-btn active">1</button>
-                                <button className="page-btn">2</button>
-                                <button className="page-btn">3</button>
-                            </div>
-
-
+                            {faqPage.totalPages > 0 && (
+                                <div className="pagination">
+                                    {Array.from({ length: faqPage.totalPages }, (_, i) => (
+                                        <button
+                                            key={i}
+                                            className={`page-btn ${i === faqCurrentPage ? 'active' : ''}`}
+                                            onClick={() => handleFaqPageChange(i)}
+                                        >
+                                            {i + 1}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
                         </>
                     )}
-                    {/* =============== 문의 탭 =================*/}
+
+                    {/* ========================================
+                        문의 탭
+                    ======================================== */}
                     {activeTab === '문의' && (
                         <>
                             {/* 검색 필터 */}
                             <SearchFilter
-                                variant="withDate"
-                                onSearch={(filters) => {
-                                    console.log('검색:', filters);
-                                }}
+                                variant="simple"
+                                searchOptions={[
+                                    { value: 'question', label: '문의 내용' },
+                                    { value: 'memberUsername', label: '작성자' }
+                                ]}
+                                onSearch={handleInquirySearch}
                             />
 
-                            {/* 답변대기/전체 탭 */}
+                            {/* 답변대기/전체 서브 탭 */}
                             <div className="tabs-container">
                                 <div className="tabs">
                                     <button
                                         className={`tab ${inquiryFilter === '답변대기' ? 'active' : ''}`}
-                                        onClick={() => setInquiryFilter('답변대기')}
+                                        onClick={() => handleInquiryFilterChange('답변대기')}
                                     >
                                         답변대기
                                     </button>
                                     <button
                                         className={`tab ${inquiryFilter === '전체' ? 'active' : ''}`}
-                                        onClick={() => setInquiryFilter('전체')}
+                                        onClick={() => handleInquiryFilterChange('전체')}
                                     >
                                         전체
                                     </button>
@@ -244,37 +335,50 @@ const FaqAndInquiryList = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {filteredInquiries.length === 0 ? (
+                                        {inquiryPage.content.length === 0 ? (
                                             <tr>
                                                 <td colSpan="7" className="empty-state">
                                                     <p>문의 내역이 없습니다.</p>
                                                 </td>
                                             </tr>
                                         ) : (
-                                            filteredInquiries.map((inquiry) => (
-                                                <tr key={inquiry.id}>
+                                            inquiryPage.content.map((inquiry) => (
+                                                <tr
+                                                    key={`${inquiry.type}-${inquiry.id}`}
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={() => navigate(`/admin/admininquiryDetail/${inquiry.type}/${inquiry.id}`)}
+                                                >
                                                     <td>{inquiry.id}</td>
-                                                    <td>{inquiry.type}</td>
-                                                    <td className="title-cell" style={{ textAlign: 'left' }}>
-                                                        {inquiry.title}
-                                                    </td>
-                                                    <td>{inquiry.author}</td>
-                                                    <td>{inquiry.date}</td>
                                                     <td>
-                                                        <span className={`status-badge ${inquiry.status === '답변대기' ? 'red' : 'green'
+                                                        {inquiry.type === 'QNA'
+                                                            ? '상품문의'
+                                                            : (inquiry.categoryDescription || inquiry.category || '1:1문의')}
+                                                    </td>
+                                                    <td className="title-cell" style={{ textAlign: 'left' }}>
+                                                        {inquiry.question}
+                                                    </td>
+                                                    <td>{inquiry.memberUsername}</td>
+                                                    <td>
+                                                        {inquiry.questionedAt
+                                                            ? new Date(inquiry.questionedAt).toLocaleDateString('ko-KR')
+                                                            : 'N/A'}
+                                                    </td>
+                                                    <td>
+                                                        <span className={`status-badge ${inquiry.status === 'PENDING' ? 'red' : 'green'
                                                             }`}>
-                                                            {inquiry.status}
+                                                            {inquiry.statusDescription}
                                                         </span>
                                                     </td>
                                                     <td>
                                                         <button
                                                             className="btn-secondary"
                                                             style={{ padding: '6px 16px' }}
-                                                            onClick={() => navigate(`/admin/inquiryDetail/${inquiry.id}`, {
-                                                                state: { inquiry }
-                                                            })}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                navigate(`/admin/admininquiryDetail/${inquiry.type}/${inquiry.id}`);
+                                                            }}
                                                         >
-                                                            {inquiry.status === '답변대기' ? '답변하기' : '상세보기'}
+                                                            {inquiry.status === 'PENDING' ? '답변하기' : '상세보기'}
                                                         </button>
                                                     </td>
                                                 </tr>
@@ -285,17 +389,21 @@ const FaqAndInquiryList = () => {
                             </div>
 
                             {/* 페이지네이션 */}
-                            <div className="pagination">
-                                <button className="page-btn active">1</button>
-                                <button className="page-btn">2</button>
-                                <button className="page-btn">3</button>
-                                <span className="page-dots">...</span>
-                                <button className="page-btn">67</button>
-                                <button className="page-btn">68</button>
-                            </div>
+                            {inquiryPage.totalPages > 0 && (
+                                <div className="pagination">
+                                    {Array.from({ length: inquiryPage.totalPages }, (_, i) => (
+                                        <button
+                                            key={i}
+                                            className={`page-btn ${i === inquiryCurrentPage ? 'active' : ''}`}
+                                            onClick={() => handleInquiryPageChange(i)}
+                                        >
+                                            {i + 1}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
                         </>
                     )}
-
                 </div>
             </div>
         </div>

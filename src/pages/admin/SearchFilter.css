@@ -1,12 +1,15 @@
+/* ========================================
+   Admin Search Filter Styles
+======================================== */
 
-.search-filter-box {
+.admin-search-filter-box {
   background: #ffffff;
   border: 1px solid #e5e7eb;
   padding: 24px;
   margin-bottom: 24px;
 }
 
-.filter-section {
+.admin-search-filter-section {
   padding: 10px 0;
   padding-right: 20px;
   display: flex;
@@ -15,11 +18,11 @@
   border: 1px solid #e5e7eb;
 }
 
-.filter-section:last-of-type {
+.admin-search-filter-section:last-of-type {
   margin-bottom: 0;
 }
 
-.filter-section label {
+.admin-search-filter-section label {
   font-weight: 600;
   font-size: 14px;
   background-color: #F7F7F7;
@@ -31,15 +34,17 @@
   align-items: center; 
 }
 
-/* 기간 */
-.date-range {
+/* ========================================
+   기간 선택
+======================================== */
+.admin-search-filter-date-range {
   display: flex;
   align-items: center;
   gap: 10px;
   flex: 1;
 }
 
-.date-range input {
+.admin-search-filter-date-range input {
   flex: 1;
   max-width: 200px;
   padding: 10px 14px;
@@ -48,18 +53,20 @@
   font-size: 14px;
 }
 
-.date-range span {
+.admin-search-filter-date-range span {
   color: #6b7280;
 }
 
-/* 검색 */
-.search-row {
+/* ========================================
+   검색
+======================================== */
+.admin-search-filter-search-row {
   display: flex;
   gap: 20px;
   flex: 1;
 }
 
-.search-row select {
+.admin-search-filter-search-row select {
   width: 200px;
   padding: 10px 14px; 
   border: 1px solid #d1d5db;
@@ -68,7 +75,7 @@
   background-color: #ffffff;
 }
 
-.search-row input[type="text"] {
+.admin-search-filter-search-row input[type="text"] {
   flex: 1;
   padding: 10px 14px;
   border: 1px solid #d1d5db;
@@ -77,25 +84,26 @@
   width: 500px;
 }
 
-.search-row input[type="text"]::placeholder {
+.admin-search-filter-search-row input[type="text"]::placeholder {
   color: #9ca3af;
 }
 
-/* 버튼 */
-.filter-buttons {
+/* ========================================
+   버튼
+======================================== */
+.admin-search-filter-buttons {
   display: flex;
   justify-content: center;
   gap: 12px;
   margin-top: 20px;
 }
 
-.search-btn {
+.admin-search-filter-search-btn {
   background-color: #739FF2;
   color: #ffffff;
-
 }
 
-.filter-buttons .btn {
+.admin-search-filter-buttons .btn {
   padding: 10px 32px;
   font-size: 14px;
   font-weight: 600;
@@ -103,15 +111,17 @@
   min-width: 120px;
 }
 
-/* 탭 (pill 스타일) */
-.pill-tabs {
+/* ========================================
+   탭 (pill 스타일)
+======================================== */
+.admin-search-filter-pill-tabs {
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
   flex: 1;
 }
 
-.pill-tab {
+.admin-search-filter-pill-tab {
   padding: 8px 20px;
   border: none;
   border-radius: 10px; 
@@ -126,17 +136,17 @@
   color: #6b7280;
 }
 
-.pill-tab:hover {
+.admin-search-filter-pill-tab:hover {
   background-color: #e5e7eb;
   color: #374151;
 }
 
-.pill-tab.active {
+.admin-search-filter-pill-tab.active {
   background-color: #739FF2;
   color: #ffffff;
   font-weight: 600;
 }
 
-.pill-tab:active {
+.admin-search-filter-pill-tab:active {
   transform: scale(0.98);
 }

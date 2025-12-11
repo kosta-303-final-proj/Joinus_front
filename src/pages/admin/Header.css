@@ -14,21 +14,21 @@
   padding: 0 32px;
   padding-left: 293px;
   transition: padding-left 0.3s ease;
-  z-index: 100;  
+  z-index: 100;
 }
 
-/* 사이드바 접혔을 때 헤더 조정 용도 */
+/* 사이드바 접혔을 때 */
 .admin-layout:has(.sidebar.collapsed) .admin-header {
-  padding-left: 70px;
+  padding-left: 103px
 }
 
-.header-left {
+.admin-header-left {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-.home-btn {
+.admin-header-home-btn {
   background: none;
   border: none;
   cursor: pointer;
@@ -41,27 +41,29 @@
   justify-content: center;
 }
 
-.home-btn:hover {
+.admin-header-home-btn:hover {
   background-color: #f3f4f6;
   color: #111827;
 }
 
-.page-title {
+.admin-header-title {
   font-size: 20px;
   font-weight: 600;
   color: #111827;
+  margin: 0;
 }
 
-.header-right {
+
+.admin-header-right {
   display: flex;
   align-items: center;
 }
 
-.user-menu-container {
+.admin-header-user-menu-container {
   position: relative;
 }
 
-.user-btn {
+.admin-header-user-btn {
   background: none;
   border: none;
   cursor: pointer;
@@ -76,12 +78,13 @@
   height: 40px;
 }
 
-.user-btn:hover {
+.admin-header-user-btn:hover {
   background-color: #f3f4f6;
   color: #111827;
 }
 
-.user-dropdown {
+
+.admin-header-user-dropdown {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
@@ -91,10 +94,11 @@
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   min-width: 200px;
   padding: 8px;
-  animation: fadeIn 0.2s ease;
+  animation: admin-header-fadeIn 0.2s ease;
+  z-index: 1000;
 }
 
-@keyframes fadeIn {
+@keyframes admin-header-fadeIn {
   from {
     opacity: 0;
     transform: translateY(-10px);
@@ -105,30 +109,30 @@
   }
 }
 
-.user-info {
+.admin-header-user-info {
   padding: 12px;
 }
 
-.user-name {
+.admin-header-user-name {
   font-size: 14px;
   font-weight: 600;
   color: #111827;
   margin: 0 0 4px 0;
 }
 
-.user-email {
+.admin-header-user-email {
   font-size: 12px;
   color: #6b7280;
   margin: 0;
 }
 
-.user-menu-divider {
+.admin-header-user-divider {
   height: 1px;
   background-color: #e5e7eb;
   margin: 8px 0;
 }
 
-.user-menu-item {
+.admin-header-user-menu-item {
   width: 100%;
   background: none;
   border: none;
@@ -143,10 +147,29 @@
   transition: all 0.2s;
 }
 
-.user-menu-item:hover {
+.admin-header-user-menu-item:hover {
   background-color: #f3f4f6;
 }
 
-.user-menu-item svg {
+.admin-header-user-menu-item svg {
   color: #6b7280;
 }
+
+/* ========================================
+   반응형
+======================================== */
+@media (max-width: 768px) {
+  .admin-header {
+    padding: 0 16px;
+    padding-left: 70px;
+  }
+
+  .admin-header-title {
+    font-size: 18px;
+  }
+
+  .admin-header-user-dropdown {
+    right: -16px;
+  }
+}
+
