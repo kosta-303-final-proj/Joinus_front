@@ -118,7 +118,7 @@ export default function Header() {
                       alt={grade}
                       className="grade-icon"
                     />
-                  <Link to="/mypage">{nickname} 님</Link>
+                  <Link to="/mypage/main">{nickname} 님</Link>
                 </li>
 
                 <li><Link to="/logout">로그아웃</Link></li>
