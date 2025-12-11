@@ -47,9 +47,9 @@ export default function ShopCartList() {
                     style={{ width: "70px", height: "70px", marginRight: "20px" }}
                 />
             <div className="productName">{item.productName}</div>
-            <div className="productPrice">{item.price}원</div>
+            <div className="productPrice">{item.price.toLocaleString()}원</div>
             <div className="productQuantity">{item.quantity}</div>
-            <div className="productTotal">{item.price * item.quantity}원</div>
+            <div className="productTotal">{(item.price * item.quantity).toLocaleString()}원</div>
             <div className="buttonGroup">
               <Button size="sm" className="buttonPrimary" style={{width:"70px"}}>결제</Button>
               <Button size="sm" className="buttonSecondary">삭제</Button>

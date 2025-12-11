@@ -19,6 +19,17 @@ export default function InterestList() {
     };
     fetchIntegerList();
   }, []);
+
+  const deleteInterest = async (id) => {
+    try {
+        const username = "kakao_4436272679";
+        await myAxios().post("/deleteWish", { id, username });
+
+        setInterestList(prev => prev.filter(item => item.id !== id));
+    } catch (error) {
+        console.error("관심상품 삭제 실패", error);
+    }
+};
   return (
     <>
         <div className="fw-bold d-block" style={{ fontSize: "20px", margin: "20px auto" }}>관심상품</div>
@@ -35,9 +46,7 @@ export default function InterestList() {
 
           {/* 헤더 */}
           <div style={{ display: "flex", gap: "15px", alignItems: "center" }}>
-            <Label style={{ color: "black", fontSize: "12px", margin: "0 250px 0 0 " }}>상품명</Label>
-            <Label style={{ color: "black", fontSize: "12px", margin: "0 50px 0 0" }}>가격</Label>
-            <Label style={{ color: "black", fontSize: "12px", margin: "0 50px 0 0" }}>만족도</Label>
+            <Label style={{ color: "black", fontSize: "12px", margin: "0 500px 0 0 " }}>상품명</Label>
             <Label style={{ color: "black", fontSize: "12px", margin: "0 35px 0 0" }}>주문</Label>
           </div>
         </FormGroup>
@@ -67,7 +76,10 @@ export default function InterestList() {
                 {/* 주문 버튼 (오른쪽 끝으로 이동) */}
                 <div style={{ display: "flex", flexDirection: "column", gap: "5px", marginLeft: "auto",padding:'10px' }}>
                     <Button size="sm" style={{backgroundColor:'#739FF2', color:'white', border:'none'}}>장바구니</Button>
-                    <Button size="sm" style={{backgroundColor:'#f7f7f7', color:'black', border:'none'}}>삭제</Button>
+                    <Button  size="sm"  style={{backgroundColor:'#f7f7f7', color:'black', border:'none'}}
+                        onClick={() => deleteInterest(item.id)}>
+                        삭제
+                    </Button>
                 </div>
             </FormGroup>
             <hr style={{ margin: "10px auto" }} />
