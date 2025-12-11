@@ -2,9 +2,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Label, FormGroup, Input, Button, Pagination, PaginationItem, PaginationLink} from "reactstrap";
 import { useEffect, useState } from "react";
 import { myAxios } from "../../../config";
+import { useNavigate } from "react-router-dom";
 
 export default function InterestList() {
     const [interestList, setInterestList] = useState([]);
+    const navigate = useNavigate();
     useEffect(() => {
     const fetchIntegerList = async () => {
       try {
@@ -20,16 +22,26 @@ export default function InterestList() {
     fetchIntegerList();
   }, []);
 
-  const deleteInterest = async (id) => {
-    try {
-        const username = "kakao_4436272679";
-        await myAxios().post("/deleteWish", { id, username });
+    const deleteInterest = async (id) => {
+        try {
+            const username = "kakao_4436272679";
+            await myAxios().post("/deleteWish", { id, username });
 
-        setInterestList(prev => prev.filter(item => item.id !== id));
-    } catch (error) {
-        console.error("관심상품 삭제 실패", error);
+            setInterestList(prev => prev.filter(item => item.id !== id));
+        } catch (error) {
+            console.error("관심상품 삭제 실패", error);
+        }
+    };
+
+    const movementCart = async (id) => {
+        try {
+            const username = "kakao_4436272679"
+            await myAxios().post("/deleteWish", { id, username, productId });
+        } catch (error) {
+            console.error("장바구니 이동 실패", error);
+        }
     }
-};
+
   return (
     <>
         <div className="fw-bold d-block" style={{ fontSize: "20px", margin: "20px auto" }}>관심상품</div>
@@ -57,12 +69,8 @@ export default function InterestList() {
             <div key={item.id}>
             <FormGroup check style={{ display: "flex", height: "120px", alignItems: "center" }}>
                 <Input type="checkbox" style={{ marginRight: "30px" }} />
-
                 {/* 상품 이미지 */}
-                {/* <img
-                    src={item.product?.thumbnail?.filePath || "/note.png"}
-                    style={{ width: "70px", height: "70px", marginRight: "20px" }}
-                /> */}
+                <div onClick={()=> navigate(`/gbProductDetail/${item.product?.id}`)} style={{display:'flex', justifyContent:'center', alignItems:'center',cursor: 'pointer'}}>
                 <img
                     src={`http://localhost:8080/file/gbProduct/${item.product?.thumbnail?.fileName}`}
                     style={{ width: "70px", height: "70px", marginRight: "20px" }}
@@ -72,10 +80,10 @@ export default function InterestList() {
                 <div style={{ fontSize: "12px", width: "400px", marginRight: "20px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                     {item.product?.name}
                 </div>
+                </div>
 
-                {/* 주문 버튼 (오른쪽 끝으로 이동) */}
+                {/* 삭제 버튼 */}
                 <div style={{ display: "flex", flexDirection: "column", gap: "5px", marginLeft: "auto",padding:'10px' }}>
-                    <Button size="sm" style={{backgroundColor:'#739FF2', color:'white', border:'none'}}>장바구니</Button>
                     <Button  size="sm"  style={{backgroundColor:'#f7f7f7', color:'black', border:'none'}}
                         onClick={() => deleteInterest(item.id)}>
                         삭제

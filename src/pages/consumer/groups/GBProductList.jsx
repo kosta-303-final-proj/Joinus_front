@@ -11,6 +11,59 @@ export default function GBProductList() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // 카테고리 및 정렬 클릭 적용
+  const [selectCategory, setSelectCategory] = useState(["전체"]);//초기값
+  const [selectedSort, setSelectedSort] = useState("최신순");
+  const [selectStatus, setSelectStatus] = useState(["진행중"]);
+
+  const allCategories = ["전체", "뷰티", "패션", "전자기기", "홈&리빙", "식품", "스포츠"];
+  const sortOptions = ["최신순", "투표순"];
+  const allStatus = ["전체","진행중","마감","취소"];
+
+  const handleCartegopryClick = (category) => {
+    if (category === "전체") {
+      setSelectCategory(["전체"]);
+    } else {
+      let newCategories = [...selectCategory];
+      if (newCategories.includes("전체")) newCategories = [];
+      if (newCategories.includes(category)) {
+        newCategories = newCategories.filter((c) => c !== category);
+      } else {
+        newCategories.push(category);
+      }
+      if (newCategories.length === 0) newCategories = ["전체"];
+      setSelectCategory(newCategories);
+    }
+  };
+
+  // 진행상태 (중복 선택 가능)
+  const handleStatusClick = (status) => {
+    if (status === "전체") {
+      setSelectStatus(["전체"]);
+    } else {
+      let newStatus = [...selectStatus];
+      if (newStatus.includes("전체")) newStatus = [];
+      if (newStatus.includes(status)) {
+        newStatus = newStatus.filter(s => s !== status);
+      } else {
+        newStatus.push(status);
+      }
+      if (newStatus.length === 0) newStatus = ["전체"];
+      setSelectStatus(newStatus);
+    }
+  };
+
+  const handleSortClick = (sort) => {
+    setSelectedSort(sort);
+  };
+
+  // 필터링 적용
+  const filteredProducts = products.filter((p) => {
+    if (selectCategory.includes("전체")) return true;
+    return selectCategory.includes(p.category);
+  });
+  
+
   // URL에서 type 파라미터 추출
   // type 파라미터가 없으면 ongoing로 설정
   const type = searchParams.get("type") || "ongoing";
@@ -62,44 +115,56 @@ export default function GBProductList() {
         </div>
       </div>
 
-      {/* 필터 영역 (현재는 UI만 유지) */}
+      {/* 필터 영역 (카테고리, 정렬, 진행상태) */}
       <div style={styles.pageWrapper}>
         <div style={styles.container2}>
           {/* 카테고리 줄 */}
-          <div
-            style={{ display: "flex", alignItems: "center", marginBottom: "15px" }}
-          >
+          <div style={{ display: "flex", alignItems: "center", marginBottom: "15px" }}>
             <div style={{ width: "120px", fontWeight: "bold" }}>카테고리</div>
             <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-              <span style={styles.tag}>뷰티</span>
-              <span style={styles.tag}>패션</span>
-              <span style={styles.tag}>전자기기</span>
-              <span style={styles.tag}>홈&리빙</span>
-              <span style={styles.tag}>식품</span>
-              <span style={styles.tag}>스포츠</span>
+              {allCategories.map((category) => (
+                <span
+                  key={category}
+                  style={selectCategory.includes(category) ? styles.tagWhite : styles.tag}
+                  onClick={() => handleCartegopryClick(category)}
+                >
+                  {category}
+                </span>
+              ))}
             </div>
           </div>
           <hr style={{ color: "#B5B1B1" }} />
-          {/* 정렬 줄 */}
-          <div
-            style={{ display: "flex", alignItems: "center", marginBottom: "15px" }}
-          >
-            <div style={{ width: "120px", fontWeight: "bold" }}>정렬</div>
 
+          {/* 정렬 줄 */}
+          <div style={{ display: "flex", alignItems: "center", marginBottom: "15px" }}>
+            <div style={{ width: "120px", fontWeight: "bold" }}>정렬</div>
             <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-              <span style={styles.tag}>최신순</span>
-              <span style={styles.tagWhite}>마감임박순</span>
+              {sortOptions.map((s) => (
+                <span
+                  key={s}
+                  style={selectedSort === s ? styles.tagWhite : styles.tag}
+                  onClick={() => handleSortClick(s)}
+                >
+                  {s}
+                </span>
+              ))}
             </div>
           </div>
           <hr style={{ color: "#B5B1B1" }} />
+
           {/* 진행상태 줄 */}
           <div style={{ display: "flex", alignItems: "center" }}>
             <div style={{ width: "120px", fontWeight: "bold" }}>진행상태</div>
-
             <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-              <span style={styles.tag}>진행중</span>
-              <span style={styles.tag}>마감</span>
-              <span style={styles.tag}>취소</span>
+              {allStatus.map((status) => (
+                <span
+                  key={status}
+                  style={selectStatus.includes(status) ? styles.tagWhite : styles.tag}
+                  onClick={() => handleStatusClick(status)}
+                >
+                  {status}
+                </span>
+              ))}
             </div>
           </div>
         </div>
@@ -109,12 +174,12 @@ export default function GBProductList() {
       <div style={styles.pageWrapper}>
         <div style={styles.container}>
           {loading ? (
-            <p>로딩 중...</p>
-          ) : products.length === 0 ? (
-            <p>공구가 없습니다.</p>
-          ) : (
-            <div className="card-grid" style={{ gap: "20px" }}>
-              {products.map((item) => (
+            <div style={{ textAlign: 'center', padding: '50px' }}>로딩 중...</div>
+            ) : filteredProducts.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '20px' }}>공구가 없습니다.</div>
+            ) : (
+              <div className="card-grid" style={{ gap: "20px" }}>
+              {filteredProducts.map((item) => (
                 <GroupBuyCard
                   key={item.id}
                   image={item.image}
