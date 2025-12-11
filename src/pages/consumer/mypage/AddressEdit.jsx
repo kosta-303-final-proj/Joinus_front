@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { myAxios } from "../../../config";   // ⭐ axios 사용하는 게 정답
+import { myAxios } from "../../../config";   // axios 사용하는 게 정답
 import "./AddressEdit.css";
 
 export default function AddressEdit() {
@@ -20,9 +20,8 @@ export default function AddressEdit() {
     isDefault: false,
   });
 
-  // =======================
-  // 📌 기존 배송지 불러오기
-  // =======================
+
+  // 기존 배송지 불러오기
   useEffect(() => {
     myAxios()
       .get(`/mypage/address/${id}`)
@@ -32,9 +31,7 @@ export default function AddressEdit() {
       .catch((err) => console.error(err));
   }, [id]);
 
-  // =======================
-  // 📌 input handler
-  // =======================
+  // input handler
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm((prev) => ({
@@ -43,9 +40,7 @@ export default function AddressEdit() {
     }));
   };
 
-  // =======================
-  // 📌 수정 요청
-  // =======================
+  // 수정 요청
   const handleSubmit = () => {
     myAxios()
       .put(`/mypage/address/${id}`, form)

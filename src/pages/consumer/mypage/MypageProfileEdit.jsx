@@ -124,7 +124,7 @@ export default function MypageProfileEdit() {
           <label>생년월일</label>
           <input
             type="date"
-            name="birthDate"      // 🔥 수정됨
+            name="birthDate"      
             value={form.birthDate}
             onChange={handleChange}
           />

@@ -1,9 +1,9 @@
-import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Label, Card, CardBody, CardTitle, CardSubtitle } from "reactstrap";
-import axios from "axios";
-import { baseUrl } from "../../../config";
+import { baseUrl, myAxios } from "../../../config";
+import GroupBuyCard from '../../../components/common/GroupBuyCard';
+import { transformGbProduct } from '../../../utils/searchDataTransform';
+import '../MainPage.css';
 
 export default function GBProductList() {
   const navigate = useNavigate();
@@ -20,29 +20,12 @@ export default function GBProductList() {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${baseUrl}/api/gb-products`, {  // API응답이 올 때까지 대기 후 결과 받음
+        const response = await myAxios().get('/api/gb-products', {
           params: { type },  
         });
 
-        // GbProductDto -> 화면 카드용 데이터로 변환
-        // 받아온 공구 상품 데이터를 프론트엔드 카드 UI에 맞는 형식으로 변환하는 부분
-        const transformed = response.data.map((p) => ({
-          id: p.id,
-          title: p.name,
-          category: p.categoryId, // TODO: 카테고리 이름 매핑
-          status: p.status === "ONGOING" ? "진행중" : "마감",
-          description: p.description,
-          price: p.price ? `${p.price.toLocaleString()}원` : "0원",
-          rating: 0, // TODO: 리뷰 평균 별점
-          currentParticipants: p.participants || 0,
-          maxParticipants: p.minParticipants || 0,
-          deadlineTime: p.endDate,
-          image: p.thumbnailFileName
-            ? `/mainPage/${p.thumbnailFileName}`
-            : "https://picsum.photos/300/200",
-        }));
-
-        // 변환된 데이터를 products 상태에 저장
+        // transformGbProduct를 사용하여 데이터 변환
+        const transformed = response.data.map(transformGbProduct);
         setProducts(transformed);
       } catch (e) {
         console.error("공구 목록 조회 실패:", e);
@@ -130,97 +113,22 @@ export default function GBProductList() {
           ) : products.length === 0 ? (
             <p>공구가 없습니다.</p>
           ) : (
-            <div
-              style={{
-                display: "grid",
-                gap: "20px",
-                gridTemplateColumns: "repeat(4, 1fr)",
-              }}
-            >
+            <div className="card-grid" style={{ gap: "20px" }}>
               {products.map((item) => (
-                <Card
+                <GroupBuyCard
                   key={item.id}
-                  style={{
-                    width: "240px",
-                    boxShadow: "0 5px 20px rgba(88 88 88 / 20%)",
-                    border: "none",
-                  }}
-                  onClick={() => navigate(`/gbProductDetail/${item.id}`)}
-                >
-                  <img src={item.image} />
-                  <CardBody style={{padding:'0'}}>
-                    <CardTitle
-                      tag="h5"
-                      style={{ display: "flex", justifyContent: "space-between" }}
-                    >
-                      <div
-                        style={{
-                          border: "1px solid black",
-                          fontSize: "10px",
-                          padding: "5px",
-                        }}
-                      >
-                        {item.category || "카테고리"}
-                      </div>
-                      <div
-                        style={{
-                          backgroundColor: "#BBFFAC",
-                          color: "#0A8F30",
-                          fontSize: "10px",
-                          padding: "5px",
-                        }}
-                      >
-                        {item.status}
-                      </div>
-                    </CardTitle>
-                    <CardSubtitle
-                      className="mb-2 text-muted"
-                      tag="h6"
-                      style={{ fontSize: "14px" }}
-                    >
-                      {item.title}
-                    </CardSubtitle>
-                    {/* <CardSubtitle>
-                      <div style={{ fontSize: "12px" }}>{item.description}</div>
-                    </CardSubtitle> */}
-                    <div className="fw-bold" style={{ fontSize: "24px" }}>
-                      {item.price}
-                    </div>
-                    <CardSubtitle>
-                      <div>
-                        <img
-                          src="/CountingStars.png"
-                          style={{ width: "12px", marginRight: "5px" }}
-                        />
-                        <Label style={{ fontSize: "12px" }}>4.6</Label>
-                      </div>
-                    </CardSubtitle>
-                    <CardSubtitle>
-                      <div
-                        style={{
-                          justifyContent: "space-between",
-                          display: "flex",
-                        }}
-                      >
-                        <div>
-                          <img
-                            src="/person.png"
-                            style={{ width: "15px", marginRight: "5px" }}
-                          />
-                          <Label style={{ fontSize: "12px" }}>
-                            참여 인원 : {item.currentParticipants}/{item.maxParticipants}
-                          </Label>
-                        </div>
-                        <div>
-                          <Label style={{ color: "red", fontSize: "10px" }}>
-                            {/* TODO: GBProductList에서도 남은 시간 계산 적용 가능 */}
-                            {item.deadlineTime}
-                          </Label>
-                        </div>
-                      </div>
-                    </CardSubtitle>
-                  </CardBody>
-                </Card>
+                  image={item.image}
+                  title={item.title}
+                  category={item.category}
+                  status={item.status}
+                  price={item.price}
+                  rating={item.rating}
+                  currentParticipants={item.currentParticipants}
+                  maxParticipants={item.maxParticipants}
+                  deadlineTime={item.deadlineTime}
+                  productId={item.id}
+                  isProposal={false}
+                />
               ))}
             </div>
           )}

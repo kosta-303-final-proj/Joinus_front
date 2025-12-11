@@ -6,7 +6,7 @@ import "./AddressAdd.css";
 export default function AddressAdd() {
   const navigate = useNavigate();
 
-  // ⭐ 서버로 보낼 폼 데이터
+  // 서버로 보낼 폼 데이터
   const [form, setForm] = useState({
     memberUsername: "ehgns0311", // 로그인 연동 전까지 하드코딩
     addressName: "",
@@ -18,7 +18,7 @@ export default function AddressAdd() {
     isDefault: false,
   });
 
-  // ⭐ input 공용 핸들러
+  // input 공용 핸들러
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
@@ -28,7 +28,7 @@ export default function AddressAdd() {
     });
   };
 
-  // ⭐ 전화번호 3칸 조합
+  // 전화번호 3칸 조합
   const handlePhoneChange = (index, value) => {
     const parts = form.phone ? form.phone.split("-") : ["", "", ""];
     parts[index] = value;
@@ -39,7 +39,7 @@ export default function AddressAdd() {
     });
   };
 
-  // ⭐ 제출 처리
+  // 제출 처리
   const handleSubmit = async () => {
     try {
       await axios.post("http://localhost:8080/mypage/address", form);
