@@ -1,7 +1,8 @@
 import { Link, useParams,Outlet } from "react-router-dom";
 import { Label } from "reactstrap";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import InquiryModal from "./InquiryModal";
+import { myAxios } from "../../../config";
 
 
 export default function QAndA(){
@@ -10,22 +11,24 @@ export default function QAndA(){
 
     const [modalOpen, setModalOpen] = useState(false);
 
+    const [qnaList, setQnaList] = useState([]);
+
     const toggle = (id) => {
         setOpenId(openId === id ? null : id);
     };
 
-    const dummyQnaList = [
-        {
-            id: 1,
-            status: "답변완료",
-            question: "파손되지않게배송부탁드립니다~ 맛있음재구매할게요~ 수고하세요",
-            user: "1611*****",
-            date: "2024.01.08 11:39",
-            answer:
-                "네 고객님 최대한 신경써서 출고처리 해드리겠습니다.\n저희 선비 제품 말고도 다양한 브랜드 제품들이 있으니 다야하게 드셔보시는 것도 추천드립니다. 감사합니다.",
-            answerDate: "2024.01.08 11:55"
-        }
-    ];
+    const fetchQna = () => {
+        myAxios().get(`/qna/${id}`)
+            .then(res => setQnaList(res.data))
+            .catch(err => console.error(err));
+    };
+
+    useEffect(() => {
+        fetchQna();   // 페이지 진입 시 QnA 로딩
+    }, [id]);
+
+
+
     return(
         <>
         <div>
@@ -61,7 +64,7 @@ export default function QAndA(){
                     </div>
 
                     {/* 리스트 */}
-                    {dummyQnaList.map((item) => (
+                    {qnaList.map((item) => (
                         <div key={item.id}>
                             {/* 상단 라인 (클릭 영역) */}
                             <div
@@ -70,17 +73,17 @@ export default function QAndA(){
 
                                 <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '10px' }}>
                                     <span style={{background: '#C7DBFF',padding: '4px 10px',borderRadius: '4px', fontSize: '13px',fontWeight: 'bold',color: '#1E50A0'}}>
-                                        {item.status}
+                                        {item.status === "PENDING" ? "답변대기" : "답변완료"}
                                     </span>
                                     <span style={{ color: '#333' }}>{item.question}</span>
                                 </div>
 
                                 <div style={{ width: '140px', textAlign: 'center', color: '#666' }}>
-                                    {item.user}
+                                    {item.username ? item.username.substring(0, 4) + "*****" : ""}
                                 </div>
 
                                 <div style={{ width: '120px', textAlign: 'center', color: '#666' }}>
-                                    {item.date}
+                                    {item.questionedAt ? item.questionedAt.split("T")[0] : ""}
                                 </div>
                             </div>
 
@@ -102,7 +105,7 @@ export default function QAndA(){
                                             <div>
                                                 <div style={{ marginBottom: '8px', lineHeight: '1.5' }}>{item.answer}</div>
                                                 <div style={{ color: '#888', fontSize: '12px', marginBottom: '6px' }}>
-                                                    판매자 / {item.answerDate}
+                                                    {item.answeredAt ? item.answeredAt.split("T")[0] : ""}
                                                 </div>
                                             </div>
                                         </div>
