@@ -93,7 +93,8 @@ export default function GroupBuyCard({
           )}
         </CardTitle>
 
-        <CardSubtitle className="mb-2 text-muted" tag="h6" style={{ fontSize: '14px', marginBottom: '8px' }}>
+        <CardSubtitle className="mb-2 text-muted" tag="h6" style={{fontSize: '14px', marginBottom: '8px',display: '-webkit-box',WebkitLineClamp: 2,        // ★ 최대 2줄
+            WebkitBoxOrient: 'vertical',overflow: 'hidden',textOverflow: 'ellipsis', }}>
           {title}
         </CardSubtitle>
 
@@ -104,7 +105,7 @@ export default function GroupBuyCard({
         )} */}
 
         {price && (
-          <div className="fw-bold" style={{ fontSize: '24px', marginBottom: '12px' }}>
+          <div className="fw-bold" style={{ fontSize: '20px', marginBottom: '12px' }}>
             {price}
           </div>
         )}

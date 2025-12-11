@@ -1,8 +1,24 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Label, FormGroup, Input, Button, Pagination, PaginationItem, PaginationLink} from "reactstrap";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { myAxios } from "../../../config";
 
 export default function InterestList() {
+    const [interestList, setInterestList] = useState([]);
+    useEffect(() => {
+    const fetchIntegerList = async () => {
+      try {
+        const username = "kakao_4436272679";
+        const response = await myAxios().get(`/interestList`, {
+          params: { username }
+        });
+        setInterestList(response.data);
+      } catch (error) {
+        console.error("장바구니 조회 실패", error);
+      }
+    };
+    fetchIntegerList();
+  }, []);
   return (
     <>
         <div className="fw-bold d-block" style={{ fontSize: "20px", margin: "20px auto" }}>관심상품</div>
@@ -28,15 +44,24 @@ export default function InterestList() {
         <hr style={{ margin: "5px auto" }} />
 
         {/* 상품 리스트 */}
+        {interestList.map((item) => (
+            <div key={item.id}>
             <FormGroup check style={{ display: "flex", height: "120px", alignItems: "center" }}>
                 <Input type="checkbox" style={{ marginRight: "30px" }} />
 
                 {/* 상품 이미지 */}
-                <img src="/note.png" style={{ width: "70px", height: "70px", marginRight: "20px" }}/>
+                {/* <img
+                    src={item.product?.thumbnail?.filePath || "/note.png"}
+                    style={{ width: "70px", height: "70px", marginRight: "20px" }}
+                /> */}
+                <img
+                    src={`http://localhost:8080/file/gbProduct/${item.product?.thumbnail?.fileName}`}
+                    style={{ width: "70px", height: "70px", marginRight: "20px" }}
+                />
 
                 {/* 상품명 */}
                 <div style={{ fontSize: "12px", width: "400px", marginRight: "20px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    ASUS 비보북 S 16 M3607KA-SH035W (SSD 512GB)
+                    {item.product?.name}
                 </div>
 
                 {/* 주문 버튼 (오른쪽 끝으로 이동) */}
@@ -46,7 +71,8 @@ export default function InterestList() {
                 </div>
             </FormGroup>
             <hr style={{ margin: "10px auto" }} />
-            
+            </div>
+            ))}
         </div>
         <Pagination>
             <PaginationItem>
