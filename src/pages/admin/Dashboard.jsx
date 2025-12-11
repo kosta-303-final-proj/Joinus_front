@@ -143,7 +143,6 @@ export default function Dashboard() {
                   <div key={item.gbProductId || index} className="payment-item">
                     <div className="payment-info">
                       <div className="payment-name">{item.name}</div>
-                      <div className="payment-count">결제 대기: {item.count}건</div>
                     </div>
                   </div>
                 ))
