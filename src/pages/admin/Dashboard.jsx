@@ -176,7 +176,6 @@ export default function Dashboard() {
                 <th>공구 ID</th>
                 <th>상품명</th>
                 <th>참여수 / 최소 인원수</th>
-                <th>현재 매출</th>
                 <th>마감까지</th>
               </tr>
             </thead>
@@ -187,7 +186,6 @@ export default function Dashboard() {
                     <td>{item.id}</td>
                     <td>{item.name}</td>
                     <td>{item.participants} / {item.minParticipants}</td>
-                    <td>{formatCurrency(item.revenue)}</td>
                     <td>{item.deadline}</td>
                   </tr>
                 ))
