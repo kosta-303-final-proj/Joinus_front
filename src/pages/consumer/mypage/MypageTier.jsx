@@ -2,10 +2,10 @@ import React from "react";
 import "./MypageTier.css";
 
 export default function MypageTier() {
-  // ⭐ 서버에서 받아온다고 가정하는 값
+  // 서버에서 받아온다고 가정하는 값
   const totalSpent = 1000000; // 최근 6개월 구매금액 (예시)
 
-  // ⭐ 등급 기준표
+  // 등급 기준표
   const levels = [
     { name: "Bronze", file: "Bronze.png", min: 0, max: 400000, rate: 1 },
     { name: "Silver", file: "Silver.png", min: 400000, max: 700000, rate: 1.3 },
@@ -13,15 +13,15 @@ export default function MypageTier() {
     { name: "Diamond", file: "Diamond.png", min: 1000000, max: Infinity, rate: 2 },
   ];
 
-  // ⭐ 현재 등급 찾기
+  // 현재 등급 찾기
   const currentLevel =
     levels.find((l) => totalSpent >= l.min && totalSpent < l.max) ||
     levels[levels.length - 1];
-
+  
   const currentIndex = levels.indexOf(currentLevel);
   const nextLevel = levels[currentIndex + 1];
 
-  // ⭐ 현재 등급 프로그래스바 계산
+  // 현재 등급 프로그래스바 계산
   const currentPercent =
     currentLevel.max === Infinity
       ? 100
@@ -34,7 +34,7 @@ export default function MypageTier() {
   const remaining =
     currentLevel.max === Infinity ? 0 : currentLevel.max - totalSpent;
 
-  // ⭐ 전체 등급 리스트 퍼센트 계산 로직
+  // 전체 등급 리스트 퍼센트 계산 로직
   const getLevelPercent = (level) => {
     const index = levels.indexOf(level);
 
