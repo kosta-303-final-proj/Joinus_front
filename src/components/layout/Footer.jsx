@@ -10,7 +10,7 @@ const Footer = () => {
             <div className="footer-top-inner">
                 <ul className="footer-menu">
                     <li><Link to="/cs/notice ">고객센터</Link></li>
-                    <li><Link to="/contact/supply">납품문의</Link></li>
+                    <li><Link to="/Partnership">납품문의</Link></li>
                 </ul>
             </div>
         </div>
