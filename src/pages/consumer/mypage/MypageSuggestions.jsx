@@ -5,69 +5,65 @@ import { myAxios } from "../../../config";
 
 export default function MypageSuggestions() {
   const [tab, setTab] = useState("participated");
+
   const [participatedList, setParticipatedList] = useState([]);
   const [writtenList, setWrittenList] = useState([]);
 
-  // 로그인 유저 정보
+  // ✅ 페이지 상태
+  const [participatedPage, setParticipatedPage] = useState(1);
+  const [writtenPage, setWrittenPage] = useState(1);
+
+  const itemsPerPage = 10;
+
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   const username = userInfo?.username;
 
   // ===============================
-  // 🔹 참여한 공동구매 조회
+  // 데이터 조회
   // ===============================
-  const fetchParticipated = () => {
+  useEffect(() => {
     if (!username) return;
 
     myAxios()
       .get(`/mypage/suggestions/participated?username=${username}`)
-      .then((res) => {
-        console.log("참여한 공구:", res.data);
-
-        const list = Array.isArray(res.data)
-          ? res.data
-          : res.data?.data || res.data?.list || res.data?.content || [];
-
-        setParticipatedList(list);
-      })
-      .catch((err) => {
-        console.error(err);
-        setParticipatedList([]);
-      });
-  };
-
-  // ===============================
-  // 🔹 내가 작성한 공동구매 조회
-  // ===============================
-  const fetchWritten = () => {
-    if (!username) return;
+      .then((res) => setParticipatedList(res.data || []));
 
     myAxios()
       .get(`/mypage/suggestions/written?username=${username}`)
-      .then((res) => {
-        console.log("내가 작성한 공구:", res.data);
+      .then((res) => setWrittenList(res.data || []));
+  }, [username]);
 
-        const list = Array.isArray(res.data)
-          ? res.data
-          : res.data?.data || res.data?.list || res.data?.content || [];
-
-        setWrittenList(list);
-      })
-      .catch((err) => {
-        console.error(err);
-        setWrittenList([]);
-      });
-  };
-
+  // ✅ 탭 변경 시 페이지 초기화 (강력추천)
   useEffect(() => {
-    fetchParticipated();
-    fetchWritten();
-  }, []);
+    setParticipatedPage(1);
+    setWrittenPage(1);
+  }, [tab]);
+
+  // ===============================
+  // 페이징 계산
+  // ===============================
+  const currentList = tab === "participated" ? participatedList : writtenList;
+  const currentPage = tab === "participated" ? participatedPage : writtenPage;
+  const setCurrentPage =
+    tab === "participated" ? setParticipatedPage : setWrittenPage;
+
+  const totalPages = Math.ceil(currentList.length / itemsPerPage);
+
+  const currentItems = currentList.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handlePageChange = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
 
   return (
     <>
       <div className="suggestions-title">공동구매 요청</div>
 
-      {/* ================= 탭 메뉴 ================= */}
+      {/* 탭 */}
       <div className="suggestions-tab-menu">
         <button
           className={tab === "participated" ? "active" : ""}
@@ -75,7 +71,6 @@ export default function MypageSuggestions() {
         >
           내가 투표한 공동 구매
         </button>
-
         <button
           className={tab === "written" ? "active" : ""}
           onClick={() => setTab("written")}
@@ -84,78 +79,62 @@ export default function MypageSuggestions() {
         </button>
       </div>
 
-      {/* ================= 리스트 ================= */}
+      {/* 리스트 */}
       <div className="suggestions-group-list">
-        {/* 참여한 공구 */}
-        {tab === "participated" &&
-          participatedList.map((item) => (
-            <div className="suggestions-card" key={item.id}>
-              <div className="suggest-card-img">
-                <img src={item.imageUrl || "/default.png"} alt="" />
+        {currentItems.map((item) => (
+          <div className="suggestions-card" key={item.id}>
+            <div className="suggest-card-img">
+              <img src={item.imageUrl || "/default.png"} alt="" />
+            </div>
+
+            <div className="card-info">
+              <div>
+                <div className="category">{item.category}</div>
+                <div className="title">{item.productName}</div>
+                <div className="desc">{item.description}</div>
+                <div className="votes">
+                  참여 투표 인원수: {item.voteCount}명
+                </div>
               </div>
 
-              <div className="card-info">
-                <div>
-                  <div className="category">{item.category}</div>
-                  <div className="title">{item.productName}</div>
-                  <div className="desc">{item.description}</div>
-                  <div className="votes">
-                    참여 투표 인원수: {item.voteCount}명
-                  </div>
-                </div>
-
-                <div className="card-actions">
-                  <button className="btn-buy">구매하기</button>
-                  <button className="btn-detail">상세보기</button>
-                </div>
+              <div className="card-actions">
+                <button className="btn-detail">상세보기</button>
               </div>
             </div>
-          ))}
-
-        {/* 내가 작성한 공구 */}
-        {tab === "written" &&
-          writtenList.map((item) => (
-            <div className="suggestions-card" key={item.id}>
-              <div className="suggest-card-img">
-                <img src={item.imageUrl || "/default.png"} alt="" />
-              </div>
-
-              <div className="card-info">
-                <div>
-                  <div className="category">{item.category}</div>
-                  <div className="title">{item.productName}</div>
-                  <div className="desc">{item.description}</div>
-                  <div className="votes">
-                    참여 투표 인원수: {item.voteCount}명
-                  </div>
-                </div>
-
-                <div className="card-actions">
-                  <button className="btn-detail">상세보기</button>
-                </div>
-              </div>
-            </div>
-          ))}
+          </div>
+        ))}
       </div>
 
-      {/* ================= 페이지네이션 (임시) ================= */}
+      {/* 페이지네이션 */}
       <Pagination className="paginationContainer">
-        <PaginationItem>
-          <PaginationLink first href="#" />
+        <PaginationItem disabled={currentPage === 1}>
+          <PaginationLink first onClick={() => handlePageChange(1)} />
         </PaginationItem>
-        <PaginationItem>
-          <PaginationLink previous href="#" />
+
+        <PaginationItem disabled={currentPage === 1}>
+          <PaginationLink
+            previous
+            onClick={() => handlePageChange(currentPage - 1)}
+          />
         </PaginationItem>
-        {[1, 2, 3].map((num) => (
-          <PaginationItem key={num}>
-            <PaginationLink href="#">{num}</PaginationLink>
+
+        {[...Array(totalPages)].map((_, i) => (
+          <PaginationItem key={i} active={currentPage === i + 1}>
+            <PaginationLink onClick={() => handlePageChange(i + 1)}>
+              {i + 1}
+            </PaginationLink>
           </PaginationItem>
         ))}
-        <PaginationItem>
-          <PaginationLink next href="#" />
+
+        <PaginationItem disabled={currentPage === totalPages}>
+          <PaginationLink
+            next
+            onClick={() => handlePageChange(currentPage + 1)}
+          />
         </PaginationItem>
-        <PaginationItem>
-          <PaginationLink last href="#" />
+
+        <PaginationItem disabled={currentPage === totalPages}>
+          <PaginationLink last onClick={() => handlePageChange(totalPages)} />
         </PaginationItem>
       </Pagination>
     </>
