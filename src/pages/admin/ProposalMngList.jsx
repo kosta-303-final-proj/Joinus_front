@@ -135,7 +135,7 @@ const ProposalMngList = () => {
                       className="title-cell"
                       style={{ cursor: 'pointer' }}
                       //제안상세 완료시 이 부분 수정하기
-                      // onClick={() => navigate(`/admin/proposalDetail/${proposal.id}`)}
+                      onClick={() => navigate(`/admin/proposalDetailAdmin/${proposal.id}`)}
                     >
                       {proposal.productName}</td>
                     <td>{proposal.memberUsername}</td>

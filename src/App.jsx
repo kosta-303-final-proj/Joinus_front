@@ -311,7 +311,7 @@ function AppContent() {
               </ProtectedRoute>
             } />
             {/* 자엔 디테일 관리자 화면 */}
-            <Route path="/admin/proposalDetailAdmin" element={
+            <Route path="/admin/proposalDetailAdmin/:id" element={
               <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
                 <ProposalDetailAdmin />
               </ProtectedRoute>

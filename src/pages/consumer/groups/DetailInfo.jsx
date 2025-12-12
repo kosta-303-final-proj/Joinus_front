@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, Outlet } from "react-router-dom";
-import { Label, } from "reactstrap";
+import { Button, Label, } from "reactstrap";
 import { myAxios } from "../../../config";
 export default function DetailInfo(){
     const { id } = useParams();
@@ -20,6 +20,10 @@ export default function DetailInfo(){
         useEffect(()=>{
           getProduct();
         },[])
+
+    const getProposalUrl = () => {
+      myAxios().get(`getProductUrl/${id}`)
+    }
 
     return(
         <>
@@ -48,8 +52,10 @@ export default function DetailInfo(){
                     <div style={{padding:'0 20px'}}>
                         <Label style={{fontSize:'24px'}}>상품 설명</Label>
                       <div>{detail.product.description}</div> <br/>
-                      <div className="fw-bold" style={{fontSize:'16px'}}>제안 링크</div>
-                      <div>https://www.coupang.com/vp/products/8941702848?itemId=26149371639&vendorI333a0</div>
+                      <div style={{display:'flex', justifyItems:'center', alignItems:'center'}}>
+                        <div className="fw-bold" style={{fontSize:'16px', margin:'10px'}}>제안 링크</div>
+                        <Button onClick={()=> window.open(detail.product.originalSiteUrl, "_black")} style={{backgroundColor:'#739FF2', width:"70px", height:"25px", fontSize:"12px", padding:"0", border:'none'}}>바로가기</Button>
+                      </div>
                     </div>
                   <hr/>
                     <div style={{padding:'0 20px'}}>
