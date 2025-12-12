@@ -276,7 +276,11 @@ const Sidebar = () => {
 
         {/* 알림 */}
         <div className="menu-item-container">
-          <div className="menu-item">
+          <div 
+          className={`menu-item ${isActive('/admin/notifications') ? 'active' : ''}`}
+          onClick={() => navigate('/admin/notifications')}
+          style={{ cursor: 'pointer' }}
+          >
             <div className="menu-item-content">
               <Bell size={20} className="menu-icon" />
               {!isCollapsed && <span className="menu-label">알림발송</span>}

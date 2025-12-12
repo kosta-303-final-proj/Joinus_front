@@ -9,8 +9,7 @@ export default function ProposalDetailConsumar() {
     const total = 15;
     const joined = 10;
     const percentage = (joined/total) * 100;
-    const [voteCount, setVoteCount] = useState(0);
-    const [isDdabong, setIsDdabong] = useState(false);
+    
 
     const [comment, setComment] = useState(''); // ← 여기 추가
     const [comments, setComments] = useState([]); // 댓글 리스트 (있으면)
@@ -63,19 +62,37 @@ export default function ProposalDetailConsumar() {
         .catch(err => console.log(err));
     };
 
-    useEffect(()=>{
-      getProposal();
-    }, [])
+    useEffect(() => {
+      getProposal(); // getProposal에서 voteCount와 isDdabong 세팅
+    }, []);
+
+
+    const [voteCount, setVoteCount] = useState(0);
+    const [isDdabong, setIsDdabong] = useState(false);
 
     const handleVote = () => {
-    myAxios().get("/proposalHeart", { params: { proposalId: id, username: "admin" } })
-      .then(res => {
-        const voted = res.data; // true or false
-        setIsDdabong(voted);
-        setVoteCount(prev => voted ? prev + 1 : prev - 1); // voteCount 직접 계산
-      })
-      .catch(err => console.log(err));
-  };
+      myAxios().get("/proposalDdabong", { params: { proposalId: id, username: "kakao_4436272679" } })
+        .then(res => {
+          const voted = res.data; // true/false
+          setIsDdabong(voted);
+          setVoteCount(prev => voted ? prev + 1 : prev - 1);
+        })
+        .catch(err => console.log(err));
+    };
+
+    useEffect(() => {
+      // 페이지 진입 시 DB에서 vote 상태 가져오기
+      myAxios()
+        .get("/proposalDdabong/status", { 
+          params: { proposalId: id, username: "kakao_4436272679" }
+        })
+        .then(res => {
+          setIsDdabong(res.data.isDdabong); // true / false
+          setVoteCount(res.data.voteCount); // DB에 저장된 실제 투표 수
+        })
+        .catch(err => console.log(err));
+    }, [id]);
+
 
     return(
         <>
@@ -198,13 +215,17 @@ export default function ProposalDetailConsumar() {
             <div style={styles.pageWrapper}>
                 <div style={styles.container}>
                     <hr style={{alignItems:'center', margin:'10px 0 10px 0'}}/>
+                    {comments.map((c) => (
+                        <div key={c.id} style={{marginBottom:'15px'}}>
                           <div style={{padding:'0 10px',display:'flex', alignContent:'center', marginBottom:'10px'}}>
-                            <div style={{}}>닉네임</div>
-                            <img src="/grade/Silver.png" style={{width:'25px'}}/>
+                            <div style={{marginRight:'10px'}}>{c.memberNickname}</div>
+                            <img src={`/grade/${c.grade.charAt(0) + c.grade.slice(1).toLowerCase()}.png`} style={{width:'25px'}}/>
                           </div>
-                          <div style={{padding:'0 10px'}}>20025-11-30</div>
-                          <div style={{padding:'0 10px'}}>대충 공구 하자는 내용</div>
+                          <div style={{padding:'0 10px'}}>{c.createdAt}</div>
+                          <div style={{padding:'0 10px'}}>{c.content}</div>
                     <hr style={{alignItems:'center', margin:'10px 0 10px 0'}}/>
+                    </div>
+                    ))}
                 </div>
             </div>
             <div style={styles.pageWrapper}>

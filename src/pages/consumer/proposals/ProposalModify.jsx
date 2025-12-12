@@ -198,10 +198,10 @@ return (
           <Input type="text" name="abroadShippingCost" value={abroadShippingCost} onChange={(e)=> setAbroadShippingCost(e.target.value)} placeholder="가격을 입력해주세요." />
         </FormGroup>
 
-        <FormGroup className="mb-4">
+        {/* <FormGroup className="mb-4">
           <Label className="fw-bold text-start d-block">최소 참여 인원 *</Label>
           <Input type="text" name="minPart" value={minPart} onChange={(e)=> setMinPart(e.target.value)} placeholder="예) 20" />
-        </FormGroup>
+        </FormGroup> */}
 
         <div className="d-flex gap-2 justify-content-end">
           <Link><Button color="secondary">취소하기</Button></Link>

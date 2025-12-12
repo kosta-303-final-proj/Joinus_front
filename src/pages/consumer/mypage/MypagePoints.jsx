@@ -2,18 +2,18 @@ import React, { useEffect, useState } from "react";
 import "./MypagePoints.css";
 import { Label, FormGroup, Input, Button, Pagination, PaginationItem, PaginationLink } from "reactstrap";
 import axios from "axios";
-
 export default function MypagePoints() {
+
+  // ✅ 로그인 유저 정보 (반드시 최상단)
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const username = userInfo?.username;
+
   const [tab, setTab] = useState("all");
   const [pointList, setPointList] = useState([]);
 
-  // 현재 페이지
   const [currentPage, setCurrentPage] = useState(1);
-  
-  // 페이지당 표시할 개수
   const itemsPerPage = 10;
 
-// 1. reason_type 한국어 매핑
   const reasonText = {
     SIGNUP: "회원가입 축하 포인트 적립",
     SIGNUP_WITH_RECOMMENDER: "추천인 입력 포인트 적립",
@@ -27,40 +27,37 @@ export default function MypagePoints() {
     CANCEL_REFUND: "주문취소/교환,반품 포인트 회수",
   };
 
-  // 2. 날짜 변환 함수 추가
   const formatDate = (dateString) => {
     if (!dateString) return "";
-    return dateString.slice(0, 10); // "YYYY-MM-DD"만 추출
+    return dateString.slice(0, 10);
   };
 
   const getPointList = () => {
+    if (!username) return; // 🔒 안전장치
+
     axios
-    .get("http://localhost:8080"+`/mypage/point?username=ehgns0311`)
-    .then((res)=> {
-      console.log(res.data);
-      setPointList(res.data); 
-    })
-      .catch((err) => {
-      console.log(err);
-      });
+      .get(`http://localhost:8080/mypage/point?username=${username}`)
+      .then((res) => {
+        setPointList(res.data);
+      })
+      .catch((err) => console.log(err));
   };
-useEffect(()=> {
-  getPointList();
-},[]);
+
+  useEffect(() => {
+    getPointList();
+  }, [username]);
 
   // 필터링
-const filteredList = pointList.filter((p) => {
-  if (tab === "save") return !p.amount.startsWith("-");   // 적립만
-  if (tab === "use") return p.amount.startsWith("-");     // 사용만
-  return true; // 전체
-});
+  const filteredList = pointList.filter((p) => {
+    if (tab === "save") return !p.amount.startsWith("-");
+    if (tab === "use") return p.amount.startsWith("-");
+    return true;
+  });
 
- // 페이징 처리
+  // 페이징
   const totalPages = Math.ceil(filteredList.length / itemsPerPage);
-
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
   const currentItems = filteredList.slice(indexOfFirstItem, indexOfLastItem);
 
   const handlePageChange = (pageNum) => {

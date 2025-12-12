@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { myAxios } from "../../../config";   // axios 사용하는 게 정답
+import { myAxios } from "../../../config";
 import "./AddressEdit.css";
 
 export default function AddressEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  // ✅ 로그인 유저
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const username = userInfo?.username;
+
   const [form, setForm] = useState({
     id: null,
-    memberUsername: "ehgns0311",
+    memberUsername: "",
     addressName: "",
     recipientName: "",
     phone: "",
@@ -20,8 +24,7 @@ export default function AddressEdit() {
     isDefault: false,
   });
 
-
-  // 기존 배송지 불러오기
+  // ✅ 기존 배송지 불러오기
   useEffect(() => {
     myAxios()
       .get(`/mypage/address/${id}`)
@@ -31,7 +34,17 @@ export default function AddressEdit() {
       .catch((err) => console.error(err));
   }, [id]);
 
-  // input handler
+  // ✅ 로그인 유저 username을 form에 강제 주입
+  useEffect(() => {
+    if (username) {
+      setForm((prev) => ({
+        ...prev,
+        memberUsername: username,
+      }));
+    }
+  }, [username]);
+
+  // ✅ input 공용 핸들러
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm((prev) => ({
@@ -40,8 +53,13 @@ export default function AddressEdit() {
     }));
   };
 
-  // 수정 요청
+  // ✅ 수정 요청
   const handleSubmit = () => {
+    if (!username) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
     myAxios()
       .put(`/mypage/address/${id}`, form)
       .then(() => {
@@ -53,7 +71,6 @@ export default function AddressEdit() {
 
   return (
     <div className="addressedit-content">
-
       <div className="addressedit-title">배송지 수정</div>
 
       {/* 배송지명 */}
@@ -102,7 +119,6 @@ export default function AddressEdit() {
         <label className="addressedit-label">
           연락처 <span className="addressedit-required">*</span>
         </label>
-
         <input
           type="text"
           name="phone"
@@ -125,8 +141,6 @@ export default function AddressEdit() {
             onChange={handleChange}
           />
 
-          <button className="addressedit-postcode-btn">검색</button>
-
           <input
             type="text"
             className="addressedit-road-input"
@@ -134,8 +148,6 @@ export default function AddressEdit() {
             value={form.streetAddress}
             onChange={handleChange}
           />
-
-          <button className="addressedit-postcode-btn">검색</button>
         </div>
 
         <textarea
@@ -143,13 +155,12 @@ export default function AddressEdit() {
           name="addressDetail"
           value={form.addressDetail}
           onChange={handleChange}
-        ></textarea>
+        />
       </div>
 
       {/* 출입방법 */}
       <div className="addressedit-form-row">
         <label className="addressedit-label">공동현관 출입방법</label>
-
         <input
           type="text"
           className="addressedit-input-box"
@@ -164,11 +175,13 @@ export default function AddressEdit() {
         <button className="addressedit-btn-confirm" onClick={handleSubmit}>
           확인
         </button>
-        <button className="addressedit-btn-cancel" onClick={() => navigate(-1)}>
+        <button
+          className="addressedit-btn-cancel"
+          onClick={() => navigate(-1)}
+        >
           취소
         </button>
       </div>
-
     </div>
   );
 }

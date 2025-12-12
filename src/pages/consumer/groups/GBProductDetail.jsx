@@ -132,11 +132,6 @@ export default function GBProductDetail() {
                           src={`${baseUrl}/files/${detail.thumbnailFile?.fileName}`} 
                           style={{width:'500px', height:"500px", marginBottom:'30px', borderRadius:'10px'}}
                         />
-                        <div style={{width:'500px', height:'100px', border:'1px solid black', padding:'5px 10px 10px 10px', borderRadius:'10px'}}>
-                            <Label style={{fontSize:'12px'}}>참여 전 요청사항</Label>
-                            <hr style={{alignItems:"center", width:'480px', margin:'0 0 5px 0'}}/>
-                            <Input type="textarea" style={{border:'1px solid black', padding:"5px", width:'480px', height:'50px', fontSize:'12px', resize: "none"}}></Input>
-                        </div>
                     </div>
                     <div style={{width:"500px", border:'1px solid black', padding:'20px', borderRadius:'10px'}}>
                         <div style={{ display:'flex', justifyContent: 'space-between', marginBottom:'10px'}}>
@@ -192,10 +187,11 @@ export default function GBProductDetail() {
                             ))}
                             <hr style={{width:"460px", alignItems:'center', margin:'20px 0 20px 0'}}/>
                             <div style={{}}>
-                                <div style={{fontSize:'12px', marginTop:'0'}}>상품 가격 {((detail.product.price || 0) + (detail.product.abroadShippingCost || 0)).toLocaleString()}원</div>
-                                <div style={{fontSize:'12px', marginTop:'0'}}>국내 배송비 {(detail.product.shippingAmount || 0).toLocaleString()}원</div>
-                                <div className="fw-bold" style={{fontSize:'12px', marginTop:'0'}}>최종 상품 가격 {((detail.product.price || 0) + (detail.product.abroadShippingCost || 0)+ (detail.product.shippingAmount || 0)).toLocaleString()} 원</div>
-                                <div style={{fontSize:'12px', marginTop:'0'}}>※ 해외 배송 2주~3주 소용, 국내 배송 2-3일 소요</div>
+                                <div style={{fontSize:'14px', marginTop:'0'}}>상품 가격 {((detail.product.price || 0) + (detail.product.abroadShippingCost || 0)).toLocaleString()}원</div>
+                                <div style={{fontSize:'14px', marginTop:'0'}}>국내 배송비 {(detail.product.shippingAmount || 0).toLocaleString()}원</div>
+                                <div className="fw-bold" style={{fontSize:'18px', marginTop:'0'}}>최종 상품 가격 {((detail.product.price || 0) + (detail.product.abroadShippingCost || 0)+ (detail.product.shippingAmount || 0)).toLocaleString()} 원</div>
+                                <br/>
+                                <div style={{fontSize:'14px', marginTop:'0'}}>※ 해외 배송 2주~3주 소용, 국내 배송 2-3일 소요</div>
                             </div>
                             <hr style={{width:"460px", alignItems:'center', margin:'20px 0 20px 0'}}/>
                             <div style={{display:'flex', gap:'10px',alignItems: "center"}}>
@@ -211,7 +207,7 @@ export default function GBProductDetail() {
                                   <Button style={{backgroundColor:'#739FF2', width:"120px", height:"35px", fontSize:"16px", padding:"0", border:'none', marginRight:'10px'}}
                                     onClick={handleWishList}
                                   >
-                                    {isHeart ? "취소하기" : "투표하기"}
+                                    {isHeart ? "취소하기" : "찜하기"}
                                   </Button>
 
                                 <img src="/share.png" style={{width:"25px", height:'25px', marginRight:'40px'}}/>
