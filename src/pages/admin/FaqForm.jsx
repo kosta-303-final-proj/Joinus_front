@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { myAxios } from '../../config';
-import Header from './Header';
+import AdminHeader from '../../components/layout/AdminHeader';
 import '../../styles/components/button.css';
 import './admin-common.css';
 import './FaqForm.css';
@@ -94,7 +94,7 @@ const FaqForm = () => {
   if (loading) {
     return (
       <div className="admin-layout">
-        <Header title={isEditMode ? "FAQ 수정" : "FAQ 등록"} />
+        <AdminHeader title={isEditMode ? "FAQ 수정" : "FAQ 등록"} />
         <div className="main-content">로딩 중...</div>
       </div>
     );
@@ -107,7 +107,7 @@ const FaqForm = () => {
   return (
     <div className="admin-layout">
       <div className="main-content">
-        <Header title={isEditMode ? "FAQ 수정" : "FAQ 등록"} />
+        <AdminHeader title={isEditMode ? "FAQ 수정" : "FAQ 등록"} />
 
         <div className="content-area">
           <form onSubmit={handleSubmit} className="form-container">

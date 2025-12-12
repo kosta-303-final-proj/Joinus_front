@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getApplicationList } from '../../../services/supplyApi';
+import AdminHeader from '../../../components/layout/AdminHeader';
 import './DeliveryApplicationList.css';
 
 const FILTERS = ['전체', '신청', '승인', '반려'];
@@ -57,6 +58,10 @@ export default function DeliveryApplicationList() {
   }, [applications]);
 
   return (
+    <div className="admin-layout">
+      <div className="main-content">
+        <AdminHeader title="납품신청업체" />
+        <div className="content-area">
     <div className="delivery-application-list-page">
       <div className="page-header">
         <div className="header-content">
@@ -153,6 +158,9 @@ export default function DeliveryApplicationList() {
             </table>
           </div>
         )}
+      </div>
+    </div>
+        </div>
       </div>
     </div>
   );

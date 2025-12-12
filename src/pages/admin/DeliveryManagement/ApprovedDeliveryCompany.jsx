@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { getApprovedSupplierList } from '../../../services/supplyApi';
+import AdminHeader from '../../../components/layout/AdminHeader';
 import './ApprovedDeliveryCompany.css';
 
 // 날짜 포맷팅 함수
@@ -46,6 +47,10 @@ export default function ApprovedDeliveryCompany() {
   }, [keyword, category, sortKey]);
 
   return (
+    <div className="admin-layout">
+      <div className="main-content">
+        <AdminHeader title="납품회사조회" />
+        <div className="content-area">
     <div className="approved-company-page">
       <div className="page-header">
         <div>
@@ -138,6 +143,9 @@ export default function ApprovedDeliveryCompany() {
             </tbody>
           </table>
         )}
+      </div>
+    </div>
+        </div>
       </div>
     </div>
   );

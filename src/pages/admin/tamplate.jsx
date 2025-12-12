@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Sidebar from './Sidebar';
-import Header from './Header';
+import AdminHeader from '../../components/layout/AdminHeader';
 import SearchFilter from './SearchFilter';
 
 const PageName = () => {
@@ -25,7 +25,7 @@ const PageName = () => {
       <Sidebar />
       
       <div className="main-content">
-        <Header title="페이지 제목" />
+        <AdminHeader title="페이지 제목" />
         
         <div className="content-area">
           {/* 검색 필터 */}

@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { getApprovedSupplierList, getSupplyProductList } from '../../../services/supplyApi';
+import AdminHeader from '../../../components/layout/AdminHeader';
 import './DeliveryProductList.css';
 
 // 날짜 포맷팅 함수
@@ -72,6 +73,10 @@ export default function DeliveryProductList() {
   }, [records]);
 
   return (
+    <div className="admin-layout">
+      <div className="main-content">
+        <AdminHeader title="납품상품 조회" />
+        <div className="content-area">
     <div className="delivery-product-list-page">
       <div className="page-header">
         <div>
@@ -172,6 +177,9 @@ export default function DeliveryProductList() {
             </tbody>
           </table>
         )}
+      </div>
+    </div>
+        </div>
       </div>
     </div>
   );

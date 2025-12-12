@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { myAxios } from '../../config';
-import Header from './Header';
+import AdminHeader from '../../components/layout/AdminHeader';
 import SearchFilter from './SearchFilter';
 import './admin-common.css';
 
@@ -112,7 +112,7 @@ const MemberList = () => {
   return (
     <div className="admin-layout">
       <div className="main-content">
-        <Header title="회원 관리" />
+        <AdminHeader title="회원 관리" />
         
         <div className="content-area">
           {/* 검색 필터 */}

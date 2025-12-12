@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getApprovedSupplierList, createSupplyProduct } from '../../../services/supplyApi';
+import AdminHeader from '../../../components/layout/AdminHeader';
 import './DeliveryProductForm.css';
 
 export default function DeliveryProductForm() {
@@ -83,6 +84,10 @@ export default function DeliveryProductForm() {
   };
 
   return (
+    <div className="admin-layout">
+      <div className="main-content">
+        <AdminHeader title="납품상품 등록" />
+        <div className="content-area">
     <div className="delivery-product-form-page">
       <div className="page-header">
         <div>
@@ -208,6 +213,9 @@ export default function DeliveryProductForm() {
           </button>
         </div>
       </form>
+    </div>
+        </div>
+      </div>
     </div>
   );
 }

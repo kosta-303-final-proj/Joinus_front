@@ -4,6 +4,7 @@ import {
     Button, Input, Table,
     InputGroup, InputGroupText
 } from "reactstrap";
+import AdminHeader from "../../components/layout/AdminHeader";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function ExchangeReturnList() {
@@ -35,6 +36,10 @@ export default function ExchangeReturnList() {
     };
 
     return (
+        <div className="admin-layout">
+          <div className="main-content">
+            <AdminHeader title="교환 및 반품 관리" />
+            <div className="content-area">
         <div className="page-wrapper">
             <div className="content-wrapper" style={{ padding: "30px" }}>
                 <h4 style={{ fontWeight: 600 }}>교환 및 반품 관리</h4>
@@ -236,6 +241,9 @@ export default function ExchangeReturnList() {
                     </div>
                 </div>
             </div>
+        </div>
+            </div>
+          </div>
         </div>
     );
 }

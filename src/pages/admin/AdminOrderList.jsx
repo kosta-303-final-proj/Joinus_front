@@ -12,6 +12,7 @@ import {
     FormGroup,
     Label
 } from "reactstrap";
+import AdminHeader from "../../components/layout/AdminHeader";
 import "bootstrap/dist/css/bootstrap.min.css";
 export default function AdminOrderList() {
     const [searchType, setSearchType] = useState("");
@@ -41,6 +42,10 @@ export default function AdminOrderList() {
     }));
 
     return (
+        <div className="admin-layout">
+          <div className="main-content">
+            <AdminHeader title="공구관리 > 주문 공구 상품" />
+            <div className="content-area">
         <Container fluid className="p-5">
             <h5 className="mb-4">공구관리 &gt; 주문 공구 상품</h5>
 
@@ -158,5 +163,8 @@ export default function AdminOrderList() {
                 </div>
             </div>
         </Container>
+            </div>
+          </div>
+        </div>
     );
 }
