@@ -51,7 +51,7 @@ export default function ProposalsList() {
     const fetchProposals = async () => {
       try {
         setLoading(true);
-        const response = await myAxios().get('/api/proposals', {
+        const response = await myAxios().get('/proposalList', {
           params: { type },
         });
 
@@ -148,6 +148,7 @@ export default function ProposalsList() {
                     maxParticipants={p.maxParticipants}
                     productId={p.id}
                     isProposal={true}
+                    voteCount={p.voteCount}
                   />
                 ))}
               </div>

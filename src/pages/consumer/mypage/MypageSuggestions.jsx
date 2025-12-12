@@ -1,15 +1,69 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./MypageSuggestions.css";
 import { Pagination, PaginationItem, PaginationLink } from "reactstrap";
+import { myAxios } from "../../../config";
 
 export default function MypageSuggestions() {
   const [tab, setTab] = useState("participated");
+
+  const [participatedList, setParticipatedList] = useState([]);
+  const [writtenList, setWrittenList] = useState([]);
+
+  // ✅ 페이지 상태
+  const [participatedPage, setParticipatedPage] = useState(1);
+  const [writtenPage, setWrittenPage] = useState(1);
+
+  const itemsPerPage = 10;
+
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const username = userInfo?.username;
+
+  // ===============================
+  // 데이터 조회
+  // ===============================
+  useEffect(() => {
+    if (!username) return;
+
+    myAxios()
+      .get(`/mypage/suggestions/participated?username=${username}`)
+      .then((res) => setParticipatedList(res.data || []));
+
+    myAxios()
+      .get(`/mypage/suggestions/written?username=${username}`)
+      .then((res) => setWrittenList(res.data || []));
+  }, [username]);
+
+  // ✅ 탭 변경 시 페이지 초기화 (강력추천)
+  useEffect(() => {
+    setParticipatedPage(1);
+    setWrittenPage(1);
+  }, [tab]);
+
+  // ===============================
+  // 페이징 계산
+  // ===============================
+  const currentList = tab === "participated" ? participatedList : writtenList;
+  const currentPage = tab === "participated" ? participatedPage : writtenPage;
+  const setCurrentPage =
+    tab === "participated" ? setParticipatedPage : setWrittenPage;
+
+  const totalPages = Math.ceil(currentList.length / itemsPerPage);
+
+  const currentItems = currentList.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handlePageChange = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
 
   return (
     <>
       <div className="suggestions-title">공동구매 요청</div>
 
-      {/* ================= 탭 메뉴 ================= */}
+      {/* 탭 */}
       <div className="suggestions-tab-menu">
         <button
           className={tab === "participated" ? "active" : ""}
@@ -17,7 +71,6 @@ export default function MypageSuggestions() {
         >
           내가 투표한 공동 구매
         </button>
-
         <button
           className={tab === "written" ? "active" : ""}
           onClick={() => setTab("written")}
@@ -26,179 +79,63 @@ export default function MypageSuggestions() {
         </button>
       </div>
 
-      {/* ================= 탭별 데이터 ================= */}
+      {/* 리스트 */}
       <div className="suggestions-group-list">
-
-        {/* 참여중인 공구 */}
-        {tab === "participated" && (
-          <>
-            {/* 1 */}
-            <div className="suggestions-card">
-              <div className="suggest-card-img">이미지</div>
-
-              <div className="card-info">
-                <div>
-                  <div className="category">전자기기</div>
-                  <div className="title">프리미엄 무선 이어폰</div>
-                  <div className="desc">고음질 무선 이어폰 제안 내용 20자.</div>
-                  <div className="votes">참여 투표 인원수: 50명</div>
-                </div>
-
-                <div className="card-actions">
-                  <button className="btn-buy">구매하기</button>
-                  <button className="btn-detail">상세보기</button>
-                </div>
-              </div>
+        {currentItems.map((item) => (
+          <div className="suggestions-card" key={item.id}>
+            <div className="suggest-card-img">
+              <img src={item.imageUrl || "/default.png"} alt="" />
             </div>
 
-            {/* 2 */}
-            <div className="suggestions-card">
-              <div className="suggest-card-img">이미지</div>
-
-              <div className="card-info">
-                <div>
-                  <div className="category">홈앤리빙</div>
-                  <div className="title">스마트 홈 조명</div>
-                  <div className="desc">
-                    자동 밝기 조절 가능한 스마트 조명 제안 내용.
-                  </div>
-                  <div className="votes">참여 투표 인원수: 23명</div>
-                </div>
-
-                <div className="card-actions">
-                  <button className="btn-detail">상세보기</button>
+            <div className="card-info">
+              <div>
+                <div className="category">{item.category}</div>
+                <div className="title">{item.productName}</div>
+                <div className="desc">{item.description}</div>
+                <div className="votes">
+                  참여 투표 인원수: {item.voteCount}명
                 </div>
               </div>
-            </div>
 
-            {/* 3 */}
-            <div className="suggestions-card">
-              <div className="suggest-card-img">이미지</div>
-
-              <div className="card-info">
-                <div>
-                  <div className="category">패션</div>
-                  <div className="title">겨울용 발열 조끼</div>
-                  <div className="desc">초경량 발열 조끼 제안된 공구 설명.</div>
-                  <div className="votes">참여 투표 인원수: 41명</div>
-                </div>
-
-                <div className="card-actions">
-                  <button className="btn-buy">구매하기</button>
-                  <button className="btn-detail">상세보기</button>
-                </div>
+              <div className="card-actions">
+                <button className="btn-detail">상세보기</button>
               </div>
             </div>
-
-            {/* 4 */}
-            <div className="suggestions-card">
-              <div className="suggest-card-img">이미지</div>
-
-              <div className="card-info">
-                <div>
-                  <div className="category">식품</div>
-                  <div className="title">견과류 5종 프리미엄 팩</div>
-                  <div className="desc">영양가 높은 견과 공구 제안.</div>
-                  <div className="votes">참여 투표 인원수: 12명</div>
-                </div>
-
-                <div className="card-actions">
-                  <button className="btn-detail">상세보기</button>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
-
-        {/* 내가 작성한 공구 */}
-        {tab === "written" && (
-          <>
-            {/* 1 */}
-            <div className="suggestions-card">
-              <div className="suggest-card-img">이미지</div>
-
-              <div className="card-info">
-                <div>
-                  <div className="category">패션</div>
-                  <div className="title">내가 올린 겨울 패딩 공구</div>
-                  <div className="desc">직접 올린 패딩 공구 제안.</div>
-                  <div className="votes">참여 투표 인원수: 11명</div>
-                </div>
-
-                <div className="card-actions">
-                  <button className="btn-detail">상세보기</button>
-                </div>
-              </div>
-            </div>
-
-            {/* 2 */}
-            <div className="suggestions-card">
-              <div className="suggest-card-img">이미지</div>
-
-              <div className="card-info">
-                <div>
-                  <div className="category">식품</div>
-                  <div className="title">내가 올린 견과 공구</div>
-                  <div className="desc">프리미엄 견과 세트 공구 제안.</div>
-                  <div className="votes">참여 투표 인원수: 7명</div>
-                </div>
-
-                <div className="card-actions">
-                  <button className="btn-buy">구매하기</button>
-                  <button className="btn-detail">상세보기</button>
-                </div>
-              </div>
-            </div>
-
-            {/* 3 */}
-            <div className="suggestions-card">
-              <div className="suggest-card-img">이미지</div>
-
-              <div className="card-info">
-                <div>
-                  <div className="category">뷰티</div>
-                  <div className="title">내가 올린 스킨케어 세트</div>
-                  <div className="desc">피부 진정 스킨케어 공구 제안.</div>
-                  <div className="votes">참여 투표 인원수: 19명</div>
-                </div>
-
-                <div className="card-actions">
-                  <button className="btn-buy">구매하기</button>
-                  <button className="btn-detail">상세보기</button>
-                </div>
-              </div>
-            </div>
-
-            {/* 4 */}
-            <div className="suggestions-card">
-              <div className="suggest-card-img">이미지</div>
-
-              <div className="card-info">
-                <div>
-                  <div className="category">반려동물</div>
-                  <div className="title">고양이 사료 대용량 공구</div>
-                  <div className="desc">대용량 사료 구매 공구 제안.</div>
-                  <div className="votes">참여 투표 인원수: 8명</div>
-                </div>
-
-                <div className="card-actions">
-                  <button className="btn-detail">상세보기</button>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
-
-      </div>
-          {/* 페이지네이션 */}
-      <Pagination className="paginationContainer">
-        <PaginationItem><PaginationLink first href="#" /></PaginationItem>
-        <PaginationItem><PaginationLink previous href="#" /></PaginationItem>
-        {[1,2,3,4,5].map(num => (
-          <PaginationItem key={num}><PaginationLink href="#">{num}</PaginationLink></PaginationItem>
+          </div>
         ))}
-        <PaginationItem><PaginationLink next href="#" /></PaginationItem>
-        <PaginationItem><PaginationLink last href="#" /></PaginationItem>
+      </div>
+
+      {/* 페이지네이션 */}
+      <Pagination className="paginationContainer">
+        <PaginationItem disabled={currentPage === 1}>
+          <PaginationLink first onClick={() => handlePageChange(1)} />
+        </PaginationItem>
+
+        <PaginationItem disabled={currentPage === 1}>
+          <PaginationLink
+            previous
+            onClick={() => handlePageChange(currentPage - 1)}
+          />
+        </PaginationItem>
+
+        {[...Array(totalPages)].map((_, i) => (
+          <PaginationItem key={i} active={currentPage === i + 1}>
+            <PaginationLink onClick={() => handlePageChange(i + 1)}>
+              {i + 1}
+            </PaginationLink>
+          </PaginationItem>
+        ))}
+
+        <PaginationItem disabled={currentPage === totalPages}>
+          <PaginationLink
+            next
+            onClick={() => handlePageChange(currentPage + 1)}
+          />
+        </PaginationItem>
+
+        <PaginationItem disabled={currentPage === totalPages}>
+          <PaginationLink last onClick={() => handlePageChange(totalPages)} />
+        </PaginationItem>
       </Pagination>
     </>
   );

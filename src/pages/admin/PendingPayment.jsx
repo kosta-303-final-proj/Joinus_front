@@ -83,7 +83,7 @@ export default function PendingPayment() {
                 <tr>
                   <th>공구 ID</th>
                   <th>상품명</th>
-                  <th>결제 대기 건수</th>
+                  {/* <th>결제 대기 건수</th> */}
                   <th>총 결제 금액</th>
                   <th>마감일</th>
                   <th>관리</th>
@@ -101,7 +101,7 @@ export default function PendingPayment() {
                     <tr key={item.gbProductId}>
                       <td>{item.groupBuyId}</td>
                       <td className="product-name">{item.name}</td>
-                      <td>{item.count}건</td>
+                      {/* <td>{item.count}건</td> */}
                       <td>{formatCurrency(item.totalAmount)}</td>
                       <td>{item.deadline}</td>
                       <td>

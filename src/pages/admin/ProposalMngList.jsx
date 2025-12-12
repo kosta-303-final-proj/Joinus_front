@@ -10,7 +10,7 @@ const ProposalMngList = () => {
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState('PENDING');
-  const [sortType, setSortType] = useState('latest');
+  const [sortType, setSortType] = useState('latest');  
   const [searchFilters, setSearchFilters] = useState({
     searchType: 'title',
     searchKeyword: ''
@@ -35,7 +35,7 @@ const ProposalMngList = () => {
         status: tab === 'ALL' ? null : tab,
         searchType: filters.searchType,
         searchKeyword: filters.searchKeyword,
-        sortType: sort 
+        sortType: sort  
       };
 
       const response = await myAxios().get('/admin/proposalList', { params });
@@ -52,7 +52,7 @@ const ProposalMngList = () => {
   // ========================================
   useEffect(() => {
     fetchProposals(currentPage, activeTab, searchFilters, sortType);
-  }, [currentPage, activeTab, searchFilters, sortType]);
+  }, [currentPage, activeTab, searchFilters, sortType]);  
 
   // ========================================
   // 탭 변경
@@ -78,7 +78,7 @@ const ProposalMngList = () => {
       searchType: 'title',
       searchKeyword: ''
     });
-    setSortType('latest');  
+    setSortType('latest'); 
     setCurrentPage(0);
   };
 
@@ -111,7 +111,7 @@ const ProposalMngList = () => {
             searchOptions={[
               { value: 'memberUsername', label: '작성자' },
               { value: 'title', label: '제목' },
-              { value: 'description', label: '내용' }
+              { value: 'description', label: '내용' } 
             ]}
             onSearch={handleSearch}
             onReset={handleReset}
@@ -140,7 +140,7 @@ const ProposalMngList = () => {
               </button>
             </div>
 
-            {/* 정렬 드롭다운 */}
+            {/* 정렬 드롭다운 ! */}
             <div className="sort-dropdown">
               <select 
                 value={sortType} 

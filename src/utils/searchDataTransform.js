@@ -13,6 +13,7 @@ export const transformProposal = (proposal) => {
     price: formatPrice(proposal.originalPrice),  // originalPrice → price (포맷팅)
     rating: null,  // 제안은 평점 없음
     currentParticipants: proposal.voteCount || 0,  // voteCount → currentParticipants
+    voteCount: proposal.voteCount || 0, // 명시적으로 투표수 전달
     maxParticipants: proposal.minPart || 0,  // minPart → maxParticipants
     deadlineTime: null,  // 제안은 마감일 없음
     badge: (proposal.voteCount >= 50) ? 'HOT' : null,  // HOT 배지 계산

@@ -21,6 +21,7 @@ export default function GroupBuyCard({
   deadlineTime,
   productId,
   isProposal = false,
+  voteCount,
 }) {
   const navigate = useNavigate();
 
@@ -108,6 +109,13 @@ export default function GroupBuyCard({
           <div className="fw-bold" style={{ fontSize: '20px', marginBottom: '12px' }}>
             {price}
           </div>
+        )}
+
+        {/* 제안 카드인 경우 투표수 표시 */}
+        {isProposal && voteCount !== undefined && (
+          <CardSubtitle style={{ marginBottom: '8px' }}>
+            <span style={{ fontSize: '12px', color: '#666' }}>투표수: {voteCount}개</span>
+          </CardSubtitle>
         )}
 
         {rating && (

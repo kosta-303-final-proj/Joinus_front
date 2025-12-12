@@ -1,6 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
+import { myAxios } from "../../../config";
 
-export default function InquiryModal({ onClose }) {
+export default function InquiryModal({ onClose, gbProductId, onQnaAdded }) {
+    const [question, setQuestion] = useState("");
+
+    const submit = () => {
+        if(!question.trim()){
+            alert("문의 내용을 입력해주세요");
+            return;
+        }
+
+        const payload = {
+            username: "kakao_4436272679",
+            gbProductId: gbProductId,
+            question: question
+        };
+
+        myAxios().post("/qna", payload)
+        .then(res=>{
+            console.log(res)
+            alert("문의가 정상적으로 등록되었습니다."); // 성공 시 alert
+            onQnaAdded && onQnaAdded(res.data); // 부모 컴포넌트에 새로운 Qna 전달
+            onClose();
+        })
+        .catch(err=>{
+            console.log(err);
+            alert("문의 등록 중 오류가 발생했습니다.");
+        })
+    }
     return (
         <>
             {/* ⭐ 모달 배경 */}
@@ -21,6 +48,8 @@ export default function InquiryModal({ onClose }) {
 
                     {/* textarea */}
                     <textarea
+                        value={question}
+                        onChange={(e) => setQuestion(e.target.value)}
                         placeholder="성분, 사용법, 구성 등 상품에 대해 문의할 내용을 입력해 주세요."
                         style={textareaStyle}
                     ></textarea>
@@ -34,7 +63,7 @@ export default function InquiryModal({ onClose }) {
                     </div>
 
                     {/* 등록하기 버튼 */}
-                    <button style={submitBtnStyle}>등록하기</button>
+                    <button onClick={submit} style={submitBtnStyle}>등록하기</button>
                 </div>
             </div>
         </>
@@ -90,6 +119,7 @@ const textareaStyle = {
     border: "1px solid #ccc",
     borderRadius: "4px",
     resize: "none",
+    fontSize:'14px'
 };
 
 const submitBtnStyle = {

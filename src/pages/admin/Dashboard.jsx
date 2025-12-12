@@ -143,7 +143,6 @@ export default function Dashboard() {
                   <div key={item.gbProductId || index} className="payment-item">
                     <div className="payment-info">
                       <div className="payment-name">{item.name}</div>
-                      <div className="payment-count">결제 대기: {item.count}건</div>
                     </div>
                   </div>
                 ))
@@ -177,7 +176,6 @@ export default function Dashboard() {
                 <th>공구 ID</th>
                 <th>상품명</th>
                 <th>참여수 / 최소 인원수</th>
-                <th>현재 매출</th>
                 <th>마감까지</th>
               </tr>
             </thead>
@@ -188,7 +186,6 @@ export default function Dashboard() {
                     <td>{item.id}</td>
                     <td>{item.name}</td>
                     <td>{item.participants} / {item.minParticipants}</td>
-                    <td>{formatCurrency(item.revenue)}</td>
                     <td>{item.deadline}</td>
                   </tr>
                 ))
