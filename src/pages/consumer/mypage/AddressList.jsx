@@ -7,9 +7,14 @@ export default function AddressList() {
    const navigate = useNavigate();
   const [addressList, setAddressList] = useState([]);
 
+   // ✅ 로그인 유저 정보
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const username = userInfo?.username;
+  
   const getAddressList = () => {
+    if (!username) return; // 🔒 안전장치
     axios
-      .get("http://localhost:8080"+`/mypage/address?username=ehgns0311`)
+      .get(`http://localhost:8080/mypage/point?username=${username}`)
       .then((res) => {
         console.log(res.data);
         setAddressList(res.data);
