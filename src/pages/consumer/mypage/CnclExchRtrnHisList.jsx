@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Container, Row, Col, Card, CardBody,
     Nav, NavItem, NavLink,
     Form, FormGroup, Label, Input, Button,
     Badge,
 } from 'reactstrap';
+import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./exchRtrn.css";
 import OrderItem from "./OrderItem";
@@ -24,6 +25,80 @@ export default function CnclExchRtrnHisList() {
     const badgeStyle = {
         color: '#739FF2'
     }
+
+    // -------------------------
+    // 상태 정의
+    // -------------------------
+    const [historyType, setHistoryType] = useState("all"); // all / cancel / return / exchange
+    const [historyList, setHistoryList] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    // TODO: 실제 로그인한 사용자 username으로 대체
+    const username = "kakao_4633814946";
+
+    // -------------------------
+    // axios로 내역 조회
+    // -------------------------
+    const fetchHistory = async (type) => {
+        setLoading(true);
+        try {
+            let url = "";
+
+            if (type === "cancel") {
+                url = `/mypage/cnclExchRtrnHisList/cancel/${username}`;
+            } else if (type === "return") {
+                url = `/mypage/cnclExchRtrnHisList/return/${username}`;
+            } else if (type === "exchange") {
+                url = `/mypage/cnclExchRtrnHisList/exchange/${username}`;
+            } else {
+                // 전체
+                url = `/mypage/cnclExchRtrnHisList/all/${username}`;
+            }
+
+            const res = await axios.get(`http://localhost:8080${url}`);
+            
+            if (type === "all") {
+            const items = res.data?.items ?? [];
+            // 접수일(requestedAt) 최신순 정렬(없으면 createdAt fallback)
+                const sorted = [...items].sort(
+                (a, b) =>
+                    new Date(b.requestedAt ?? b.createdAt ?? 0) -
+                    new Date(a.requestedAt ?? a.createdAt ?? 0)
+                );
+                setHistoryList(sorted);
+                return;
+            }
+            // ✅ 개별(취소/반품/교환)은 아직 기존 응답구조를 유지한다고 가정
+            // (컨트롤러를 나중에 맞출 거라서, 현재 백엔드 구조도 대응해둠)
+            if (type === "cancel") {
+                setHistoryList(res.data?.cancels ?? res.data ?? []);
+            } else if (type === "return") {
+                setHistoryList(res.data?.returns ?? res.data ?? []);
+            } else if (type === "exchange") {
+                setHistoryList(res.data?.exchanges ?? res.data ?? []);
+            } else {
+                setHistoryList([]);
+            }
+        } catch (e) {
+            console.error("취소/반품/교환 내역 조회 실패:", e);
+            setHistoryList([]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // 처음 렌더링 + historyType 변경될 때마다 호출
+    useEffect(() => {
+        fetchHistory(historyType);
+    }, [historyType]);
+
+    // 날짜 포맷 (Timestamp 문자열 기준)
+    const formatDate = (value) => {
+        if (!value) return "";
+        // value가 "2024-03-26T10:20:30" 이런 식이면 앞 10자리만 사용
+        return String(value).substring(0, 10).replaceAll("-", "/");
+    };
+
     return (
         <Container className="bg-white p-4" style={{ maxWidth: "860px" }}>
             <div className="d-flex flex-row" style={{ width: "100%", marginLeft: "24px" }}>
@@ -36,13 +111,15 @@ export default function CnclExchRtrnHisList() {
                             <Row className="align-items-center">
                                 <Col md={1} className="text-muted w-auto">처리내역</Col>
                                 <Col md={5} className="d-flex align-items-center gap-2">
-                                    <Button size="sm" style={filterButtonStyle} className="me-2 w-100">전체</Button>
-                                    <Button size="sm" outline className="me-2 w-100">취소</Button>
-                                    <Button size="sm" outline className="me-2 w-100">반품</Button>
-                                    <Button size="sm" outline className="me-2 w-100">교환</Button>
-                                    <Button size="sm" outline className="w-100">환불</Button>
+                                    <Button size="sm" style={filterButtonStyle} className="me-2 w-100" onClick={() => setHistoryType("all")}>전체</Button>
+                                    <Button size="sm" outline className="me-2 w-100" onClick={() => setHistoryType("cancel")}>취소</Button>
+                                    <Button size="sm" outline className="me-2 w-100" onClick={() => setHistoryType("return")}>반품</Button>
+                                    <Button size="sm" outline className="me-2 w-100" onClick={() => setHistoryType("exchange")}>교환</Button>
+                                    <Button size="sm" outline className="w-100" disabled>환불</Button>
                                 </Col>
                             </Row>
+
+                            {/* ======================== 구매 기간 ======================== */}
                             <Row className="align-items-center mt-2">
                                 <Col md={1} className="text-muted w-auto">구매기간</Col>
                                 <Col md={5} className="d-flex align-items-center gap-2">
@@ -73,9 +150,52 @@ export default function CnclExchRtrnHisList() {
                                     <Button className="ms-3" style={buttonStyle}>조회하기</Button>
                                 </Col>
                             </Row>
+                            {/* ====================================================== */}
+                        </div>
+                        
+                        {/* -------------------------- */}
+                        {/*   내역 리스트 영역           */}
+                        {/* -------------------------- */}
+
+                        <div className="mt-4">
+                            {loading && <p>불러오는 중...</p>}
+
+                            {!loading && historyList.length === 0 && (
+                                <p>취소/반품/교환 내역이 없습니다.</p>
+                            )}
+
+                            {!loading && historyList.length > 0 && historyList.map((item, idx) => {
+                                
+                                const statusText = item.status ?? "상태";
+                                const orderNum = item.orderId ?? item.order?.id ?? "-";
+
+                                const requestedAt = item.requestedAt ?? item.createdAt; // fallback
+                                const orderAt = item.orderAt ?? item.orderDate ?? item.createdAt; // fallback
+
+                                const quantity = item.quantity ?? 1;
+
+                                const priceText = Number(item.price ?? 0).toLocaleString();
+
+                                const key = `${item.requestId ?? item.id ?? idx}-${item.orderItemId ?? "noItem"}-${orderNum}`;
+
+                                return (
+                                    <OrderItem
+                                    key={key}
+                                    status={statusText}
+                                    product={item.productName ?? "상품명 없음"}
+                                    options={item.optionName ?? "옵션 없음"}
+                                    quantity={quantity} // ✅ 추가
+                                    price={priceText}
+                                    // ✅ 접수일/주문일 분리해서 전달
+                                    requestedAt={formatDate(requestedAt)}
+                                    orderDate={formatDate(orderAt)}
+                                    orderNum={orderNum}
+                                    />
+                                );
+                            })}
                         </div>
 
-
+                        {/* ============= 예시 =============
                         <div className="mt-4">
                             <OrderItem
                                 status="취소완료"
@@ -141,6 +261,7 @@ export default function CnclExchRtrnHisList() {
                                 </Col>
                             </Row>
                         </div>
+                         */}
                     </CardBody>
                 </Card>
             </div>
