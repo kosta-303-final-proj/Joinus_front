@@ -10,7 +10,7 @@ const ProposalMngList = () => {
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState('PENDING');
-  const [sortType, setSortType] = useState('latest');  
+  const [sortType, setSortType] = useState('latest');
   const [searchFilters, setSearchFilters] = useState({
     searchType: 'title',
     searchKeyword: ''
@@ -35,10 +35,15 @@ const ProposalMngList = () => {
         status: tab === 'ALL' ? null : tab,
         searchType: filters.searchType,
         searchKeyword: filters.searchKeyword,
-        sortType: sort  
+        sortType: sort  // ✅ 정렬 타입!
       };
 
+      console.log('🔍 API 요청 params:', params);
+
       const response = await myAxios().get('/admin/proposalList', { params });
+      
+      console.log('📥 API 응답:', response.data);
+      
       setProposalPage(response.data);
       setCurrentPage(page);
 
@@ -51,13 +56,15 @@ const ProposalMngList = () => {
   // 의존성 변경 시 재요청
   // ========================================
   useEffect(() => {
+    console.log('🔄 useEffect 실행 - sortType:', sortType);
     fetchProposals(currentPage, activeTab, searchFilters, sortType);
-  }, [currentPage, activeTab, searchFilters, sortType]);  
+  }, [currentPage, activeTab, searchFilters, sortType]);  // ✅ sortType 포함!
 
   // ========================================
   // 탭 변경
   // ========================================
   const handleTabChange = (tabValue) => {
+    console.log('📑 탭 변경:', tabValue);
     setActiveTab(tabValue);
     setCurrentPage(0);
   };
@@ -66,6 +73,7 @@ const ProposalMngList = () => {
   // 검색
   // ========================================
   const handleSearch = (filters) => {
+    console.log('🔎 검색:', filters);
     setSearchFilters(filters);
     setCurrentPage(0);
   };
@@ -74,11 +82,12 @@ const ProposalMngList = () => {
   // 초기화
   // ========================================
   const handleReset = () => {
+    console.log('🔄 초기화');
     setSearchFilters({
       searchType: 'title',
       searchKeyword: ''
     });
-    setSortType('latest'); 
+    setSortType('latest');
     setCurrentPage(0);
   };
 
@@ -87,15 +96,18 @@ const ProposalMngList = () => {
   // ========================================
   const handlePageChange = (pageNumber) => {
     if (pageNumber >= 0 && pageNumber < proposalPage.totalPages) {
+      console.log('📄 페이지 변경:', pageNumber);
       setCurrentPage(pageNumber);
     }
   };
 
   // ========================================
-  // 정렬 변경 
+  // 정렬 변경
   // ========================================
   const handleSortChange = (e) => {
-    setSortType(e.target.value);
+    const newSort = e.target.value;
+    console.log('🎯 정렬 변경:', sortType, '→', newSort);
+    setSortType(newSort);
     setCurrentPage(0);
   };
 
@@ -111,13 +123,13 @@ const ProposalMngList = () => {
             searchOptions={[
               { value: 'memberUsername', label: '작성자' },
               { value: 'title', label: '제목' },
-              { value: 'description', label: '내용' } 
+              { value: 'description', label: '내용' }
             ]}
             onSearch={handleSearch}
             onReset={handleReset}
           />
 
-          {/* 탭 + 정렬  */}
+          {/* 탭 + 정렬 */}
           <div className="tabs-container">
             <div className="tabs">
               <button
@@ -140,7 +152,7 @@ const ProposalMngList = () => {
               </button>
             </div>
 
-            {/* 정렬 드롭다운 ! */}
+            {/* 정렬 드롭다운 */}
             <div className="sort-dropdown">
               <select 
                 value={sortType} 
@@ -181,7 +193,6 @@ const ProposalMngList = () => {
                       <td
                         className="title-cell"
                         style={{ cursor: 'pointer' }}
-                        // onClick={() => navigate(`/admin/proposalDetail/${proposal.id}`)}
                       >
                         {proposal.productName}
                       </td>
