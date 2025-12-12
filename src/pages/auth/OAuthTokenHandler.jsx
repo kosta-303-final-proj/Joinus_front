@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { apiFetch, myAxios } from '../../config';
+import { baseUrl } from '../../config';
+import { myAxios } from '../../config';
 
 /**
  * 소셜 로그인(OAuth2) 성공 후 토큰을 처리하는 컴포넌트
- * 백엔드에서 http://localhost:5173/token?token={JSON문자열} 형태로 리다이렉트됨
+ * 백엔드에서 http://localhost:5173/token?success=true 형태로 리다이렉트됨
+ * URL에 토큰이 노출되지 않음 (세션 토큰 교환 방식)
  */
 export default function OAuthTokenHandler() {
   const navigate = useNavigate();
@@ -13,25 +15,35 @@ export default function OAuthTokenHandler() {
   useEffect(() => {
     const handleToken = async () => {
       try {
-        // URL에서 token 파라미터 가져오기
-        const tokenParam = searchParams.get('token');
+        // URL에서 성공 여부만 확인 (토큰 없음)
+        const success = searchParams.get('success');
         
-        if (!tokenParam) {
-          console.error('토큰이 없습니다.');
+        if (!success) {
+          console.error('로그인 실패 또는 토큰이 없습니다.');
           alert('로그인에 실패했습니다. 다시 시도해주세요.');
           navigate('/login');
           return;
         }
 
-        // JSON 문자열을 파싱
-        let tokenData;
-        try {
-          tokenData = JSON.parse(tokenParam);
-        } catch (e) {
-          // 이미 파싱된 객체일 수도 있음
-          tokenData = typeof tokenParam === 'string' ? JSON.parse(tokenParam) : tokenParam;
+        // 세션에서 토큰 교환 API 호출
+        const response = await fetch(`${baseUrl}/api/auth/oauth/token`, {
+          method: 'GET',
+          credentials: 'include', // 쿠키(세션) 포함 필수
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            throw new Error('토큰이 만료되었거나 이미 사용되었습니다.');
+          }
+          throw new Error('토큰 교환에 실패했습니다.');
         }
 
+        // 토큰 받기
+        const tokenData = await response.json();
+        
         // 토큰 저장
         if (tokenData.access_token) {
           localStorage.setItem('access_token', tokenData.access_token);
@@ -60,16 +72,16 @@ export default function OAuthTokenHandler() {
           if (userRole.includes('ROLE_ADMIN') || userRole.includes('ROLE_MANAGER')) {
             // 관리자 또는 매니저인 경우
             alert('로그인 성공!');
-            navigate('/admin');
+            navigate('/admin', { replace: true }); // 히스토리에서 제거
           } else {
             // 일반 사용자인 경우
             alert('로그인 성공!');
-            navigate('/');
+            navigate('/', { replace: true }); // 히스토리에서 제거
           }
         } else {
           // 사용자 정보를 가져오지 못한 경우 기본값으로 메인 페이지로 이동
           alert('로그인 성공!');
-          navigate('/');
+          navigate('/', { replace: true }); // 히스토리에서 제거
         }
       } catch (error) {
         console.error('토큰 처리 실패:', error);
