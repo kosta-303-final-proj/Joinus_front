@@ -1,41 +1,108 @@
 import React from "react";
-import {
-    Row, Col, Button, Badge,
-} from 'reactstrap';
-export default function OrderItem({ status, product, options, quantity, price, requestedAt, orderDate, orderNum }) {
-    
-    const safeStatus = String(status ?? "");
-    
-    return (
-    <Row className="mb-3 p-3 bg-white border rounded">
-        <Col xs={12} className="mb-2">
-            <small className="text-muted">
-                {requestedAt ? `반품접수일: ${requestedAt} | ` : ''}
-                {orderDate ? `주문일: ${orderDate} | ` : ''}
-                주문번호: {orderNum ?? "-"}
-            </small>
-        </Col>
-        <Col md={1} className="d-flex align-items-center">
-            <div className="bg-light p-3 border rounded w-100 text-center">이미지</div>
-        </Col>
-        <Col md={7} className="d-flex flex-column justify-content-center">
-            <strong>{product ?? "상품명 없음"}</strong>
-            <small className="text-muted mt-1">{options ?? "옵션 없음"}</small>
-        </Col>
-        <Col md={1} className="d-flex align-items-center justify-content-end">
-            <span className="text-muted">{quantity}개</span>
-        </Col>
-        <Col md={1} className="d-flex align-items-center justify-content-end">
-            <strong>{price ?? "0"} 원</strong>
-        </Col>
-        <Col md={2} className="d-flex flex-column align-items-end justify-content-center gap-1">
-            <Badge color={safeStatus.includes("완료") ? "secondary" : "primary"}>
-                {safeStatus || "상태"}
-            </Badge>
-            {status.includes('반품') && <Button size="sm" outline>반품상세</Button>}
-            {status.includes('교환') && <Button size="sm" outline>교환상세</Button>}
-            {status.includes('취소') && <Button size="sm" outline>취소상세</Button>}
-        </Col>
-    </Row>
-    );
+import { Button } from "reactstrap";
+
+export default function OrderItem({
+  requestedAt,
+  orderDate,
+  orderNum,
+  product,
+  options,
+  quantity,
+  price,
+  status,
+}) {
+  return (
+    <div style={styles.row}>
+      <div style={{ ...styles.col, width: "10%" }}>{requestedAt}</div>
+      <div style={{ ...styles.col, width: "10%" }}>{orderDate}</div>
+      <div style={{ ...styles.col, width: "15%" }}>{orderNum}</div>
+
+      <div style={{ ...styles.col, width: "30%", textAlign: "left" }}>
+        <div style={styles.productWrap}>
+          <div style={styles.imageBox}>이미지</div>
+          <div>
+            <div style={styles.product}>{product}</div>
+            <div style={styles.option}>{options}</div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ ...styles.col, width: "5%" }}>{quantity}</div>
+      <div style={{ ...styles.col, width: "10%" }}>
+        <strong>{price}원</strong>
+      </div>
+
+      <div style={{ ...styles.col, width: "10%" }}>
+        <span style={styles.status}>{status}</span>
+      </div>
+
+      <div style={{ ...styles.col, width: "10%" }}>
+        <Button size="sm" outline style={styles.detailBtn}>
+          상세보기
+        </Button>
+      </div>
+    </div>
+  );
 }
+
+const styles = {
+  row: {
+    display: "flex",
+    alignItems: "center",
+    padding: "14px 0",
+    borderBottom: "1px solid #eee",
+    fontSize: "12px",
+  },
+  col: {
+    textAlign: "center",
+  },
+  productWrap: {
+    display: "flex",
+    gap: "8px",
+    alignItems: "center",
+  },
+  imageBox: {
+    width: "50px",
+    height: "50px",
+    border: "1px solid #ddd",
+    fontSize: "11px",
+    color: "#aaa",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  product: {
+    fontWeight: "bold",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    maxWidth: "220px",
+  },
+  option: {
+    fontSize: "11px",
+    color: "#777",
+  },
+ status: {
+    padding: "4px 10px",
+    borderRadius: "6px",
+    fontSize: "12px",
+    whiteSpace: "nowrap",
+    backgroundColor: "rgb(242, 249, 252)",
+    color: "rgb(118, 147, 252)",
+    border: "1px solid rgb(118, 147, 252)",
+    display: "inline-block",
+  },
+  detailBtn: {
+    width: "80px",
+    fontSize: "10px",
+    marginBottom: "5px",
+    padding: "5px 0px",
+    border: "1px solid rgb(204, 204, 204)",
+    backgroundColor: "rgb(255, 255, 255)",
+    borderRadius: "4px",
+    cursor: "pointer",
+    display: "block",
+    marginLeft: "auto",
+    marginRight: "auto",
+  },
+};
