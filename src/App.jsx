@@ -90,9 +90,11 @@ import Policy from './pages/consumer/groups/Policy';
 import QAndA from './pages/consumer/groups/QAndA';
 import Pay from './pages/consumer/groups/Pay';
 import PayComplete from './pages/consumer/groups/PayComplete';
+import { CheckoutPage } from './tossPayment';
 //관리자
 import ProposalDetailAdmin from './pages/admin/ProposalDetailAdmin';
 import InquiryWrite from './pages/cs/InquiryWrite';
+
 
 
 
@@ -347,8 +349,8 @@ function AppContent() {
             <Route path="/proposalsList/proposalModify/:id" element={<ProposalModify />} />
 
             {/* 공구 */}
-
-            <Route path='/pay' element={<Pay />} />
+            <Route path='/pay/:id' element={<Pay />} />
+            <Route path="/checkout" element={<CheckoutPage />} /> {/* 결제 */}
             <Route path="/payComplate" element={<PayComplete />} />
             <Route path="/gbProductList" element={<GBProductList />} />
             <Route path="/gbProductDetail/:id" element={<GBProductDetail />}>

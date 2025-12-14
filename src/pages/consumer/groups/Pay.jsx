@@ -1,9 +1,90 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Label, FormGroup, Input, Button } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Link, useParams, useLocation, useNavigate  } from "react-router-dom";
+import { myAxios , baseUrl} from "../../../config";
 
 export default function Pay(){
     const [addressType, setAddressType] = useState("new");
+    
+    const { id } = useParams();
+    const location = useLocation();
+    const [detail, setDetail] = useState({ product: {}, category: {}, thumbnailFile: {}, images: [], options: []});
+    const { productId, thumbnail, finalPrice, productName, quantity } = location.state || {};
+    const navigate = useNavigate();
+    // 🔹 회원 포인트
+    const [memberPoint, setMemberPoint] = useState(0);
+    // 🔹 사용 포인트
+    const [usingPoint, setUsingPoint] = useState(0);
+
+    const [shipRecipient, setShipRecipient] = useState("");
+    const [phone, setPhone] = useState("");
+    const [postcode, setPostcode] = useState("");
+    const [name, setName] = useState("");  // 이름
+    const [email, setEmail] = useState("");                 // 이메일
+    const [streetAddress, setStreetAddress] = useState("");
+    const [addressDetail, setAddressDetail] = useState("");
+    const [accessInstructions, setAccessInstructions] = useState("");
+    const [optionIds, setOptionIds] = useState([]); // 상품 옵션 선택에 따라
+
+    const shippingAmount = 3000;
+    const totalAmount = finalPrice + shippingAmount - usingPoint;
+
+    const getMemberPoint = () => {
+        myAxios().get("/member/detail", { params: { username: "kakao_4436272679" } })
+        .then(res => {
+            console.log(res.data);
+        setMemberPoint(res.data.pointBalance);
+        })
+        .catch(err => {
+        console.log("회원 포인트 조회 실패", err);
+        });
+    };
+    
+    //상품 상세 조회
+    const getProduct =()=>{
+      myAxios().get(`/gbProductDetail/${id}`)
+      .then(res=>{
+        console.log(res)
+        setDetail(res.data)
+      })
+      .catch(err=>{
+        console.log(err)
+      })
+    }
+    useEffect(()=>{
+        getProduct();
+        getMemberPoint();   // ⭐ 포인트 조회
+    },[])
+
+
+    // 주문 생성 함수 
+    const [orderId, setOrderId] = useState(null);
+    const createOrder = async () => {
+        try {
+            const response = await myAxios().post("/orders", {
+                member: { username: "kakao_4436272679" },
+                gbProduct: { id: productId },
+                optionIds,
+                quantity,
+                subtotalAmount: finalPrice,
+                shippingAmount,
+                totalAmount,
+                usingPoint,
+                shipRecipient,
+                phone,
+                postcode,
+                streetAddress,
+                addressDetail,
+                accessInstructions,
+            });
+            return response.data.orderId;
+        } catch (e) {
+            console.log("주문 생성 에러:", e.response?.data || e.message);
+            throw e;
+        }
+    };
+
+
     return(
         <>
             <div style={styles.pageWrapper}>
@@ -32,11 +113,11 @@ export default function Pay(){
                         <div style={{ display: "flex", height: "118px", fontSize:'12px' }}>
                             <div style={{ flex: 1, borderRight: "1px solid black", display: "flex", justifyContent: "center", alignItems: "center" }}>2025-12-01</div>
                             <div style={{flex: 2,borderRight: "1px solid black",display: "flex",alignItems: "center",gap: "10px",}}>
-                                <img src="/computer.png" style={{ width: "60px", height: "60px", marginLeft:'20px' }} />
-                                <div>상품명</div>
+                                <img src={`${baseUrl}/files/${thumbnail}`} style={{ width: "60px", height: "60px", marginLeft:'20px' }} />
+                                <div>{productName}</div>
                             </div>
                             <div style={{ flex: 1, borderRight: "1px solid black", display: "flex", justifyContent: "center", alignItems: "center" }}>1</div>
-                            <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>10,000</div>
+                            <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>{finalPrice?.toLocaleString()}원</div>
                         </div>
                     </div>
                 </div>
@@ -51,85 +132,130 @@ export default function Pay(){
                         {/* 왼쪽 배송지 박스 */}
                         <div style={{ border: '1px solid black', overflow: 'hidden', width: '500px' }}>
                             <div style={row}>
-                                <div style={leftCol}>배송지 선택</div>
-                                <div style={rightCol}>
-                                    <FormGroup tag="fieldset" style={{ display: "flex", gap: "20px", alignItems: "center" }}>
-                                        {/* 신규 배송지 */}
-                                        <FormGroup check style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                                            <Input
-                                                name="addressType"
-                                                type="radio"
-                                                value="new"
-                                                checked={addressType === "new"}
-                                                onChange={() => setAddressType("new")}
-                                            />
-                                            <Label check>신규 배송지</Label>
-                                        </FormGroup>
-                                        {/* 기존 배송지 */}
-                                        <FormGroup check style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                                            <Input
-                                                name="addressType"
-                                                type="radio"
-                                                value="old"
-                                                checked={addressType === "old"}
-                                                onChange={() => setAddressType("old")}
-                                            />
-                                            <Label check>기존 배송지</Label>
-                                        </FormGroup>
-                                    </FormGroup>
+                            <div style={leftCol}>배송지 선택</div>
+                            <div style={rightCol}>
+                            <FormGroup tag="fieldset" style={{ display: "flex", gap: "20px", alignItems: "center" }}>
+                                <FormGroup check style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                                <Input
+                                    name="addressType"
+                                    type="radio"
+                                    value="new"
+                                    checked={addressType === "new"}
+                                    onChange={() => setAddressType("new")}
+                                />
+                                <Label check>신규 배송지</Label>
+                                </FormGroup>
 
-                                    {/* ⭐ 기존 배송지일 때만 Select 표시 */}
-                                    {addressType === "old" && (
-                                        <FormGroup>
-                                            <Input
-                                                id="exampleSelect"
-                                                name="select"
-                                                type="select"
-                                                style={{ fontSize: '12px', width: '100px' }}
-                                            >
-                                                <option>집으로</option>
-                                            </Input>
-                                        </FormGroup>
-                                    )}
-                                </div>
+                                <FormGroup check style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                                <Input
+                                    name="addressType"
+                                    type="radio"
+                                    value="old"
+                                    checked={addressType === "old"}
+                                    onChange={() => setAddressType("old")}
+                                />
+                                <Label check>기존 배송지</Label>
+                                </FormGroup>
+                            </FormGroup>
+
+                            {addressType === "old" && (
+                                <FormGroup>
+                                <Input type="select" style={{ fontSize: "12px", width: "100px" }}>
+                                    <option>집으로</option>
+                                </Input>
+                                </FormGroup>
+                            )}
                             </div>
+                        </div>
 
+                        {/* 배송지명 */}
                         <div style={row}>
                             <div style={leftCol}>배송지명</div>
-                            <div style={rightCol}>샘플 상품명입니다</div>
+                            <div style={rightCol}>
+                            <Input
+                                value={shipRecipient}
+                                onChange={(e) => setShipRecipient(e.target.value)}
+                                style={{ fontSize: "12px", height: "20px" }}
+                                placeholder="배송지명 입력"
+                            />
+                            </div>
                         </div>
+
+                        {/* 이름 */}
                         <div style={row}>
                             <div style={leftCol}>이름</div>
                             <div style={rightCol}>
-                            <div style={{ border: '1px solid #A9A9A9', backgroundColor: '#d9d9d9', fontSize: '12px', width: '343px', height: '20px' }}>최지성</div>
+                            <Input
+                                value={addressType === "new" ? name : "최지성"}
+                                onChange={(e) => addressType === "new" && setName(e.target.value)}
+                                style={{ fontSize: "12px", height: "20px" }}
+                            />
                             </div>
                         </div>
+
+                        {/* 주소 */}
                         <div style={row}>
                             <div style={leftCol}>주소</div>
-                            <div style={rightCol}>10,000원</div>
+                            <div style={rightCol}>
+                            <Input
+                                value={streetAddress}
+                                onChange={(e) => setStreetAddress(e.target.value)}
+                                style={{ fontSize: "12px", height: "20px" }}
+                                placeholder="도로명 주소 입력"
+                            />
+                            </div>
                         </div>
+
+                        {/* 이메일 */}
                         <div style={row}>
                             <div style={leftCol}>이메일</div>
                             <div style={rightCol}>
-                            <div style={{ border: '1px solid #A9A9A9', backgroundColor: '#d9d9d9', fontSize: '12px', width: '343px', height: '20px' }}>jisung0629jisung@gmail.com</div>
+                            <Input
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                style={{ fontSize: "12px", height: "20px" }}
+                                placeholder="이메일 입력"
+                            />
                             </div>
                         </div>
+
+                        {/* 전화번호 */}
                         <div style={row}>
                             <div style={leftCol}>전화번호</div>
                             <div style={rightCol}>
-                            <div style={{ border: '1px solid #A9A9A9', backgroundColor: '#d9d9d9', fontSize: '12px', width: '343px', height: '20px' }}>010-4627-6195</div>
+                            <Input
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                style={{ fontSize: "12px", height: "20px" }}
+                                placeholder="전화번호 입력"
+                            />
                             </div>
                         </div>
+
+                        {/* 출입방법 */}
                         <div style={row}>
                             <div style={leftCol}>출입방법</div>
                             <div style={rightCol}>
-                            <div type="textarea" style={{ border: '1px solid #A9A9A9', backgroundColor: '#d9d9d9' , fontSize: '12px', width: '343px', height: '20px'}}>문앞에 ㄱㄱ</div>
+                            <Input
+                                type="textarea"
+                                value={accessInstructions}
+                                onChange={(e) => setAccessInstructions(e.target.value)}
+                                style={{ fontSize: "12px", height: "20px", resize: "none" }}
+                            />
                             </div>
                         </div>
+
+                        {/* 요청사항 */}
                         <div style={row}>
                             <div style={leftCol}>요청사항</div>
                             <div style={rightCol}>
-                            <Input type="textarea" style={{ border: '1px solid #A9A9A9', fontSize: '12px', width: '343px', height: '50px', resize: 'none' }}/>
+                            <Input
+                                type="textarea"
+                                value={addressDetail}
+                                onChange={(e) => setAddressDetail(e.target.value)}
+                                style={{ fontSize: "12px", height: "50px", resize: "none" }}
+                                placeholder="배송 요청사항"
+                            />
                             </div>
                         </div>
                         </div>
@@ -142,22 +268,32 @@ export default function Pay(){
                                         alignItems: 'center',justifyContent: 'center',textAlign: 'center', fontSize:'12px', height:'35px'}}>
                                         포인트
                                     </div>
-                                    <div style={{flex: 1,flexDirection: 'column',display:'flex',padding: '5px', justifyContent:'center'}}>샘플 상품명입니다</div>
+                                    <div style={{flex: 1,flexDirection: 'column',display:'flex',padding: '5px', justifyContent:'center'}}></div>
                                 </div>
                                 <hr style={{border:'1px solid black', margin:'0'}}/>
                                 <div style={row}>
                                     <div style={{width: '128px',padding: '5px',fontWeight: 'bold',borderRight: '1px solid #A09B9B',display: 'flex',          
                                         alignItems: 'center',justifyContent: 'center',textAlign: 'center', fontSize:'12px', height:'34px'}}>보유 포인트</div>
-                                    <div style={{flex: 1, flexDirection: 'column', display:'flex',padding: '5px', justifyContent:'center', color:'#5173D2'}}>5000p</div>
+                                    <div style={{flex: 1, flexDirection: 'column', display:'flex',padding: '5px', justifyContent:'center', color:'#5173D2'}}>{memberPoint.toLocaleString()}p</div>
                                 </div>
                                 <div style={row}>
                                     <div style={{width: '128px',padding: '5px',fontWeight: 'bold',borderRight: '1px solid #A09B9B',display: 'flex',          
                                         alignItems: 'center',justifyContent: 'center',textAlign: 'center', fontSize:'12px', height:'35px'}}>사용 포인트</div>
-                                    <div style={{flex: 1, flexDirection: 'column', display:'flex',padding: '5px', justifyContent:'center'}}>1000p</div>
+                                    <div style={{flex: 1, flexDirection: 'column', display:'flex',padding: '5px', justifyContent:'center'}}>
+                                        <Input style={{ fontSize: '12px', height: '20px' }}
+                                            value={usingPoint} onChange={(e) => {
+                                                const value = Number(e.target.value);
+                                                if (value <= memberPoint) {
+                                                setUsingPoint(value);
+                                                }
+                                            }}
+                                            placeholder="사용할 포인트"
+                                            />
+                                    </div>
                                 </div>
                             </div>
                             {/* 결제 수단 */}
-                            <div style={{ border: '1px solid black', width: '500px', height: '110px' }}>
+                            {/* <div style={{ border: '1px solid black', width: '500px', height: '110px' }}>
                                 <div style={row}>
                                     <div style={{width: '128px',padding: '10px',fontWeight: 'bold',display: 'flex',          
                                         alignItems: 'center',textAlign: 'center', fontSize:'12px', height:'35px'}}>
@@ -173,7 +309,7 @@ export default function Pay(){
                                         <Input name="radio1" type="radio"  />
                                     <Label check >네이버페이</Label>
                                     </FormGroup>
-                            </div>
+                            </div> */}
                             <div style={{ border: '1px solid black', width: '500px', height: '190px' }}>
                                 <div style={row}>
                                     <div className="fw-bold" style={{width: '500px',padding: '10px',fontWeight: 'bold',display: 'flex',          
@@ -183,8 +319,8 @@ export default function Pay(){
                                 </div>
                                 <div style={{padding:'5px', fontSize:'12px'}}>
                                     <div style={{padding:'3px', justifyContent:'space-between',display:'flex'}}>
-                                        <div>총 주문 금액</div>
-                                        <div>1,054,314</div>
+                                        <div>상품 가격</div>
+                                        <div>{finalPrice?.toLocaleString()}</div>
                                     </div>
                                     <div style={{padding:'3px', justifyContent:'space-between',display:'flex'}}>
                                         <div>국내 배송비</div>
@@ -192,21 +328,40 @@ export default function Pay(){
                                     </div>
                                     <div style={{padding:'3px', justifyContent:'space-between',display:'flex'}}>
                                         <div>포인트 사용</div>
-                                        <div>1,000</div>
+                                        <div>- {usingPoint.toLocaleString()}</div>
                                     </div>
                                 </div>
                                 <hr style={{border:'1px solid black', margin:'0'}}/>
                                 <div style={{padding:'5px', fontSize:'12px'}}>
                                     <div style={{padding:'3px', justifyContent:'space-between',display:'flex'}}>
-                                        <div style={{color:'red'}}>총 주문 금액</div>
-                                        <div>1,057,314</div>
+                                        <div style={{padding:'3px', justifyContent:'space-between',display:'flex'}}>
+                                            <div style={{color:'red'}}>총 주문 금액</div>
+                                            <div>{totalAmount.toLocaleString()}</div>
+                                        </div>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                                        <Link to='/payComplate'>
-                                            <Button style={{ fontSize: '12px', backgroundColor: '#739FF2', padding: '3px', border:'none'}}>
+                                            <Button style={{ fontSize: '12px', backgroundColor: '#739FF2', padding: '3px', border:'none'}}
+                                                onClick={async () => {
+                                                    try {
+                                                    // 1️⃣ 주문 먼저 생성
+                                                    const createdOrderId = await createOrder();
+                                                    setOrderId(createdOrderId);
+
+                                                    // 2️⃣ Checkout 페이지로 이동
+                                                    navigate("/checkout", {
+                                                        state: {
+                                                        orderId: createdOrderId,
+                                                        amount: finalPrice,
+                                                        productName,
+                                                        },
+                                                    });
+                                                    } catch (e) {
+                                                    alert("주문 생성 실패");
+                                                    }
+                                                }}
+                                                >
                                                 결제하기
                                             </Button>
-                                        </Link>
                                     </div>
                                 </div>
                             </div>
