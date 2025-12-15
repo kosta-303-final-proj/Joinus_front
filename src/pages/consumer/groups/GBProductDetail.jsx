@@ -257,7 +257,13 @@ export default function GBProductDetail() {
                                   onClick={() => submit()}
                                 >장바구니</Button>
                                 <Link to={`/pay/${detail.product.id}`}
-                                  state={{productId: detail.product.id,thumbnail: detail.thumbnailFile?.fileName,finalPrice: finalPrice,productName: detail.product.name,quantity: 1}}>
+                                  state={{productId: detail.product.id,
+                                  thumbnail: detail.thumbnailFile?.fileName,
+                                  finalPrice: finalPrice,
+                                  productName: detail.product.name,
+                                  quantity: 1,
+                                  optionIds: Object.values(selectedOptions).map(Number),
+                                  }}>
                                   <Button style={{backgroundColor:'#F7F7F7', width:"120px", height:"35px", fontSize:"16px", padding:"0", color:'black', border:'1px solid black'}}>참여하기</Button>
                                 </Link>
                             </div>
