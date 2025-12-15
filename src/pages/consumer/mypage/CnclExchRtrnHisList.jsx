@@ -184,7 +184,11 @@ export default function CnclExchRtrnHisList() {
                   orderDate={formatDate(orderAt)}
                   orderNum={orderNum}
                   product={item.productName ?? "상품명 없음"}
-                  options={item.optionName ?? "옵션 없음"}
+                  options={
+                  item.optionName
+                    ? item.optionName.replace(/,\s*/g, " | ")
+                    : "옵션 없음"
+                  }
                   quantity={quantity}
                   price={priceText}
                   status={statusText}
