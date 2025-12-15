@@ -111,23 +111,23 @@
 }
 
 /* 버튼 스타일 */
-.btn-approve {
+.form-actions .btn-approve {
   padding: 10px 24px;
-  background-color: #739FF2;
-  border: none;
+  background-color: #739FF2 !important;
+  border: none !important;
   border-radius: 4px;
   font-size: 13px;
   font-weight: 500;
-  color: white;
+  color: white !important;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
-.btn-approve:hover {
-  background-color: #5a8ae3;
+.form-actions .btn-approve:hover {
+  background-color: #5a8ae3 !important;
 }
 
-.btn-reject {
+.form-actions .btn-reject {
   padding: 10px 24px;
   background-color: white;
   border: 1px solid #dc3545;
@@ -139,10 +139,10 @@
   transition: all 0.2s;
 }
 
-.btn-reject:hover {
+.form-actions .btn-reject:hover {
   background-color: #dc3545;
   color: white;
-}
+} 
 
 .approved-message,
 .rejected-message {

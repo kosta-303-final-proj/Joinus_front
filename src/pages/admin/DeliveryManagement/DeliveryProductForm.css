@@ -50,9 +50,17 @@
   background: #fff;
   cursor: pointer;
 }
-.primary-btn {
+
+.form-actions button.primary-btn {
   border: none;
   background: #2563eb;
   color: #fff;
   font-weight: 600;
 }
+
+/* .primary-btn {
+  border: none;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 600;
+} */

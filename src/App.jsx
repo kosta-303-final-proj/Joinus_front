@@ -190,11 +190,6 @@ function AppContent() {
                 <NoticeWrite />
               </ProtectedRoute>
             } />
-            <Route path="/admin/deliveryManagement" element={
-              <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
-                <DeliveryManagement />
-              </ProtectedRoute>
-            } />
             <Route path="/admin/delivery/:id" element={
               <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
                 <DeliveryDetail />
