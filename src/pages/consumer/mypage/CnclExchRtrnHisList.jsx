@@ -172,7 +172,26 @@ export default function CnclExchRtrnHisList() {
               const requestedAt = item.requestedAt ?? item.createdAt;
               const orderAt = item.orderAt ?? item.orderDate ?? item.createdAt;
               const quantity = item.quantity ?? 1;
-              const priceText = Number(item.price ?? 0).toLocaleString();
+              
+              // ========== 금액 관련 ==========
+              // const priceText = Number(item.price ?? 0).toLocaleString();
+              const getPriceText = (item) => {
+                // 교환은 환불 금액 표시 안 함
+                if (item.type === "교환") return "-";
+
+                // 전체조회: price 사용
+                if (item.price != null) {
+                  return Number(item.price).toLocaleString();
+                }
+
+                // 취소 / 반품 개별조회: returnTotalPrice 사용
+                if (item.returnTotalPrice != null) {
+                  return Number(item.returnTotalPrice).toLocaleString();
+                }
+
+                return "-";
+              };
+
               const orderNum = item.orderId ?? item.order?.id ?? "-";
 
               const key = `${item.requestId ?? item.id ?? idx}-${orderNum}`;
@@ -180,6 +199,7 @@ export default function CnclExchRtrnHisList() {
               return (
                 <OrderItem
                   key={key}
+                  thumbnailFileId={item.thumbnailFileId ?? item.thumbnail_file_id ?? item.thumbnailFile?.id}
                   requestedAt={formatDate(requestedAt)}
                   orderDate={formatDate(orderAt)}
                   orderNum={orderNum}
@@ -190,7 +210,7 @@ export default function CnclExchRtrnHisList() {
                     : "옵션 없음"
                   }
                   quantity={quantity}
-                  price={priceText}
+                  price={getPriceText(item)}
                   status={statusText}
                 />
               );

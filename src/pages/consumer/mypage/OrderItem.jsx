@@ -10,16 +10,37 @@ export default function OrderItem({
   quantity,
   price,
   status,
+  thumbnailFileId,
 }) {
+
+  const imgSrc = thumbnailFileId
+    ? `http://localhost:8080/files/id/${thumbnailFileId}`
+    : null;
+
   return (
     <div style={styles.row}>
       <div style={{ ...styles.col, width: "10%" }}>{requestedAt}</div>
       <div style={{ ...styles.col, width: "10%" }}>{orderDate}</div>
       <div style={{ ...styles.col, width: "15%" }}>{orderNum}</div>
-
       <div style={{ ...styles.col, width: "30%", textAlign: "left" }}>
+        
         <div style={styles.productWrap}>
-          <div style={styles.imageBox}>이미지</div>
+          <div style={styles.imageBox}>
+            {imgSrc ? (
+              <img
+                src={imgSrc}
+                alt={"상품"}
+                style={styles.thumb}
+                onError={(e) => {
+                  // 깨진 이미지일 때 fallback 처리
+                  e.currentTarget.style.display = "none";
+                }}
+              />
+            ) : (
+              <span style={styles.imagePlaceholder}>이미지</span>
+            )}
+          </div>
+
           <div>
             <div style={styles.product}>{product}</div>
             <div style={styles.option}>{options}</div>
@@ -65,11 +86,19 @@ const styles = {
     width: "50px",
     height: "50px",
     border: "1px solid #ddd",
+    overflow: "hidden",          // ✅ 핵심: 넘친 부분 숨김
+    flexShrink: 0,               // ✅ 줄어들면서 찌그러지는 것 방지
     fontSize: "11px",
     color: "#aaa",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+  },
+  thumb: {
+  width: "100%",               // ✅ 박스에 맞춤
+  height: "100%",
+  objectFit: "cover",          // ✅ 꽉 채우고 넘치는 부분은 잘라냄
+  display: "block",
   },
   product: {
     fontWeight: "bold",
