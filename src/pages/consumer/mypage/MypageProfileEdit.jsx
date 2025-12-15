@@ -60,12 +60,13 @@ export default function MypageProfileEdit() {
 const handleSave = () => {
   const payload = { ...form };
 
-  // ✅ 비밀번호를 입력하지 않으면 아예 보내지 않음
+  // 비밀번호 미입력 시 제외
   if (!payload.password) {
     delete payload.password;
   }
 
   axios
+    .put("http://localhost:8080/mypage/profile/update", payload)
     .then(() => {
       alert("개인정보가 수정되었습니다.");
       navigate("/mypage/profileDetail");

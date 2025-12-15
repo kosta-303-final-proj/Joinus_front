@@ -11,21 +11,45 @@ export default function MypageMain() {
   // ===============================
   const [suggestions, setSuggestions] = useState([]);
 
+  // ===============================
+  // 관심상품 (Wishlist 대시보드용)
+  // ===============================
+  const [wishlist, setWishlist] = useState([]);
+
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   const username = userInfo?.username;
 
+  // ===============================
+  // 공동구매 요청 TOP 5
+  // ===============================
   useEffect(() => {
     if (!username) return;
 
     myAxios()
       .get(`/mypage/dashboard/suggestions?username=${username}`)
       .then((res) => {
-        // 최대 5개만 사용
         setSuggestions(res.data.slice(0, 5));
       })
       .catch((err) => {
         console.error("대시보드 공동구매 조회 실패", err);
         setSuggestions([]);
+      });
+  }, [username]);
+
+  // ===============================
+  // 관심상품 TOP 5
+  // ===============================
+  useEffect(() => {
+    if (!username) return;
+
+    myAxios()
+      .get(`/mypage/dashboard/wishlist?username=${username}`)
+      .then((res) => {
+        setWishlist(res.data); // 이미 5개만 내려옴
+      })
+      .catch((err) => {
+        console.error("대시보드 관심상품 조회 실패", err);
+        setWishlist([]);
       });
   }, [username]);
 
@@ -80,21 +104,37 @@ export default function MypageMain() {
           </Link>
         </h3>
 
-        <div className="main-product-item">
-          <div className="main-thumb"></div>
-          <div className="main-product-info">
-            <p>프리미엄 원두커피 1kg</p>
-            <p>₩19,900</p>
+        {wishlist.length === 0 && (
+          <div className="main-product-item">
+            <div className="main-product-info">
+              <p>관심상품이 없습니다.</p>
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className="main-product-item">
-          <div className="main-thumb"></div>
-          <div className="main-product-info">
-            <p>스테인리스 텀블러 350ml</p>
-            <p>₩12,500</p>
+        {wishlist.map((item) => (
+          <div
+            key={item.id}
+            className="main-product-item"
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate(`/gbproduct/${item.gbProductId}`)}
+          >
+            <div
+              className="main-thumb"
+              style={{
+                backgroundImage: item.file
+                  ? `url(/file/${item.file.id})`
+                  : "none",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            />
+            <div className="main-product-info">
+              <p>{item.product.name}</p>
+              <p>₩{item.product.price.toLocaleString()}</p>
+            </div>
           </div>
-        </div>
+        ))}
       </div>
 
       {/* ================= 공동구매 요청 ================= */}

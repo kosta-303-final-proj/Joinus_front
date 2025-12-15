@@ -5,35 +5,34 @@ import { Pagination, PaginationItem, PaginationLink } from "reactstrap";
 
 export default function MypageAlert() {
   const [alertList, setAlertList] = useState([]);
-  const [openedIds, setOpenedIds] = useState([]); // 열려있는 아코디언 ID(여러 개!)
-  const [readUiIds, setReadUiIds] = useState([]); // NEW 제거용 UI 상태
+  const [openedIds, setOpenedIds] = useState([]);
+  const [readUiIds, setReadUiIds] = useState([]);
 
-  const [currentPage, setCurrentPage] = useState(1); 
-  const itemsPerPage = 10; // 페이지당 10개
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
-// 로그인 유저 정보
-const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-const username = userInfo?.username;
+  // 로그인 유저 정보
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const username = userInfo?.username;
 
-  // 알림 리스트 불러오기
+  // 알림 리스트 조회
   const getAlertList = () => {
-    if (!username) return; // 로그인 안 된 경우 방어
+    if (!username) return;
     axios
       .get(`http://localhost:8080/mypage/alert?username=${username}`)
       .then((res) => setAlertList(res.data))
       .catch((err) => console.log(err));
   };
 
-useEffect(() => {
-  getAlertList();
-}, [username]);
+  useEffect(() => {
+    getAlertList();
+  }, [username]);
 
-useEffect(() => {
-  setCurrentPage(1);
-}, [username]);
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [username]);
 
-
-   // 페이징 계산
+  // 페이징 계산
   const totalPages = Math.ceil(alertList.length / itemsPerPage);
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
@@ -45,42 +44,42 @@ useEffect(() => {
   };
 
   useEffect(() => {
-  if (currentPage > totalPages) {
-    setCurrentPage(totalPages || 1);
-  }
-}, [alertList]);
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages || 1);
+    }
+  }, [alertList]);
 
   // 읽지 않은 알림 수
   const unreadCount = alertList.filter(
     (a) => !a.readedAt && !readUiIds.includes(a.id)
   ).length;
 
-  // 아코디언 토글 (여러 개 동시에 열릴 수 있음)
-  const toggle = (id) => {
-    // 이미 열려있으면 → 닫기
+  // ⭐ 아코디언 토글 + 읽음 처리
+  const toggle = (id, readedAt) => {
     if (openedIds.includes(id)) {
       setOpenedIds(openedIds.filter((item) => item !== id));
     } else {
-      // 열리면 NEW 제거 처리
-      if (!readUiIds.includes(id)) {
+      // 🔥 처음 읽는 경우에만 서버에 읽음 처리 요청
+      if (!readedAt && !readUiIds.includes(id)) {
+        axios
+          .put(`http://localhost:8080/mypage/alert/read?id=${id}`)
+          .catch((err) => console.error(err));
+
         setReadUiIds([...readUiIds, id]);
       }
-      // 열기
+
       setOpenedIds([...openedIds, id]);
     }
   };
 
-  // 삭제 기능
+  // 삭제
   const deleteAlert = (id) => {
     if (!window.confirm("이 알림을 삭제하시겠습니까?")) return;
 
     axios
       .delete(`http://localhost:8080/mypage/alert/delete?id=${id}`)
       .then(() => {
-        // 화면에서 삭제
         setAlertList(alertList.filter((alert) => alert.id !== id));
-
-        // 열려있던 배열에서도 제거
         setOpenedIds(openedIds.filter((item) => item !== id));
         setReadUiIds(readUiIds.filter((item) => item !== id));
       })
@@ -96,67 +95,75 @@ useEffect(() => {
         <strong className="alert-blue">{unreadCount}개</strong> 있습니다.
       </p>
 
-    <div className="alert-list">
-  {currentItems.length === 0 ? (
-    <div style={{ padding: "20px", color: "#777" }}>
-      알림이 없습니다.
-    </div>
-  ) : (
-    currentItems.map((alert) => {
-      const isOpen = openedIds.includes(alert.id);
-      const showNew = !alert.readedAt && !readUiIds.includes(alert.id);
-      const unreadBackground = showNew;
-
-      return (
-        <div
-          key={alert.id}
-          className={`alert-accordion-item ${
-            unreadBackground ? "alert-unread" : ""
-          }`}
-        >
-          <div
-            className="alert-accordion-header"
-            onClick={() => toggle(alert.id)}
-          >
-            <div className="alert-left">
-              <div className="alert-icon">✉</div>
-              <div>
-                <div className="alert-title">
-                  {alert.title}
-                  {showNew && <span className="alert-badge-new">NEW</span>}
-                </div>
-                <div className="alert-date">{alert.createdAt}</div>
-              </div>
-            </div>
-            <div className="alert-arrow">{isOpen ? "▲" : "▼"}</div>
+      <div className="alert-list">
+        {currentItems.length === 0 ? (
+          <div style={{ padding: "20px", color: "#777" }}>
+            알림이 없습니다.
           </div>
+        ) : (
+          currentItems.map((alert) => {
+            const isOpen = openedIds.includes(alert.id);
+            const showNew = !alert.readedAt && !readUiIds.includes(alert.id);
 
-          {isOpen && (
-            <div className="alert-accordion-body">
-              <div className="alert-text">{alert.content}</div>
-
-              <button
-                className="alert-btn-delete alert-delete-bottom"
-                onClick={() => deleteAlert(alert.id)}
+            return (
+              <div
+                key={alert.id}
+                className={`alert-accordion-item ${
+                  showNew ? "alert-unread" : ""
+                }`}
               >
-                삭제
-              </button>
-            </div>
-          )}
-        </div>
-      );
-    })
-  )}
-</div>
+                <div
+                  className="alert-accordion-header"
+                  onClick={() => toggle(alert.id, alert.readedAt)}
+                >
+                  <div className="alert-left">
+                    <div className="alert-icon">✉</div>
+                    <div>
+                      <div className="alert-title">
+                        {alert.title}
+                        {showNew && (
+                          <span className="alert-badge-new">NEW</span>
+                        )}
+                      </div>
+                      <div className="alert-date">
+                        {alert.createdAt}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="alert-arrow">
+                    {isOpen ? "▲" : "▼"}
+                  </div>
+                </div>
 
-       {/* 페이지네이션 UI 추가 */}
+                {isOpen && (
+                  <div className="alert-accordion-body">
+                    <div className="alert-text">{alert.content}</div>
+
+                    <button
+                      className="alert-btn-delete alert-delete-bottom"
+                      onClick={() => deleteAlert(alert.id)}
+                    >
+                      삭제
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* 페이지네이션 */}
       <Pagination className="paginationContainer">
         <PaginationItem disabled={currentPage === 1}>
           <PaginationLink first onClick={() => handlePageChange(1)} />
         </PaginationItem>
 
         <PaginationItem disabled={currentPage === 1}>
-          <PaginationLink previous onClick={() => handlePageChange(currentPage - 1)} />
+          <PaginationLink
+            previous
+            onClick={() => handlePageChange(currentPage - 1)}
+          />
         </PaginationItem>
 
         {[...Array(totalPages)].map((_, i) => (
@@ -168,7 +175,10 @@ useEffect(() => {
         ))}
 
         <PaginationItem disabled={currentPage === totalPages}>
-          <PaginationLink next onClick={() => handlePageChange(currentPage + 1)} />
+          <PaginationLink
+            next
+            onClick={() => handlePageChange(currentPage + 1)}
+          />
         </PaginationItem>
 
         <PaginationItem disabled={currentPage === totalPages}>
@@ -176,7 +186,6 @@ useEffect(() => {
         </PaginationItem>
       </Pagination>
 
-      {/* 안내 박스 */}
       <div className="alert-info-box">
         <div className="alert-info-title">안내사항</div>
         • 알림은 30일 보관 후 자동 삭제됩니다.
