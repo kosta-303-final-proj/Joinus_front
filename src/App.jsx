@@ -90,7 +90,7 @@ import Policy from './pages/consumer/groups/Policy';
 import QAndA from './pages/consumer/groups/QAndA';
 import Pay from './pages/consumer/groups/Pay';
 import PayComplete from './pages/consumer/groups/PayComplete';
-import { CheckoutPage } from './TossPayment';
+import { CheckoutPage } from './tossPayment';
 // import { SuccessPage } from './Success';
 //관리자
 import ProposalDetailAdmin from './pages/admin/ProposalDetailAdmin';
@@ -346,7 +346,7 @@ function AppContent() {
 
             {/* 공구 */}
             
-            <Route path="/checkout" element={<CheckoutPage />} /> {/* 결제 */}
+            <Route path="/checkout/:id" element={<CheckoutPage />} /> {/* 결제 */}
             {/* <Route path="/success" element={<SuccessPage />} /> */}
             {/* <Route path="/fail" element={<FailPage />} /> */}
             <Route path="/payComplate" element={<PayComplete />} />

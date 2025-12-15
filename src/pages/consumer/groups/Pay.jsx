@@ -336,21 +336,27 @@ export default function Pay(){
                                                     const createdOrderId = await createOrder();
                                                     setOrderId(createdOrderId);
 
-                                                    // 2️⃣ Checkout 페이지로 이동
-                                                    navigate("/checkout", {
+                                                    // 2️⃣ 옵션 체크
+                                                    const selectedOptionsArray = selectedOptions.map(opt => {
+                                                        if (!opt.optionId) throw new Error("모든 옵션을 선택해주세요");
+                                                        return {
+                                                        groupName: opt.groupName,
+                                                        optionId: Number(opt.optionId),
+                                                        };
+                                                    });
+
+                                                    // 3️⃣ CheckoutPage로 이동
+                                                    navigate(`/checkout/${id}`, {
                                                         state: {
                                                         orderId: createdOrderId,
                                                         amount: totalAmount,
+                                                        productId:id, // id fallback
                                                         productName,
-                                                        productId: id,
-                                                        selectedOptions: Object.entries(selectedOptions).map(([group, optId]) => ({
-                                                            groupName: group,
-                                                            optionId: Number(optId)
-                                                        })),
+                                                        selectedOptions: selectedOptionsArray,
                                                         },
                                                     });
                                                     } catch (e) {
-                                                    alert("주문 생성 실패");
+                                                    alert(e.message);
                                                     }
                                                 }}
                                                 >

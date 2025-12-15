@@ -5,15 +5,16 @@ import { myAxios } from "../../../config";
 
 export default function PayComplete(){
 
-const didRun = useRef(false); // ✅ StrictMode 방어
-  const navigate = useNavigate();
-  const location = useLocation(); // CheckoutPage에서 전달받은 state
-  const [searchParams] = useSearchParams();
-  const [paymentConfirmed, setPaymentConfirmed] = useState(false); // 결제 확인 상태
-
-  const orderId = searchParams.get("orderId");
-  const productId = searchParams.get("productId");
-  const paymentKey = searchParams.get("paymentKey");
+    const didRun = useRef(false); // ✅ StrictMode 방어
+    const navigate = useNavigate();
+    const location = useLocation(); // CheckoutPage에서 전달받은 state
+    // const [searchParams] = useSearchParams();
+    const [paymentConfirmed, setPaymentConfirmed] = useState(false); // 결제 확인 상태
+    const searchParams = new URLSearchParams(window.location.search);
+    const orderId = searchParams.get("orderId");
+    const productId = searchParams.get("productId");
+    const paymentKey = searchParams.get("paymentKey");
+    const amount = parseInt(searchParams.get("amount") || "0");
 
   useEffect(() => {
     if (didRun.current) return;
@@ -40,10 +41,10 @@ const didRun = useRef(false); // ✅ StrictMode 방어
         const amount = location.state?.amount || 0;
         const selectedOptions = location.state?.selectedOptions || [];
 
-        if (!orderId || !productId) {
-            console.error("OrderId 또는 ProductId가 없습니다.", { orderId, productId });
-            return navigate(`/fail?message=필수 데이터 누락`);
-        }
+        // if (!orderId || !productId) {
+        //     console.error("OrderId 또는 ProductId가 없습니다.", { orderId, productId });
+        //     return navigate(`/fail?message=필수 데이터 누락`);
+        // }
 
         // 3️⃣ OrderItem 생성
         await myAxios().post("/orderItems", {

@@ -74,9 +74,11 @@ export function CheckoutPage() {
             try {
               await widgets.requestPayment({
                 orderId: orderId,
-                productId : productId,
+                // productId : productId,
                 orderName: productName || "상품 결제",
-                successUrl: window.location.origin + "/paycomplate", // ✅ :id 제거
+                // successUrl: window.location.origin + "/paycomplate", // ✅ :id 제거
+                // successUrl: `${window.location.origin}/paycomplete?orderId=${orderId}&productId=${productId}&amount=${payAmount}`,
+                successUrl: `${window.location.origin}/paycomplete?orderId=${orderId}&productId=${productId}&amount=${payAmount}`,
                 failUrl: window.location.origin + "/fail",
                 customerEmail: "customer123@gmail.com",
                 customerName: "김토스",
