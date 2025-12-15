@@ -132,7 +132,7 @@ export default function Header() {
             )}
 
             {/* 공통 메뉴 */}
-            <li><Link to="/mypage/shoppingCartList">장바구니</Link></li>
+            <li><Link to="/mypage/shopCartList">장바구니</Link></li>
             <li><Link to="/mypage/orderList">주문배송</Link></li>
             <li><Link to="/proposalWrite">제안하기</Link></li>
             <li><Link to="/contact/supply">납품문의</Link></li>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { apiFetch } from '../../config';
+import AdminHeader from '../../components/layout/AdminHeader';
 import './Statistics.css';
 
 export default function Statistics() {
@@ -209,6 +210,10 @@ export default function Statistics() {
   }
 
   return (
+    <div className="admin-layout">
+      <div className="main-content">
+        <AdminHeader title="매출 통계" />
+        <div className="content-area">
     <div className="statistics-page">
       {/* 헤더 */}
       <div className="page-header">
@@ -406,6 +411,9 @@ export default function Statistics() {
             </button>
           </div>
         )}
+      </div>
+    </div>
+        </div>
       </div>
     </div>
   );

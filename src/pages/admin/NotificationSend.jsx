@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { apiFetch } from '../../config';
+import AdminHeader from '../../components/layout/AdminHeader';
 import './NotificationSend.css';
 
 const initialForm = {
@@ -185,6 +186,10 @@ export default function NotificationSend() {
   const currentDate = formatDate(new Date());
 
   return (
+    <div className="admin-layout">
+      <div className="main-content">
+        <AdminHeader title="알림발송" />
+        <div className="content-area">
     <div className="notification-send-page">
       {/* 헤더 */}
       <div className="page-header">
@@ -525,6 +530,9 @@ export default function NotificationSend() {
           </div>
         </div>
       )}
+    </div>
+        </div>
+      </div>
     </div>
   );
 }

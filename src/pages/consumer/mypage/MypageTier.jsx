@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./MypageTier.css";
+import { myAxios } from "../../../config";
 
 export default function MypageTier() {
   const [totalSpent, setTotalSpent] = useState(0);
@@ -7,25 +8,23 @@ export default function MypageTier() {
   const [nextGrade, setNextGrade] = useState(null);
   const [neededAmount, setNeededAmount] = useState(0);
 
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const username = userInfo?.username;
+
   useEffect(() => {
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    const username = userInfo?.username;
+    if (!username) return;
 
-    if (!username) {
-      console.error("로그인된 유저 정보를 찾을 수 없습니다.");
-      return;
-    }
-
-    fetch(`http://localhost:8080/mypage/tier?username=${username}`)
-      .then(res => res.json())
-      .then(data => {
+    myAxios()
+      .get(`/mypage/tier?username=${username}`)
+      .then((res) => {
+        const data = res.data;
         setTotalSpent(data.totalSpent);
         setCurrentGrade(data.currentGrade);
         setNextGrade(data.nextGrade);
         setNeededAmount(data.neededAmount);
       })
-      .catch(err => console.error(err));
-  }, []);
+      .catch((err) => console.error(err));
+  }, [username]);
 
   const levels = [
     { name: "BRONZE", file: "Bronze.png", min: 0, max: 400000, rate: 1 },
@@ -34,7 +33,9 @@ export default function MypageTier() {
     { name: "DIAMOND", file: "Diamond.png", min: 1000000, max: Infinity, rate: 2 },
   ];
 
-  const currentLevel = levels.find((l) => l.name === currentGrade);
+  const currentLevel =
+    levels.find((l) => l.name === currentGrade) || levels[0];
+
   const currentIndex = levels.indexOf(currentLevel);
   const nextLevelInfo = levels[currentIndex + 1];
 
@@ -47,24 +48,18 @@ export default function MypageTier() {
             100
         );
 
-const getLevelPercent = (level) => {
-  const index = levels.indexOf(level);
-
-  // 이전 등급은 항상 100%
-  if (index < currentIndex) return 100;
-
-  // 이후 등급은 항상 0%
-  if (index > currentIndex) return 0;
-
-  // 현재 등급만 정확한 % 계산
-  return currentPercent;
-};
+  const getLevelPercent = (level) => {
+    const index = levels.indexOf(level);
+    if (index < currentIndex) return 100;
+    if (index > currentIndex) return 0;
+    return currentPercent;
+  };
 
   return (
     <>
       <div className="mypageTier_page-title">회원 등급</div>
 
-      {/* 현재 등급 박스 */}
+      {/* 현재 등급 */}
       <div className="mypageTier_grade-box">
         <div className="mypageTier_grade-img">
           <img
@@ -84,13 +79,12 @@ const getLevelPercent = (level) => {
               <div
                 className="mypageTier_progress-bar"
                 style={{ width: `${currentPercent}%` }}
-              ></div>
+              />
             </div>
           </div>
 
           <div className="mypageTier_progress-text">
             <span>최근 6개월 구매금액 {totalSpent.toLocaleString()}원</span>
-
             <span>
               {nextLevelInfo
                 ? `${nextLevelInfo.name}까지 ${neededAmount.toLocaleString()}원 남음`
@@ -128,7 +122,7 @@ const getLevelPercent = (level) => {
         })}
       </div>
 
-      {/* 안내 박스 */}
+      {/* 안내 */}
       <div className="mypageTier_info-box">
         <span>등급 산정 안내</span>
         <br />
@@ -138,11 +132,7 @@ const getLevelPercent = (level) => {
         <br />
         · 등급 상승 시 혜택은 자동 적용됩니다.
         <br />
-        · 다음 분기 시작 등급은 이전 분기의 최종 등급 기반입니다.
-        <br />
-        · 기준 미달 시 등급 하락이 발생합니다.
-        <br />
-        · 취소·반품된 금액은 제외됩니다.
+        · 기준 미달 시 등급 하락이 발생할 수 있습니다.
         <br />
       </div>
     </>

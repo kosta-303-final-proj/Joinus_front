@@ -201,10 +201,10 @@ export default function ProposalWrite() {
             </FormGroup>
 
             {/* 최소 참여 인원 */}
-            <FormGroup className="mb-4">
+            {/* <FormGroup className="mb-4">
               <Label className="fw-bold text-start d-block">최소 참여 인원 *</Label>
               <Input type="text" name="minPart" onChange={(e)=> setMinPart(e.target.value)} placeholder="예) 20" />
-            </FormGroup>
+            </FormGroup> */}
 
             <div className="d-flex gap-2 justify-content-end">
               <Button color="secondary">취소하기</Button>

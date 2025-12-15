@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { myAxios } from '../../config';
-import Header from './Header';
+import AdminHeader from '../../components/layout/AdminHeader';
 import SearchFilter from './SearchFilter';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import '../../styles/components/button.css';
@@ -138,7 +138,7 @@ const FaqAndInquiryList = () => {
     return (
         <div className="admin-layout">
             <div className="main-content">
-                <Header title="문의 내역" />
+                <AdminHeader title="문의 내역" />
 
                 <div className="content-area">
 

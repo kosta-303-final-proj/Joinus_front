@@ -14,6 +14,7 @@ export default function SignUp() {
     email: '',
     address: '',
     detailAddress: '',
+    referrer: '',  // 추천인 ID
     agreeMarketing: false  // 체크박스는 boolean
   });
   
@@ -113,7 +114,8 @@ export default function SignUp() {
           email: formData.email,
           phone: formData.phone,
           address: formData.address || null,
-          detailAddress: formData.detailAddress || null
+          detailAddress: formData.detailAddress || null,
+          recommenderUsername: formData.referrer || null  // 추천인 ID
           // agreeMarketing은 MemberDto에 없으므로 제외
         }),
       });

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiFetch } from '../../config';
+import AdminHeader from '../../components/layout/AdminHeader';
 import './Dashboard.css';
 
 export default function Dashboard() {
@@ -60,6 +61,10 @@ export default function Dashboard() {
   const { stats, topProposals, pendingPayments, ongoingGroupBuys } = dashboardData;
 
   return (
+    <div className="admin-layout">
+      <div className="main-content">
+        <AdminHeader title="대시보드" />
+        <div className="content-area">
     <div className="dashboard-page">
       {/* 헤더 */}
       <div className="page-header">
@@ -196,6 +201,9 @@ export default function Dashboard() {
               )}
             </tbody>
           </table>
+        </div>
+      </div>
+    </div>
         </div>
       </div>
     </div>

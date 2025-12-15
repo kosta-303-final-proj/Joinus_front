@@ -23,6 +23,7 @@ export default function MypageProfileDetail() {
 
   // 프로필 정보 가져오기
   useEffect(() => {
+     if (!username) return; // 🔒 안전장치
     axios
       .get(`http://localhost:8080/mypage/profile?username=${username}`)
       .then((res) => {
@@ -98,7 +99,14 @@ export default function MypageProfileDetail() {
           <label>성별</label>
           <input
             type="text"
-            value={data.gender === "M" ? "남성" : "여성"}
+            value={
+  data.gender === "M"
+    ? "남성"
+    : data.gender === "F"
+    ? "여성"
+    : ""
+}
+
             readOnly
           />
         </div>

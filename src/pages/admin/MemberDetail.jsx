@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { myAxios } from '../../config';
-import Header from './Header';
+import AdminHeader from '../../components/layout/AdminHeader';
 import SearchFilter from './SearchFilter';
 import './admin-common.css';
 import './MemberDetail.css';
@@ -154,7 +154,7 @@ const MemberDetail = () => {
   return (
     <div className="admin-layout">
       <div className="main-content">
-        <Header title="회원 상세 보기" />
+        <AdminHeader title="회원 상세 보기" />
 
         <div className="content-area">
           {/* 회원 기본정보 */}

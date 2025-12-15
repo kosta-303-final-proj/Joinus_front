@@ -5,6 +5,7 @@ import {
     Form, FormGroup, Label, Input, Button,
     CardTitle, CardText
 } from 'reactstrap';
+import AdminHeader from '../../components/layout/AdminHeader';
 
 export default function ExchRtrnWaitingDetail() {
     const confirmBtnStyle = {
@@ -22,6 +23,10 @@ export default function ExchRtrnWaitingDetail() {
         color: '#739FF2'
     }
     return (
+        <div className="admin-layout">
+          <div className="main-content">
+            <AdminHeader title="교환 신청 관리" />
+            <div className="content-area">
         <Container fluid className="p-4 bg-light min-vh-100">
             {/* Header and Action Buttons */}
             <div className="d-flex justify-content-between align-items-center mb-4">
@@ -272,5 +277,8 @@ export default function ExchRtrnWaitingDetail() {
                 </Col>
             </Row>
         </Container>
+            </div>
+          </div>
+        </div>
     );
 };

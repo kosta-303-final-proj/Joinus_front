@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { myAxios } from '../../config';
-import Header from './Header';
+import AdminHeader from '../../components/layout/AdminHeader';
 import SearchFilter from './SearchFilter';
 import '../../styles/components/button.css';
 import '../../styles/components/table.css';
@@ -79,7 +79,7 @@ const NoticeList = () => {
     <div className="admin-layout">
 
       <div className="main-content">
-        <Header title="공지사항" />
+        <AdminHeader title="공지사항" />
 
         <div className="content-area">
           {/* 검색 필터 */}

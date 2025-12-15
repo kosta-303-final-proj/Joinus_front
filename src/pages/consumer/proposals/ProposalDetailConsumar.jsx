@@ -5,12 +5,46 @@ import { baseUrl, myAxios } from "../../../config";
 
 export default function ProposalDetailConsumar() {
     const {id} = useParams();
-    const [proposal, setPropsal] = useState({id:id,category:'',description:'',productName:'',memberName:'',originalPrice:'',createdAt:'',originalSiteUrl:'',abroadShippingCost:'',imageUrl:'' });
+    const [proposal, setPropsal] = useState({id:id,category:'',description:'',productName:'',memberName:'',originalPrice:'',createdAt:'',originalSiteUrl:'',abroadShippingCost:'',imageUrl:'', gbProductId:'', rejectReason:'', status:'' });
     const total = 15;
     const joined = 10;
     const percentage = (joined/total) * 100;
-    const [voteCount, setVoteCount] = useState(0);
-    const [isDdabong, setIsDdabong] = useState(false);
+    
+
+    const [comment, setComment] = useState(''); // ← 여기 추가
+    const [comments, setComments] = useState([]); // 댓글 리스트 (있으면)
+
+
+    // 댓글 등록 함수
+    const submit = () => {
+      myAxios().post("/writeComment", {
+        proposalId: id,
+        memberUsername: "kakao_4436272679",
+        content: comment // 여기서 textarea 내용 전달
+      })
+      .then(res => {
+        console.log(res);
+        setComment(''); // 입력 후 초기화
+      })
+      .catch(err => console.log(err));
+    };
+
+    //댓글 get 함수
+    const getComment = () => {
+      myAxios().get(`getComment/${id}`)
+      .then(res=>{
+        console.log(res)
+        setComments(res.data)
+      })
+      .catch(err=>{
+        console.log(err)
+      })
+    }
+
+    useEffect(() => {
+        getComment();   // 페이지 진입 시 QnA 로딩
+    }, [id]);
+
 
 
     const getProposal = () => {
@@ -28,19 +62,37 @@ export default function ProposalDetailConsumar() {
         .catch(err => console.log(err));
     };
 
-    useEffect(()=>{
-      getProposal();
-    }, [])
+    useEffect(() => {
+      getProposal(); // getProposal에서 voteCount와 isDdabong 세팅
+    }, []);
+
+
+    const [voteCount, setVoteCount] = useState(0);
+    const [isDdabong, setIsDdabong] = useState(false);
 
     const handleVote = () => {
-    myAxios().get("/proposalHeart", { params: { proposalId: id, username: "admin" } })
-      .then(res => {
-        const voted = res.data; // true or false
-        setIsDdabong(voted);
-        setVoteCount(prev => voted ? prev + 1 : prev - 1); // voteCount 직접 계산
-      })
-      .catch(err => console.log(err));
-  };
+      myAxios().get("/proposalDdabong", { params: { proposalId: id, username: "kakao_4436272679" } })
+        .then(res => {
+          const voted = res.data; // true/false
+          setIsDdabong(voted);
+          setVoteCount(prev => voted ? prev + 1 : prev - 1);
+        })
+        .catch(err => console.log(err));
+    };
+
+    useEffect(() => {
+      // 페이지 진입 시 DB에서 vote 상태 가져오기
+      myAxios()
+        .get("/proposalDdabong/status", { 
+          params: { proposalId: id, username: "kakao_4436272679" }
+        })
+        .then(res => {
+          setIsDdabong(res.data.isDdabong); // true / false
+          setVoteCount(res.data.voteCount); // DB에 저장된 실제 투표 수
+        })
+        .catch(err => console.log(err));
+    }, [id]);
+
 
     return(
         <>
@@ -63,7 +115,18 @@ export default function ProposalDetailConsumar() {
                     <div style={{width:"500px",  border:'1px solid black', padding:'20px', borderRadius:'10px'}}>
                         <div style={{ display:'flex', justifyContent: 'space-between', marginBottom:'10px'}}>
                             <div style={{border:'1px solid black', borderRadius:'5px', fontSize:'12px', textAlign:'center', alignContent:'center'}}>{proposal.category}</div>
-                            <div style={{backgroundColor:'#79F273', color:'black', width:'100px', height:'30px', alignContent:'center', textAlign:'center'}}>공구 등록</div>
+                            <div style={{backgroundColor: (() => {
+                                if (proposal.gbProductId) return '#79F273';          // 승인 → 초록
+                                if (proposal.rejectReason) return '#F55F5F';         // 반려 → 빨강
+                                return '#739FF2';  })(),
+                              color: 'black',width: '100px',height: '30px',textAlign: 'center',display: 'flex',
+                              justifyContent: 'center',alignItems: 'center',borderRadius: '5px'}}>
+                              {proposal.gbProductId
+                                ? '승인'
+                                : proposal.rejectReason
+                                  ? '반려'
+                                  : '검토대기'}
+                            </div>
                         </div>
                         <div>
                             <Label style={{fontSize:"20px"}}>{proposal.productName}</Label>
@@ -73,7 +136,7 @@ export default function ProposalDetailConsumar() {
                             <Label style={{fontSize:"12px"}}>{proposal.createdAt ? proposal.createdAt.substring(0, 10) : ""}</Label>
                         </div>
                         <div>
-                            <Label style={{fontSize:"24px"}}>{proposal.originalPrice + proposal.abroadShippingCost}원</Label>
+                            <Label style={{fontSize:"24px"}}>{(proposal.originalPrice + proposal.abroadShippingCost).toLocaleString()}원</Label>
                         </div>
                         <hr style={{width:"460px", alignItems:'center', margin:'15px 0 15px 0'}}/>
                         <div className="fw-bold" style={{fontSize:'14px', padding:'0 10px 0 10px'}}>상품 상세 설명</div>
@@ -89,13 +152,24 @@ export default function ProposalDetailConsumar() {
                             </Label>
                             <hr style={{width:"460px", alignItems:'center', margin:'15px 0 15px 0'}}/>
                             <div>
-                                <div style={{fontSize:'12px', marginTop:'0'}}>원래 가격 : {proposal.originalPrice}</div>
-                                <div style={{fontSize:'12px', marginTop:'0'}}>해외 배송비 : {proposal.abroadShippingCost}</div>
+                                <div style={{fontSize:'12px', marginTop:'0'}}>원래 가격 : {(proposal.originalPrice).toLocaleString()}</div>
+                                <div style={{fontSize:'12px', marginTop:'0'}}>해외 배송비 : {(proposal.abroadShippingCost).toLocaleString()}</div>
                             </div>
                             <hr style={{width:"460px", alignItems:'center', margin:'15px 0 15px 0'}}/>
                             <div style={{display:'flex', gap:'10px',alignItems: "center"}}>
+                              {proposal.gbProductId ? (
+                                <>
                                 <div className="fw-bold" style={{fontSize:'14px'}}>공구 상세 URL</div>
                                 <Button style={{backgroundColor:'#739FF2', width:"70px", height:"25px", fontSize:"12px", padding:"0", border:'none'}}>바로가기</Button>
+                                </>
+                              ) : (
+                                <div>
+                                  <div style={{ fontWeight: 'bold', marginBottom: '5px', fontSize:'12px' }}>반려 사유</div>
+                                  <div style={{ fontSize: '12px', color: '#F55F5F' }}>
+                                    {proposal.rejectReason}
+                                  </div>
+                                </div>
+                              )}
                             </div>
                             <hr style={{width:"460px", alignItems:'center', margin:'15px 0 15px 0'}}/>
                             
@@ -141,21 +215,51 @@ export default function ProposalDetailConsumar() {
             <div style={styles.pageWrapper}>
                 <div style={styles.container}>
                     <hr style={{alignItems:'center', margin:'10px 0 10px 0'}}/>
+                    {comments.map((c) => (
+                        <div key={c.id} style={{marginBottom:'15px'}}>
                           <div style={{padding:'0 10px',display:'flex', alignContent:'center', marginBottom:'10px'}}>
-                            <div style={{}}>닉네임</div>
-                            <img src="/grade/Silver.png" style={{width:'25px'}}/>
+                            <div style={{marginRight:'10px'}}>{c.memberNickname}</div>
+                            <img src={`/grade/${c.grade.charAt(0) + c.grade.slice(1).toLowerCase()}.png`} style={{width:'25px'}}/>
                           </div>
-                          <div style={{padding:'0 10px'}}>20025-11-30</div>
-                          <div style={{padding:'0 10px'}}>대충 공구 하자는 내용</div>
+                          <div style={{padding:'0 10px'}}>{c.createdAt}</div>
+                          <div style={{padding:'0 10px'}}>{c.content}</div>
                     <hr style={{alignItems:'center', margin:'10px 0 10px 0'}}/>
+                    </div>
+                    ))}
                 </div>
             </div>
             <div style={styles.pageWrapper}>
-                <div style={styles.container}>
-                  <div style={{height:'100px', backgroundColor:'#d9d9d9'}}>
-                  
+              <div style={styles.container}>
+                {/* 댓글 입력 영역 */}
+                <div style={{ display: 'flex', flexDirection: 'column',  backgroundColor: 'white',padding: '0', gap: '12px'}}>
+                  <label style={{ fontWeight: 'bold', fontSize: '14px', color: '#333' }}>댓글 작성</label>              
+                  <textarea value={comment} onChange={(e) => setComment(e.target.value)} placeholder="여기에 댓글을 작성하세요..."
+                    style={{ width: '100%', minHeight: '80px',resize: 'none', borderRadius: '10px', border: '1px solid #d1d9e6', padding: '12px',
+                      fontSize: '14px', outline: 'none', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)', backgroundColor: '#fff',transition: '0.2s all',}}
+                    onFocus={(e) => e.target.style.borderColor = '#739FF2'}
+                    onBlur={(e) => e.target.style.borderColor = '#d1d9e6'}
+                  />
+
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                    <button style={{ backgroundColor: '#d9d9d9', color: '#000000', border: 'none', borderRadius: '8px', padding: '8px 18px', fontWeight: 'bold',
+                      fontSize: '14px',cursor: 'pointer', transition: '0.2s all'}}
+                      onMouseEnter={e => e.target.style.backgroundColor = '#d9d9d9'}
+                      // onMouseLeave={e => e.target.style.backgroundColor = '#d9d9d9'}
+                      onClick={() => setComment('')} // 취소 버튼
+                    >
+                      취소
+                    </button>
+
+                    <button style={{ backgroundColor: '#739FF2', color: '#fff', border: 'none', borderRadius: '8px', padding: '8px 18px',fontWeight: 'bold',
+                      fontSize: '14px', cursor: 'pointer', transition: '0.2s all', boxShadow: '0 4px 8px rgba(115, 159, 242, 0.4)'}}
+                      onMouseEnter={e => e.target.style.backgroundColor = '#5a7cd6'}
+                      onMouseLeave={e => e.target.style.backgroundColor = '#739FF2'}
+                      onClick={submit}>
+                      등록
+                    </button>
                   </div>
                 </div>
+              </div>
             </div>
         </>
     );

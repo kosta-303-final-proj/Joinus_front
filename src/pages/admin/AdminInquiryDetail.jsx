@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { myAxios } from '../../config';
-import Header from './Header';
+import AdminHeader from '../../components/layout/AdminHeader';
 import '../../styles/components/button.css';
 import './admin-common.css';
 import './AdminInquiryDetail.css';
@@ -87,7 +87,7 @@ const AdminInquiryDetail = () => {
   return (
     <div className="admin-layout">
       <div className="main-content">
-        <Header title={isAnswered ? "문의 상세" : "문의 답변하기"} />
+        <AdminHeader title={isAnswered ? "문의 상세" : "문의 답변하기"} />
         
         <div className="content-area">
           <div className="inquiry-detail-container">

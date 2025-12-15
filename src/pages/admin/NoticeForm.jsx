@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { myAxios } from '../../config';
-import Header from './Header';
+import AdminHeader from '../../components/layout/AdminHeader';
 import '../../styles/components/button.css';
 import './admin-common.css';
 import './NoticeForm.css';
@@ -77,7 +77,7 @@ const NoticeForm = () => {
     <div className="admin-layout">
 
       <div className="main-content">
-        <Header title="공지사항 등록" />
+        <AdminHeader title="공지사항 등록" />
 
         <div className="content-area">
           <div className="form-container">

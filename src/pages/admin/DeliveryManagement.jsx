@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AdminHeader from '../../components/layout/AdminHeader';
 import './DeliveryManagement.css';
 
 export default function DeliveryManagement() {
@@ -199,6 +200,10 @@ export default function DeliveryManagement() {
   };
 
   return (
+    <div className="admin-layout">
+      <div className="main-content">
+        <AdminHeader title="납품 관리" />
+        <div className="content-area">
     <div className="delivery-management-page">
       {/* 헤더 */}
       <div className="page-header">
@@ -418,6 +423,9 @@ export default function DeliveryManagement() {
         <p className="list-note">
           · 자세한 업체 정보, 납품 이력 등은 추후 상세 페이지(또는 모달)로 연결할 수 있습니다.
         </p>
+      </div>
+    </div>
+        </div>
       </div>
     </div>
   );

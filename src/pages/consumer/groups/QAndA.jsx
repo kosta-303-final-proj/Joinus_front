@@ -72,8 +72,8 @@ export default function QAndA(){
                                 style={{display: 'flex', padding: '14px 0', borderBottom: '1px solid #eee', fontSize: '14px', alignItems: 'center',cursor: 'pointer'}}>
 
                                 <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                    <span style={{background: '#C7DBFF',padding: '4px 10px',borderRadius: '4px', fontSize: '13px',fontWeight: 'bold',color: '#1E50A0'}}>
-                                        {item.status === "PENDING" ? "답변대기" : "답변완료"}
+                                    <span style={{background: item.answer ? '#C7DBFF' : '#FFD7D7',padding: '4px 10px',borderRadius: '4px', fontSize: '13px',fontWeight: 'bold',color: item.answer ? '#1E50A0' : '#E54940'}}>
+                                        {item.answer ? "답변완료" : "답변대기"}
                                     </span>
                                     <span style={{ color: '#333' }}>{item.question}</span>
                                 </div>

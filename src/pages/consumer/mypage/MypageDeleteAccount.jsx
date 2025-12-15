@@ -12,18 +12,20 @@ export default function MypageDeleteAccount() {
   const [reason, setReason] = useState("");
   const [otherReason, setOtherReason] = useState("");
 
-  useEffect(() => {
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    const username = userInfo?.username;
+useEffect(() => {
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const username = userInfo?.username;
 
-    setNickname(userInfo?.nickname);
+  if (!username) return; // 🔒 안전장치
 
-    axios.get(`http://localhost:8080/consumerInfo?username=${username}`)
-      .then((res) => {
-        setPoint(res.data.pointBalance);
-      })
-      .catch((err) => console.log(err));
-  }, []);
+  setNickname(userInfo.nickname);
+
+  axios
+    .get(`http://localhost:8080/consumerInfo?username=${username}`)
+    .then((res) => setPoint(res.data.pointBalance))
+    .catch((err) => console.log(err));
+}, []);
+
 
 const handleDelete = () => {
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));

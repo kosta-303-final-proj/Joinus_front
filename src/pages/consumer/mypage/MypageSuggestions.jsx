@@ -2,19 +2,23 @@ import React, { useEffect, useState } from "react";
 import "./MypageSuggestions.css";
 import { Pagination, PaginationItem, PaginationLink } from "reactstrap";
 import { myAxios } from "../../../config";
+import { useNavigate } from "react-router-dom";
 
 export default function MypageSuggestions() {
+  const navigate = useNavigate();
+
   const [tab, setTab] = useState("participated");
 
   const [participatedList, setParticipatedList] = useState([]);
   const [writtenList, setWrittenList] = useState([]);
 
-  // ✅ 페이지 상태
+  // 페이지 상태
   const [participatedPage, setParticipatedPage] = useState(1);
   const [writtenPage, setWrittenPage] = useState(1);
 
   const itemsPerPage = 10;
 
+  // 로그인 정보
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   const username = userInfo?.username;
 
@@ -26,14 +30,16 @@ export default function MypageSuggestions() {
 
     myAxios()
       .get(`/mypage/suggestions/participated?username=${username}`)
-      .then((res) => setParticipatedList(res.data || []));
+      .then((res) => setParticipatedList(res.data || []))
+      .catch(() => setParticipatedList([]));
 
     myAxios()
       .get(`/mypage/suggestions/written?username=${username}`)
-      .then((res) => setWrittenList(res.data || []));
+      .then((res) => setWrittenList(res.data || []))
+      .catch(() => setWrittenList([]));
   }, [username]);
 
-  // ✅ 탭 변경 시 페이지 초기화 (강력추천)
+  // 탭 변경 시 페이지 초기화
   useEffect(() => {
     setParticipatedPage(1);
     setWrittenPage(1);
@@ -59,6 +65,15 @@ export default function MypageSuggestions() {
     setCurrentPage(page);
   };
 
+  // 🔒 로그인 안 된 경우
+  if (!username) {
+    return (
+      <div className="suggestions-title">
+        로그인이 필요합니다.
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="suggestions-title">공동구매 요청</div>
@@ -81,62 +96,77 @@ export default function MypageSuggestions() {
 
       {/* 리스트 */}
       <div className="suggestions-group-list">
-        {currentItems.map((item) => (
-          <div className="suggestions-card" key={item.id}>
-            <div className="suggest-card-img">
-              <img src={item.imageUrl || "/default.png"} alt="" />
-            </div>
+        {currentItems.length === 0 ? (
+          <div className="suggestions-empty">
+            {tab === "participated"
+              ? "내가 투표한 공동구매가 없습니다."
+              : "내가 요청한 공동구매가 없습니다."}
+          </div>
+        ) : (
+          currentItems.map((item) => (
+            <div className="suggestions-card" key={item.id}>
+              <div className="suggest-card-img">
+                <img src={item.imageUrl || "/default.png"} alt="" />
+              </div>
 
-            <div className="card-info">
-              <div>
-                <div className="category">{item.category}</div>
-                <div className="title">{item.productName}</div>
-                <div className="desc">{item.description}</div>
-                <div className="votes">
-                  참여 투표 인원수: {item.voteCount}명
+              <div className="card-info">
+                <div>
+                  <div className="category">{item.category}</div>
+                  <div className="title">{item.productName}</div>
+                  <div className="desc">{item.description}</div>
+                  <div className="votes">
+                    참여 투표 인원수: {item.voteCount}명
+                  </div>
+                </div>
+
+                <div className="card-actions">
+                  <button
+                    className="btn-detail"
+                    onClick={() => navigate(`/suggestions/${item.id}`)}
+                  >
+                    상세보기
+                  </button>
                 </div>
               </div>
-
-              <div className="card-actions">
-                <button className="btn-detail">상세보기</button>
-              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
       {/* 페이지네이션 */}
-      <Pagination className="paginationContainer">
-        <PaginationItem disabled={currentPage === 1}>
-          <PaginationLink first onClick={() => handlePageChange(1)} />
-        </PaginationItem>
-
-        <PaginationItem disabled={currentPage === 1}>
-          <PaginationLink
-            previous
-            onClick={() => handlePageChange(currentPage - 1)}
-          />
-        </PaginationItem>
-
-        {[...Array(totalPages)].map((_, i) => (
-          <PaginationItem key={i} active={currentPage === i + 1}>
-            <PaginationLink onClick={() => handlePageChange(i + 1)}>
-              {i + 1}
-            </PaginationLink>
+      {totalPages > 1 && (
+        <Pagination className="paginationContainer">
+          <PaginationItem disabled={currentPage === 1}>
+            <PaginationLink first onClick={() => handlePageChange(1)} />
           </PaginationItem>
-        ))}
 
-        <PaginationItem disabled={currentPage === totalPages}>
-          <PaginationLink
-            next
-            onClick={() => handlePageChange(currentPage + 1)}
-          />
-        </PaginationItem>
+          <PaginationItem disabled={currentPage === 1}>
+            <PaginationLink
+              previous
+              onClick={() => handlePageChange(currentPage - 1)}
+            />
+          </PaginationItem>
 
-        <PaginationItem disabled={currentPage === totalPages}>
-          <PaginationLink last onClick={() => handlePageChange(totalPages)} />
-        </PaginationItem>
-      </Pagination>
+          {[...Array(totalPages)].map((_, i) => (
+            <PaginationItem key={i} active={currentPage === i + 1}>
+              <PaginationLink onClick={() => handlePageChange(i + 1)}>
+                {i + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+
+          <PaginationItem disabled={currentPage === totalPages}>
+            <PaginationLink
+              next
+              onClick={() => handlePageChange(currentPage + 1)}
+            />
+          </PaginationItem>
+
+          <PaginationItem disabled={currentPage === totalPages}>
+            <PaginationLink last onClick={() => handlePageChange(totalPages)} />
+          </PaginationItem>
+        </Pagination>
+      )}
     </>
   );
 }

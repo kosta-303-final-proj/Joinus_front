@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { myAxios } from "../../../config";   // axios 사용하는 게 정답
-import "./AddressEdit.css";
+import axios from "axios";
+import "./AddressAdd.css"; // Add와 동일 CSS 사용
 
 export default function AddressEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const username = userInfo?.username;
+
   const [form, setForm] = useState({
-    id: null,
-    memberUsername: "ehgns0311",
     addressName: "",
     recipientName: "",
     phone: "",
@@ -17,21 +18,33 @@ export default function AddressEdit() {
     streetAddress: "",
     addressDetail: "",
     accessInstructions: "",
-    isDefault: false,
+    defaultAddress: false, // 🔥 핵심
   });
 
-
+  // =======================
   // 기존 배송지 불러오기
+  // =======================
   useEffect(() => {
-    myAxios()
-      .get(`/mypage/address/${id}`)
+    axios
+      .get(`http://localhost:8080/mypage/address/${id}`)
       .then((res) => {
-        setForm(res.data);
+        setForm({
+          addressName: res.data.addressName,
+          recipientName: res.data.recipientName,
+          phone: res.data.phone,
+          postcode: res.data.postcode,
+          streetAddress: res.data.streetAddress,
+          addressDetail: res.data.addressDetail,
+          accessInstructions: res.data.accessInstructions,
+          defaultAddress: res.data.defaultAddress, // 🔥 유지
+        });
       })
       .catch((err) => console.error(err));
   }, [id]);
 
-  // input handler
+  // =======================
+  // 공용 input 핸들러
+  // =======================
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm((prev) => ({
@@ -40,34 +53,68 @@ export default function AddressEdit() {
     }));
   };
 
-  // 수정 요청
-  const handleSubmit = () => {
-    myAxios()
-      .put(`/mypage/address/${id}`, form)
-      .then(() => {
-        alert("배송지가 수정되었습니다!");
-        navigate("/mypage/addressList");
-      })
-      .catch((err) => console.error(err));
+  // =======================
+  // 주소 표시용 문자열
+  // =======================
+  const displayAddress =
+    form.postcode && form.streetAddress
+      ? `[${form.postcode}] ${form.streetAddress}`
+      : "";
+
+  // =======================
+  // 다음 주소 검색
+  // =======================
+  const openDaumPostcode = () => {
+    if (!window.daum || !window.daum.Postcode) {
+      alert("주소 검색 서비스를 불러오지 못했습니다.");
+      return;
+    }
+
+    new window.daum.Postcode({
+      oncomplete: function (data) {
+        setForm((prev) => ({
+          ...prev,
+          postcode: data.zonecode,
+          streetAddress: data.roadAddress,
+        }));
+      },
+    }).open();
+  };
+
+  // =======================
+  // 수정 처리
+  // =======================
+  const handleSubmit = async () => {
+    try {
+      await axios.put(`http://localhost:8080/mypage/address/${id}`, {
+        ...form,
+        memberUsername: username,
+      });
+
+      alert("배송지가 수정되었습니다!");
+      navigate("/mypage/addressList");
+    } catch (err) {
+      console.error(err);
+      alert("수정 실패했습니다.");
+    }
   };
 
   return (
-    <div className="addressedit-content">
+    <div className="addressadd-content">
+      <div className="addressadd-title">배송지 수정</div>
 
-      <div className="addressedit-title">배송지 수정</div>
-
-      {/* 배송지명 */}
-      <div className="addressedit-form-row">
-        <div className="addressedit-label-flex">
-          <label className="addressedit-label">
-            배송지명 <span className="addressedit-required">*</span>
+      {/* 배송지명 + 기본배송지 */}
+      <div className="addressadd-form-row">
+        <div className="addressadd-label-flex">
+          <label className="addressadd-label">
+            배송지명 <span className="addressadd-required">*</span>
           </label>
 
-          <label className="addressedit-checkbox-default">
+          <label className="addressadd-checkbox-default">
             <input
               type="checkbox"
-              name="isDefault"
-              checked={form.isDefault}
+              name="defaultAddress"              // 🔥 변경
+              checked={form.defaultAddress}     // 🔥 변경
               onChange={handleChange}
             />
             기본배송지 설정
@@ -76,99 +123,100 @@ export default function AddressEdit() {
 
         <input
           type="text"
-          className="addressedit-input-box"
           name="addressName"
+          className="addressadd-input-box"
           value={form.addressName}
           onChange={handleChange}
         />
       </div>
 
       {/* 받는 분 */}
-      <div className="addressedit-form-row">
-        <label className="addressedit-label">
-          받는 분 <span className="addressedit-required">*</span>
+      <div className="addressadd-form-row">
+        <label className="addressadd-label">
+          받는 분 <span className="addressadd-required">*</span>
         </label>
         <input
           type="text"
-          className="addressedit-input-box"
           name="recipientName"
+          className="addressadd-input-box"
           value={form.recipientName}
           onChange={handleChange}
         />
       </div>
 
       {/* 연락처 */}
-      <div className="addressedit-form-row">
-        <label className="addressedit-label">
-          연락처 <span className="addressedit-required">*</span>
+      <div className="addressadd-form-row">
+        <label className="addressadd-label">
+          연락처 <span className="addressadd-required">*</span>
         </label>
-
         <input
           type="text"
           name="phone"
-          className="addressedit-input-box"
+          className="addressadd-input-box"
           value={form.phone}
           onChange={handleChange}
         />
       </div>
 
       {/* 주소 */}
-      <div className="addressedit-form-row">
-        <label className="addressedit-label">주소</label>
+      <div className="addressadd-form-row">
+        <label className="addressadd-label">
+          주소 <span className="addressadd-required">*</span>
+        </label>
 
-        <div className="addressedit-address-row">
+        <div style={{ display: "flex", gap: "8px" }}>
           <input
             type="text"
-            className="addressedit-postcode-input"
-            name="postcode"
-            value={form.postcode}
-            onChange={handleChange}
+            readOnly
+            value={displayAddress}
+            className="addressadd-input-box"
+            style={{ flex: 1 }}
           />
 
-          <button className="addressedit-postcode-btn">검색</button>
-
-          <input
-            type="text"
-            className="addressedit-road-input"
-            name="streetAddress"
-            value={form.streetAddress}
-            onChange={handleChange}
-          />
-
-          <button className="addressedit-postcode-btn">검색</button>
+          <button
+            type="button"
+            className="addressadd-postcode-btn"
+            onClick={openDaumPostcode}
+          >
+            주소 검색
+          </button>
         </div>
 
         <textarea
-          className="addressedit-textarea-box"
           name="addressDetail"
+          className="addressadd-textarea-box"
           value={form.addressDetail}
           onChange={handleChange}
-        ></textarea>
+        />
       </div>
 
       {/* 출입방법 */}
-      <div className="addressedit-form-row">
-        <label className="addressedit-label">공동현관 출입방법</label>
-
+      <div className="addressadd-form-row">
+        <label className="addressadd-label">
+          공동현관 출입방법 <span className="addressadd-required">*</span>
+        </label>
         <input
           type="text"
-          className="addressedit-input-box"
           name="accessInstructions"
+          className="addressadd-input-box"
           value={form.accessInstructions}
           onChange={handleChange}
         />
       </div>
 
       {/* 버튼 */}
-      <div className="addressedit-btn-row">
-        <button className="addressedit-btn-confirm" onClick={handleSubmit}>
+      <div className="addressadd-btn-row">
+        <button className="addressadd-btn-confirm" onClick={handleSubmit}>
           확인
         </button>
-        <button className="addressedit-btn-cancel" onClick={() => navigate(-1)}>
+        <button
+          type="button"
+          className="addressadd-btn-cancel"
+          onClick={() => navigate(-1)}
+        >
           취소
         </button>
       </div>
-
     </div>
   );
 }

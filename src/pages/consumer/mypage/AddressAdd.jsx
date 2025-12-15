@@ -6,43 +6,74 @@ import "./AddressAdd.css";
 export default function AddressAdd() {
   const navigate = useNavigate();
 
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const username = userInfo?.username;
+
   // 서버로 보낼 폼 데이터
   const [form, setForm] = useState({
-    memberUsername: "ehgns0311", // 로그인 연동 전까지 하드코딩
     addressName: "",
     recipientName: "",
+    phone: "",
     postcode: "",
     streetAddress: "",
     addressDetail: "",
     accessInstructions: "",
-    isDefault: false,
+    defaultAddress: false, // ✅ 백엔드 DTO와 일치
   });
 
-  // input 공용 핸들러
+  // ===============================
+  // 공용 input 핸들러
+  // ===============================
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-
-    setForm({
-      ...form,
+    setForm((prev) => ({
+      ...prev,
       [name]: type === "checkbox" ? checked : value,
-    });
+    }));
   };
 
-  // 전화번호 3칸 조합
-  const handlePhoneChange = (index, value) => {
-    const parts = form.phone ? form.phone.split("-") : ["", "", ""];
-    parts[index] = value;
+  // ===============================
+  // 주소 표시용 문자열
+  // ===============================
+  const displayAddress =
+    form.postcode && form.streetAddress
+      ? `[${form.postcode}] ${form.streetAddress}`
+      : "";
 
-    setForm({
-      ...form,
-      phone: parts.join("-"),
-    });
+  // ===============================
+  // 다음 주소 검색
+  // ===============================
+  const openDaumPostcode = () => {
+    if (!window.daum || !window.daum.Postcode) {
+      alert("주소 검색 서비스를 불러오지 못했습니다.");
+      return;
+    }
+
+    new window.daum.Postcode({
+      oncomplete: function (data) {
+        setForm((prev) => ({
+          ...prev,
+          postcode: data.zonecode,
+          streetAddress: data.roadAddress,
+        }));
+      },
+    }).open();
   };
 
+  // ===============================
   // 제출 처리
+  // ===============================
   const handleSubmit = async () => {
+    if (!username) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
     try {
-      await axios.post("http://localhost:8080/mypage/address", form);
+      await axios.post("http://localhost:8080/mypage/address", {
+        ...form,
+        memberUsername: username,
+      });
 
       alert("배송지가 등록되었습니다!");
       navigate("/mypage/addressList");
@@ -57,7 +88,7 @@ export default function AddressAdd() {
       {/* ===== 페이지 제목 ===== */}
       <div className="addressadd-title">배송지 등록</div>
 
-      {/* ===== 배송지명 ===== */}
+      {/* ===== 배송지명 + 기본배송지 ===== */}
       <div className="addressadd-form-row">
         <div className="addressadd-label-flex">
           <label className="addressadd-label">
@@ -67,8 +98,8 @@ export default function AddressAdd() {
           <label className="addressadd-checkbox-default">
             <input
               type="checkbox"
-              name="isDefault"
-              checked={form.isDefault}
+              name="defaultAddress"
+              checked={form.defaultAddress}
               onChange={handleChange}
             />
             기본배송지 설정
@@ -94,28 +125,26 @@ export default function AddressAdd() {
           type="text"
           name="recipientName"
           className="addressadd-input-box"
-          placeholder="이름 입력"
+          placeholder="이름을 입력하세요."
           value={form.recipientName}
           onChange={handleChange}
         />
       </div>
 
-{/* ===== 연락처 ===== */}
-<div className="addressadd-form-row">
-  <label className="addressadd-label">
-    연락처 <span className="addressadd-required">*</span>
-  </label>
-
-  <input
-    type="text"
-    name="phone"
-    className="addressadd-input-box"
-    placeholder="연락처를 입력하세요."
-    value={form.phone}
-    onChange={handleChange}
-  />
-</div>
-
+      {/* ===== 연락처 ===== */}
+      <div className="addressadd-form-row">
+        <label className="addressadd-label">
+          연락처 <span className="addressadd-required">*</span>
+        </label>
+        <input
+          type="text"
+          name="phone"
+          className="addressadd-input-box"
+          placeholder="연락처를 입력하세요."
+          value={form.phone}
+          onChange={handleChange}
+        />
+      </div>
 
       {/* ===== 주소 ===== */}
       <div className="addressadd-form-row">
@@ -123,28 +152,24 @@ export default function AddressAdd() {
           주소 <span className="addressadd-required">*</span>
         </label>
 
-        <div className="addressadd-address-row">
+        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
           <input
             type="text"
-            name="postcode"
-            className="addressadd-postcode-input"
-            placeholder="우편번호"
-            value={form.postcode}
-            onChange={handleChange}
+            readOnly
+            value={displayAddress}
+            placeholder="[우편번호] 주소"
+            className="addressadd-input-box"
+            style={{ flex: 1 }}
           />
 
-          <button className="addressadd-postcode-btn">검색</button>
-
-          <input
-            type="text"
-            name="streetAddress"
-            className="addressadd-road-input"
-            placeholder="도로명 주소를 입력하세요."
-            value={form.streetAddress}
-            onChange={handleChange}
-          />
-
-          <button className="addressadd-postcode-btn">검색</button>
+          <button
+            type="button"
+            className="addressadd-postcode-btn"
+            onClick={openDaumPostcode}
+            style={{ whiteSpace: "nowrap" }}
+          >
+            주소 검색
+          </button>
         </div>
 
         <textarea
@@ -153,7 +178,7 @@ export default function AddressAdd() {
           placeholder="상세주소를 입력하세요."
           value={form.addressDetail}
           onChange={handleChange}
-        ></textarea>
+        />
       </div>
 
       {/* ===== 출입방법 ===== */}
@@ -177,7 +202,11 @@ export default function AddressAdd() {
           확인
         </button>
 
-        <button className="addressadd-btn-cancel" onClick={() => navigate(-1)}>
+        <button
+          type="button"
+          className="addressadd-btn-cancel"
+          onClick={() => navigate(-1)}
+        >
           취소
         </button>
       </div>

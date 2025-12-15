@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { apiFetch } from '../../config';
+import AdminHeader from '../../components/layout/AdminHeader';
 import './ProductStatistics.css';
 
 export default function ProductStatistics() {
@@ -146,6 +147,10 @@ export default function ProductStatistics() {
   }
 
   return (
+    <div className="admin-layout">
+      <div className="main-content">
+        <AdminHeader title="상품별 통계" />
+        <div className="content-area">
     <div className="product-statistics-page">
       {/* 헤더 */}
       <div className="page-header">
@@ -374,6 +379,9 @@ export default function ProductStatistics() {
         <div className="table-notes">
           <p>- 상세 지표(평균 객단가, 전월 대비 증감 등)는 추후 열 추가 또는 엑셀 다운로드에서 제공할 수 있습니다.</p>
           <p>- 검색 조건을 즐겨찾기로 저장해 정기 리포트에 활용하세요.</p>
+        </div>
+      </div>
+    </div>
         </div>
       </div>
     </div>

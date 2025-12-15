@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getApplicationDetail, approveApplication, rejectApplication } from '../../../services/supplyApi';
+import AdminHeader from '../../../components/layout/AdminHeader';
 import '../../../pages/consumer/Partnership.css';
 import './DeliveryApplicationDetail.css';
 
@@ -104,8 +105,19 @@ export default function DeliveryApplicationDetail() {
     }
   };
 
+  const renderShell = (children) => (
+    <div className="admin-layout">
+      <div className="main-content">
+        <AdminHeader title="납품 신청 상세" />
+        <div className="content-area">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+
   if (isLoading) {
-    return (
+    return renderShell(
       <div className="partnership-page">
         <div className="partnership-container">
           <div className="loading">로딩 중...</div>
@@ -115,7 +127,7 @@ export default function DeliveryApplicationDetail() {
   }
 
   if (error) {
-    return (
+    return renderShell(
       <div className="partnership-page">
         <div className="partnership-container">
           <div className="error">{error}</div>
@@ -127,7 +139,7 @@ export default function DeliveryApplicationDetail() {
     );
   }
 
-  return (
+  return renderShell(
     <div className="partnership-page">
       <div className="partnership-container">
         {/* 헤더 */}

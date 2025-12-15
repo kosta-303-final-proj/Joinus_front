@@ -8,8 +8,10 @@ export default function GBProductDetail() {
     const [detail, setDetail] = useState({ product: {}, category: {}, thumbnailFile: {}, images: [], options: []});
     
     const [timeLeft, setTimeLeft] = useState("");
-
+    const [selectedOptions, setSelectedOptions] = useState({});
     
+
+    /* ========================= 타이머 ========================= */
     useEffect(()=>{
       if (!detail.product.endDate) return;
 
@@ -37,7 +39,7 @@ export default function GBProductDetail() {
     }, [detail.product.endDate]);
 
 
-
+    /* ========================= 상품 조회 ========================= */
     const getProduct =()=>{
       myAxios().get(`/gbProductDetail/${id}`)
       .then(res=>{
@@ -53,13 +55,33 @@ export default function GBProductDetail() {
       getProduct();
     },[])
 
+    /* ========================= 옵션 그룹 ========================= */
     const optionGroups = detail.options.reduce((acc, opt) => {
       if (!acc[opt.groupName]) acc[opt.groupName] = [];
       acc[opt.groupName].push(opt);
       return acc;
   }, {});
 
-  const [selectedOptions, setSelectedOptions] = useState({});
+  /* ========================= 옵션 가격 계산 ========================= */
+  const getOptionTotalPrice = () => {
+    const selectedIds = Object.values(selectedOptions);
+
+    return detail.options
+      .filter(opt => selectedIds.includes(String(opt.id)))
+      .reduce((sum, opt) => sum + (opt.price || 0), 0);
+  };
+
+  /* ========================= 가격 계산 ========================= */
+  const basePrice =
+    (detail.product.price || 0) +
+    (detail.product.abroadShippingCost || 0) +
+    (detail.product.shippingAmount || 0);
+
+  const finalPrice = basePrice + getOptionTotalPrice();
+
+
+
+  
 
   const submit = (quantity = 1) => {
     const username = "kakao_4436272679";
@@ -86,7 +108,7 @@ export default function GBProductDetail() {
     const [isHeart, setIsHeart] = useState(false);
     const [wishCount, setWishCount] = useState(0);
 
-
+    /* ========================= 찜하기 ========================= */
     const handleWishList = () => {
       myAxios().get("/product/productHeart", {
         params: { gbProductId: id, username: "kakao_4436272679" }
@@ -132,16 +154,11 @@ export default function GBProductDetail() {
                           src={`${baseUrl}/files/${detail.thumbnailFile?.fileName}`} 
                           style={{width:'500px', height:"500px", marginBottom:'30px', borderRadius:'10px'}}
                         />
-                        <div style={{width:'500px', height:'100px', border:'1px solid black', padding:'5px 10px 10px 10px', borderRadius:'10px'}}>
-                            <Label style={{fontSize:'12px'}}>참여 전 요청사항</Label>
-                            <hr style={{alignItems:"center", width:'480px', margin:'0 0 5px 0'}}/>
-                            <Input type="textarea" style={{border:'1px solid black', padding:"5px", width:'480px', height:'50px', fontSize:'12px', resize: "none"}}></Input>
-                        </div>
                     </div>
                     <div style={{width:"500px", border:'1px solid black', padding:'20px', borderRadius:'10px'}}>
                         <div style={{ display:'flex', justifyContent: 'space-between', marginBottom:'10px'}}>
                             <div style={{border:'1px solid black', borderRadius:'5px', fontSize:'12px'}}>{detail.category.name}</div>
-                            <div>2025-11-28</div>
+                            <div>{detail.product.createdAt?.substring(0, 10)}</div>
                         </div>
                         <div>
                             <Label style={{fontSize:"20px"}}>{detail.product.name}</Label>
@@ -172,30 +189,51 @@ export default function GBProductDetail() {
                             </Label>
                            {/* 나중에 옵션 map으로 돌려 */}
                             {Object.entries(optionGroups).map(([groupName, options], idx) => (
-                                <FormGroup key={idx}>
-                                    <Input
-                                        type="select"
-                                        value={selectedOptions[groupName] || ""}
-                                        onChange={(e) => {
-                                            setSelectedOptions(prev => ({
-                                                ...prev,
-                                                [groupName]: e.target.value
-                                            }));
-                                        }}
-                                    >
-                                        <option value="" disabled>{groupName}</option>
-                                        {options.map(opt => (
-                                            <option key={opt.id} value={opt.id}>{opt.name.replace(/ /g, "\u00A0").padEnd(80, "\u00A0")}(+{opt.price})</option>
-                                        ))}
-                                    </Input>
+                                // <FormGroup key={idx}>
+                                //     <Input
+                                //         type="select"
+                                //         value={selectedOptions[groupName] || ""}
+                                //         onChange={(e) => {
+                                //             setSelectedOptions(prev => ({
+                                //                 ...prev,
+                                //                 [groupName]: e.target.value
+                                //             }));
+                                //         }}
+                                //     >
+                                //         <option value="" disabled>{groupName}</option>
+                                //         {options.map(opt => (
+                                //             <option key={opt.id} value={opt.id}>{opt.name.replace(/ /g, "\u00A0").padEnd(80, "\u00A0")}(+{opt.price})</option>
+                                //         ))}
+                                //     </Input>
+                                // </FormGroup>
+                                <FormGroup key={groupName}>
+                                  <Input
+                                    type="select"
+                                    value={selectedOptions[groupName] || ""}
+                                    onChange={e =>
+                                      setSelectedOptions(prev => ({
+                                        ...prev,
+                                        [groupName]: e.target.value
+                                      }))
+                                    }
+                                  >
+                                    <option value="" disabled>{groupName}</option>
+                                    {options.map(opt => (
+                                      <option key={opt.id} value={opt.id}>
+                                        {opt.name} (+{opt.price.toLocaleString()}원)
+                                      </option>
+                                    ))}
+                                  </Input>
                                 </FormGroup>
                             ))}
                             <hr style={{width:"460px", alignItems:'center', margin:'20px 0 20px 0'}}/>
                             <div style={{}}>
-                                <div style={{fontSize:'12px', marginTop:'0'}}>상품 가격 {((detail.product.price || 0) + (detail.product.abroadShippingCost || 0)).toLocaleString()}원</div>
-                                <div style={{fontSize:'12px', marginTop:'0'}}>국내 배송비 {(detail.product.shippingAmount || 0).toLocaleString()}원</div>
-                                <div className="fw-bold" style={{fontSize:'12px', marginTop:'0'}}>최종 상품 가격 {((detail.product.price || 0) + (detail.product.abroadShippingCost || 0)+ (detail.product.shippingAmount || 0)).toLocaleString()} 원</div>
-                                <div style={{fontSize:'12px', marginTop:'0'}}>※ 해외 배송 2주~3주 소용, 국내 배송 2-3일 소요</div>
+                                <div style={{fontSize:'14px', marginTop:'0'}}>상품 가격 {((detail.product.price || 0) + (detail.product.abroadShippingCost || 0)).toLocaleString()}원</div>
+                                <div style={{fontSize:'14px', marginTop:'0'}}>국내 배송비 {(detail.product.shippingAmount || 0).toLocaleString()}원</div>
+                                <div style={{ fontSize: "14px" }}>옵션 추가 금액: {getOptionTotalPrice().toLocaleString()}원</div>
+                                <div className="fw-bold" style={{fontSize:'18px', marginTop:'0'}}>최종 상품 가격 {finalPrice.toLocaleString()} 원</div>
+                                <br/>
+                                <div style={{fontSize:'14px', marginTop:'0'}}>※ 해외 배송 2주~3주 소용, 국내 배송 2-3일 소요</div>
                             </div>
                             <hr style={{width:"460px", alignItems:'center', margin:'20px 0 20px 0'}}/>
                             <div style={{display:'flex', gap:'10px',alignItems: "center"}}>
@@ -211,14 +249,21 @@ export default function GBProductDetail() {
                                   <Button style={{backgroundColor:'#739FF2', width:"120px", height:"35px", fontSize:"16px", padding:"0", border:'none', marginRight:'10px'}}
                                     onClick={handleWishList}
                                   >
-                                    {isHeart ? "취소하기" : "투표하기"}
+                                    {isHeart ? "취소하기" : "찜하기"}
                                   </Button>
 
                                 <img src="/share.png" style={{width:"25px", height:'25px', marginRight:'40px'}}/>
                                 <Button style={{backgroundColor:'#739FF2', width:"120px", height:"35px", fontSize:"16px", padding:"0", border:'none', marginRight:'10px'}}
                                   onClick={() => submit()}
                                 >장바구니</Button>
-                                <Link to='/pay'>
+                                <Link to={`/pay/${detail.product.id}`}
+                                  state={{productId: detail.product.id,
+                                  thumbnail: detail.thumbnailFile?.fileName,
+                                  finalPrice: finalPrice,
+                                  productName: detail.product.name,
+                                  quantity: 1,
+                                  optionIds: Object.values(selectedOptions).map(Number),
+                                  }}>
                                   <Button style={{backgroundColor:'#F7F7F7', width:"120px", height:"35px", fontSize:"16px", padding:"0", color:'black', border:'1px solid black'}}>참여하기</Button>
                                 </Link>
                             </div>
