@@ -66,7 +66,6 @@ const handleSave = () => {
   }
 
   axios
-    .put("http://localhost:8080/mypage/profile/update", payload)
     .then(() => {
       alert("개인정보가 수정되었습니다.");
       navigate("/mypage/profileDetail");
