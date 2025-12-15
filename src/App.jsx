@@ -90,7 +90,8 @@ import Policy from './pages/consumer/groups/Policy';
 import QAndA from './pages/consumer/groups/QAndA';
 import Pay from './pages/consumer/groups/Pay';
 import PayComplete from './pages/consumer/groups/PayComplete';
-import { CheckoutPage } from './tossPayment';
+import { CheckoutPage } from './TossPayment';
+// import { SuccessPage } from './Success';
 //관리자
 import ProposalDetailAdmin from './pages/admin/ProposalDetailAdmin';
 import InquiryWrite from './pages/cs/InquiryWrite';
@@ -344,8 +345,10 @@ function AppContent() {
             <Route path="/proposalsList/proposalModify/:id" element={<ProposalModify />} />
 
             {/* 공구 */}
-            <Route path='/pay/:id' element={<Pay />} />
+            
             <Route path="/checkout" element={<CheckoutPage />} /> {/* 결제 */}
+            {/* <Route path="/success" element={<SuccessPage />} /> */}
+            {/* <Route path="/fail" element={<FailPage />} /> */}
             <Route path="/payComplate" element={<PayComplete />} />
             <Route path="/gbProductList" element={<GBProductList />} />
             <Route path="/gbProductDetail/:id" element={<GBProductDetail />}>
@@ -355,6 +358,8 @@ function AppContent() {
               <Route path="reviews" element={<Reviews />} />
               <Route path="qAndA" element={<QAndA />} />
             </Route>
+            <Route path='/pay/:id' element={<Pay />} /> {/* 결제전 작성 및 결제 대기 */}
+            <Route path='/payComplete' element={<PayComplete/>}/>
           </Routes>
         </main>
       </div>
