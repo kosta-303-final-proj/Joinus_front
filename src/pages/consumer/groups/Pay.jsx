@@ -26,7 +26,7 @@ export default function Pay(){
     const [accessInstructions, setAccessInstructions] = useState("");
     const [optionIds, setOptionIds] = useState([]); // 상품 옵션 선택에 따라
 
-    const shippingAmount = 3000;
+    const shippingAmount = 0;
     const totalAmount = finalPrice + shippingAmount - usingPoint;
 
     const getMemberPoint = () => {
@@ -324,7 +324,7 @@ export default function Pay(){
                                     </div>
                                     <div style={{padding:'3px', justifyContent:'space-between',display:'flex'}}>
                                         <div>국내 배송비</div>
-                                        <div>3,000</div>
+                                        <div>{shippingAmount.toLocaleString()}</div>
                                     </div>
                                     <div style={{padding:'3px', justifyContent:'space-between',display:'flex'}}>
                                         <div>포인트 사용</div>
@@ -351,8 +351,9 @@ export default function Pay(){
                                                     navigate("/checkout", {
                                                         state: {
                                                         orderId: createdOrderId,
-                                                        amount: finalPrice,
+                                                        amount: totalAmount,
                                                         productName,
+                                                        productId: id,
                                                         },
                                                     });
                                                     } catch (e) {

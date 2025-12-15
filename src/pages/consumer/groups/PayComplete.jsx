@@ -1,7 +1,84 @@
-import { Link } from "react-router-dom";
+import { Link,useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { Button } from "reactstrap";
+import { useEffect, useRef,useState } from "react";
+import { myAxios } from "../../../config";
 
 export default function PayComplete(){
+
+const didRun = useRef(false); // ✅ StrictMode 방어
+  const navigate = useNavigate();
+  const location = useLocation(); // CheckoutPage에서 전달받은 state
+  const [searchParams] = useSearchParams();
+  const [paymentConfirmed, setPaymentConfirmed] = useState(false); // 결제 확인 상태
+
+  const orderId = searchParams.get("orderId");
+  const paymentKey = searchParams.get("paymentKey");
+
+  useEffect(() => {
+    if (didRun.current) return;
+    didRun.current = true;
+
+    async function confirmPayment() {
+      try {
+        // 서버에 orderId로 조회 후 금액 검증
+        const response = await myAxios().post("/payments/confirm", {
+          paymentKey,
+          orderId,
+          method: "CARD",
+          status: "PAID",
+          approvedAt: new Date().toISOString(),
+          amount: location.state?.amount || 0,
+        });
+
+        console.log("결제 성공:", response.data);
+        setPaymentConfirmed(true);
+        // ✅ 결제 확인 후 /payCompleteSuccess로 이동
+        // navigate("/payComplete", {
+        //   state: {
+        //     orderId,
+        //     productId: location.state?.productId || null,
+        //   },
+        // });
+      } catch (error) {
+        console.error("결제 확인 에러:", error);
+        navigate(`/fail?message=${error.message}`);
+      }
+    }
+
+    confirmPayment();
+  }, [navigate, location.state, orderId, paymentKey]);
+
+// useEffect(() => {
+//     if (didRun.current) return;
+//     didRun.current = true;
+
+//     async function confirmPayment() {
+//       if (!orderId || !paymentKey) return;
+
+//       try {
+//         // 서버에 orderId로 조회 후 금액 검증
+//         const response = await myAxios().post("/payments/confirm", {
+//           paymentKey,
+//           orderId,
+//           method: "CARD",
+//           status: "PAID",
+//           approvedAt: new Date().toISOString(),
+//         });
+
+//         console.log("결제 성공:", response.data);
+//         setPaymentConfirmed(true); // 결제 확인 완료
+//       } catch (error) {
+//         console.error("결제 확인 에러:", error);
+//         navigate(`/fail?message=${error.message}`);
+//       }
+//     }
+
+//     confirmPayment();
+//   }, [navigate, orderId, paymentKey]);
+
+
+
+
     return(
         <>
             <div style={styles.pageWrapper}>

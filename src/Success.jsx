@@ -1,57 +1,53 @@
-import { useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+// import { useEffect, useRef } from "react";
+// import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
+// import { myAxios } from "./config";
 
-export function SuccessPage() {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+// export function SuccessPage() {
+//   const didRun = useRef(false); // ✅ StrictMode 방어
+//   const navigate = useNavigate();
+//   const location = useLocation(); // CheckoutPage에서 전달받은 state
+//   const [searchParams] = useSearchParams();
 
-  useEffect(() => {
-    // 쿼리 파라미터 값이 결제 요청할 때 보낸 데이터와 동일한지 반드시 확인하세요.
-    // 클라이언트에서 결제 금액을 조작하는 행위를 방지할 수 있습니다.
-    const requestData = {
-      orderId: searchParams.get("orderId"),
-      amount: searchParams.get("amount"),
-      paymentKey: searchParams.get("paymentKey"),
-    };
+//   const orderId = searchParams.get("orderId");
+//   const paymentKey = searchParams.get("paymentKey");
 
-    async function confirm() {
-      const response = await fetch("/payments/confirm", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            orderId: searchParams.get("orderId"),
-            amount: searchParams.get("amount"),
-            paymentKey: searchParams.get("paymentKey"),
-        }),
-    });
+//   useEffect(() => {
+//     if (didRun.current) return;
+//     didRun.current = true;
 
-      const json = await response.json();
+//     async function confirmPayment() {
+//       try {
+//         // 서버에 orderId로 조회 후 금액 검증
+//         const response = await myAxios().post("/payments/confirm", {
+//           paymentKey,
+//           orderId,
+//           method: "CARD",
+//           status: "PAID",
+//           approvedAt: new Date().toISOString(),
+//         });
 
-      if (!response.ok) {
-        // 결제 실패 비즈니스 로직을 구현하세요.
-        navigate(`/fail?message=${json.message}&code=${json.code}`);
-        return;
-      }
+//         console.log("결제 성공:", response.data);
 
-      // 결제 성공 비즈니스 로직을 구현하세요.
-    }
-    confirm();
-  }, []);
+//         // ✅ 결제 확인 후 /payCompleteSuccess로 이동
+//         navigate("/payCompleteSuccess", {
+//           state: {
+//             orderId,
+//             productId: location.state?.productId || null,
+//           },
+//         });
+//       } catch (error) {
+//         console.error("결제 확인 에러:", error);
+//         navigate(`/fail?message=${error.message}`);
+//       }
+//     }
 
-  return (
-    <div className="result wrapper">
-      <div className="box_section">
-        <h2>
-          결제 성공
-        </h2>
-        <p>{`주문번호: ${searchParams.get("orderId")}`}</p>
-        <p>{`결제 금액: ${Number(
-          searchParams.get("amount")
-        ).toLocaleString()}원`}</p>
-        <p>{`paymentKey: ${searchParams.get("paymentKey")}`}</p>
-      </div>
-    </div>
-  );
-}
+//     confirmPayment();
+//   }, [navigate, location.state, orderId, paymentKey]);
+
+//   return (
+//     <div>
+//       <h1>결제 완료</h1>
+//       {orderId && <p>주문 번호: {orderId}</p>}
+//     </div>
+//   );
+// }
