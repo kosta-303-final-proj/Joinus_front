@@ -29,7 +29,7 @@ import DeliveryApplicationDetail from './pages/admin/DeliveryManagement/Delivery
 import ApprovedDeliveryCompany from './pages/admin/DeliveryManagement/ApprovedDeliveryCompany';
 import DeliveryProductForm from './pages/admin/DeliveryManagement/DeliveryProductForm';
 import DeliveryProductList from './pages/admin/DeliveryManagement/DeliveryProductList';
-// 제안/공구상품/회원관리
+// ?�안/공구?�품/?�원관�?
 import ProposalMngList from './pages/admin/ProposalMngList'
 import GbProductMngList from './pages/admin/GbProductMngList'
 import GbProductCreate from './pages/admin/GbProductCreate';
@@ -47,7 +47,7 @@ import AdminOrderDetail from './pages/admin/AdminOrderDetail';
 import ExchRtrnWaitingList from './pages/admin/ExchRtrnWaitingList';
 import ExchRtrnWaitingDetail from './pages/admin/ExchRtrnWaitingDetail';
 import './App.css';
-// 마이페이지
+// 마이?�이지
 import InterestList from './pages/consumer/mypage/InterestList';
 import InquiryHistoryList from './pages/consumer/mypage/inquiryHistoryList';
 import OrderList from './pages/consumer/mypage/OrderList';
@@ -76,7 +76,7 @@ import CnclExchRtrnHisList from './pages/consumer/mypage/CnclExchRtrnHisList';
 import ExchangeDetail from './pages/consumer/mypage/ExchangeDetail';
 import ReturnDetail from './pages/consumer/mypage/ReturnDetail';
 import CancelDetail from './pages/consumer/mypage/CancelDetail';
-// 제안
+// ?�안
 import ProposalsList from "./pages/consumer/proposals/ProposalsList";
 import ProposalDetailConsumar from "./pages/consumer/proposals/ProposalDetailConsumar";
 import ProposalWrite from "./pages/consumer/proposals/ProposalWrite";
@@ -100,7 +100,7 @@ import InquiryWrite from './pages/cs/InquiryWrite';
 
 
 function AppContent() {
-  const location = useLocation(); /* 현재 url정보 반환 */
+  const location = useLocation(); /* ?�재 url?�보 반환 */
   const isAdminPage = location.pathname.startsWith('/admin');
 
   return (
@@ -110,14 +110,14 @@ function AppContent() {
         {isAdminPage && <AdminSidebar />}
         <main className={isAdminPage ? 'app-content-admin' : 'app-content'}>
           <Routes>
-            {/* 메인 페이지 */}
+            {/* 메인 ?�이지 */}
             <Route path="/" element={<MainPage />} />
             <Route path="/consumer/main" element={<MainPage />} />
 
-            {/* 검색 결과 페이지 */}
+            {/* 검??결과 ?�이지 */}
             <Route path="/searchResult" element={<SearchResult />} />
 
-            {/* 인증 페이지 */}
+            {/* ?�증 ?�이지 */}
             <Route path="/login" element={<Login />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/signup" element={<SignUp />} />
@@ -126,16 +126,16 @@ function AppContent() {
             <Route path="/token" element={<OAuthTokenHandler />} />
             <Route path="/logout" element={<Logout />} />
 
-            {/* 고객센터 */}
+            {/* 고객?�터 */}
             <Route path="/cs/notice" element={<Notice />} />
             <Route path="/cs/notice/:id" element={<NoticeDetail />} />
             <Route path="/cs/inquiry/:id" element={<InquiryDetail />} />
-            <Route path="/cs/inquiryWrite" element={<InquiryWrite />} /> {/* 임시 */}
+            <Route path="/cs/inquiryWrite" element={<InquiryWrite />} /> {/* ?�시 */}
 
-            {/* 납품문의 */}
+            {/* ?�품문의 */}
             <Route path="/partnership" element={<Partnership />} />
 
-            {/* 사용자 마이페이지 - 로그인 필요 */}
+            {/* ?�용??마이?�이지 - 로그???�요 */}
             <Route path="/mypage/*" element={
               <ProtectedRoute>
                 <Sidebar>
@@ -180,7 +180,7 @@ function AppContent() {
             } />
 
 
-            {/* 관리자 페이지 - ROLE_ADMIN 또는 ROLE_MANAGER 권한 필요 */}
+            {/* 관리자 ?�이지 - ROLE_ADMIN ?�는 ROLE_MANAGER 권한 ?�요 */}
             <Route path="/admin" element={
               <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
                 <Dashboard />
@@ -242,7 +242,7 @@ function AppContent() {
               </ProtectedRoute>
             } />
 
-            {/* 제안/공구상품/회원관리 */}
+            {/* ?�안/공구?�품/?�원관�?*/}
             <Route path="/admin/proposalMngList" element={
               <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
                 <ProposalMngList />
@@ -293,7 +293,7 @@ function AppContent() {
                 <FaqForm />
               </ProtectedRoute>
             } />
-            <Route path="/admin/faqForm/:id" element={ // 수정: ID 파라미터 추가
+            <Route path="/admin/faqForm/:id" element={ // ?�정: ID ?�라미터 추�?
               <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
                 <FaqForm />
               </ProtectedRoute>
@@ -308,7 +308,7 @@ function AppContent() {
                 <MemberDetail />
               </ProtectedRoute>
             } />
-            {/* 제안 디테일 관리자 화면 */}
+            {/* ?�안 ?�테??관리자 ?�면 */}
             <Route path="/admin/proposalDetailAdmin" element={
               <ProtectedRoute requiredRoles={['ROLE_ADMIN', 'ROLE_MANAGER']}>
                 <ProposalDetailAdmin />
@@ -337,7 +337,7 @@ function AppContent() {
               </ProtectedRoute>
             } />
 
-            {/* 제안 */}
+            {/* ?�안 */}
             <Route path="/proposalsList" element={<ProposalsList />} />
             <Route path="/proposalsList/proposalWrite" element={<ProposalWrite />} />
             <Route path='/proposalDetail/:id' element={<ProposalDetailConsumar />} />
@@ -358,7 +358,7 @@ function AppContent() {
               <Route path="reviews" element={<Reviews />} />
               <Route path="qAndA" element={<QAndA />} />
             </Route>
-            <Route path='/pay/:id' element={<Pay />} /> {/* 결제전 작성 및 결제 대기 */}
+            <Route path='/pay/:id' element={<Pay />} /> {/* 결제???�성 �?결제 ?��?*/}
             <Route path='/payComplete' element={<PayComplete/>}/>
           </Routes>
         </main>

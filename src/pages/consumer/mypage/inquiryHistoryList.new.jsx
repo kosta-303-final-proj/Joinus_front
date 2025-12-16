@@ -117,6 +117,9 @@ export default function InquiryHistoryList() {
   return (
     <div className="notice-page">
       <div className="notice-container">
+        {/* 마이페이지용 제목 */}
+        <h1 className="page-title">1:1 문의 내역</h1>
+
         {/* 탭 없이 바로 리스트만 */}
         <div className="tab-content">
           {isLoading ? (
@@ -206,3 +209,5 @@ export default function InquiryHistoryList() {
     </div>
   );
 }
+
+
