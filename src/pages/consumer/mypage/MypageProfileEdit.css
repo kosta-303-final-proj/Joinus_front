@@ -34,7 +34,7 @@
  ********************************/
 .profileedit-info-box {
   background: #fff;
-  border-radius: 14px;
+  border-radius: 0px;
   border: 1px solid var(--line-strong);
   padding: 40px 50px;
   width: 100%;
@@ -61,7 +61,7 @@
   flex: 1;
   padding: 12px 14px;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 0px;
   font-size: 15px;
 }
 
@@ -92,7 +92,7 @@
   padding: 11px 26px;
   font-size: 15px;
   font-weight: 700;
-  border-radius: 8px;
+  border-radius: 0px;
   cursor: pointer;
 }
 
@@ -106,7 +106,7 @@
   flex: 1;
   padding: 12px 14px;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 0px;
   font-size: 15px;
   background: #fff;
   color: #000;

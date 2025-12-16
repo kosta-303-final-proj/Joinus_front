@@ -42,7 +42,7 @@
 /* 카드 */
 .alert-card {
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 0px;
   padding: 24px 28px;
   display: flex;
   justify-content: space-between;
@@ -97,7 +97,7 @@
   color: white;
   font-size: 11px;
   padding: 2px 6px;
-  border-radius: 4px;
+  border-radius: 0px;
   margin-left: 6px;
   font-weight: 600;
 }
@@ -110,7 +110,7 @@
   padding: 8px 16px;
   font-size: 14px;
   font-weight: 700;
-  border-radius: 8px;
+  border-radius: 0px;
   cursor: pointer;
   transition: 0.15s;
 }
@@ -122,7 +122,7 @@
 /* 안내 박스 */
 .alert-info-box {
   border: 1px solid var(--line-strong);
-  border-radius: 12px;
+  border-radius: 0px;
   background: #F8FAFF;
   padding: 22px;
   font-size: 14px;
@@ -138,7 +138,7 @@
 /* 아코디언 전체 박스 */
 .alert-accordion-item {
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 0px;
   background: white;
   overflow: hidden;
   transition: 0.2s;
@@ -200,7 +200,7 @@
   border: 1px solid var(--line);
   color: var(--deep-text);
   padding: 6px 12px;
-  border-radius: 6px;
+  border-radius: 0px;
   margin: 0 3px;
   font-size: 14px;
   transition: 0.15s;

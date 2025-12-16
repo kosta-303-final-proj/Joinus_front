@@ -75,7 +75,7 @@
 /* 안내 박스 */
 .points-info-box {
   border: 1px solid var(--line-strong);
-  border-radius: 12px;
+  border-radius: 0px;
   background: #F7F9FC;
   padding: 22px;
   font-size: 14px;
@@ -101,7 +101,7 @@
   border: 1px solid var(--line);
   color: var(--deep-text);
   padding: 6px 12px;
-  border-radius: 6px;
+  border-radius: 0px;
   margin: 0 3px;
   font-size: 14px;
   transition: 0.15s;

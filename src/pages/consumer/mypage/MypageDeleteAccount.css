@@ -26,7 +26,7 @@
   background: #F7F9FC;
   border: 1px solid var(--line);
   padding: 28px 32px;
-  border-radius: 12px;
+  border-radius: 0px;
   margin-bottom: 30px;
   max-width: 900px;
 }
@@ -44,7 +44,7 @@
 /* 본문 박스 */
 .deleteaccount-box {
   background: #fff;
-  border-radius: 14px;
+  border-radius: 0px;
   border: 1px solid var(--line);
   padding: 35px 40px;
   max-width: 900px;
@@ -93,7 +93,7 @@
   height: 150px;
   padding: 14px;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 0px;
   resize: none;
   font-size: 14px;
 }
@@ -109,7 +109,7 @@
 .deleteaccount-btn {
   padding: 12px 26px;
   font-size: 15px;
-  border-radius: 8px;
+  border-radius: 0px;
   font-weight: 600;
   cursor: pointer;
   border: 1px solid var(--intel-blue);
