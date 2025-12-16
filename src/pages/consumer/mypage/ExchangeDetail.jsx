@@ -1,24 +1,96 @@
-import React from "react";
-import {
-    Container,
-    Row,
-    Col,
-    Card,
-    CardBody,
-    Table,
-    Button,
-    Badge
-} from "reactstrap";
+import React, {useEffect, useState} from "react";
+import { Container, Row, Col, Card, CardBody, Table, Button } from "reactstrap";
+import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./exchRtrn.css";
 
 export default function ExchangeDetail() {
+
+    const { id } = useParams(); // exchangeId
+    const navigate = useNavigate();
+
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
     const confirmBtnStyle = {
         backgroundColor: '#739FF2',
         padding: '10px 20px',
         width: '120px',
         color: 'white'
+    };
+
+    const formatDate = (value) => {
+    if (!value) return "-";
+    return String(value).substring(0, 10).replaceAll("-", "/");
+    };
+
+    // 상태
+    const STATUS_LABEL = {
+    EXCHANGE_REQUESTED: "교환신청",
+    EXCHANGE_PREPARATION: "교환준비",
+    EXCHANGE_RETRIEVAL: "교환회수중",
+    EXCHANGE_SHIPPING: "교환배송중",
+    EXCHANGE_REJECTED: "교환거절",
+    EXCHANGE_COMPLETED: "교환완료",
+    };
+
+    const toStatus = (raw) => {
+    const key = String(raw ?? "").trim().toUpperCase();
+    return STATUS_LABEL[key] ?? raw ?? "-";
+    };
+
+    useEffect(() => {
+    const fetchDetail = async () => {
+      setLoading(true);
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/mypage/cnclExchRtrnHisList/exchangeDetail/${id}`
+        );
+        setData(res.data);
+      } catch (e) {
+        console.error("교환 상세 조회 실패:", e);
+        setData(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) fetchDetail();
+    }, [id]);
+
+    if (loading) {
+        return (
+        <Container className="bg-white p-4" style={{ maxWidth: "860px" }}>
+            <div style={{ padding: "40px", textAlign: "center" }}>불러오는 중...</div>
+        </Container>
+        );
     }
+
+    if (!data) {
+        return (
+        <Container className="bg-white p-4" style={{ maxWidth: "860px" }}>
+            <div style={{ padding: "40px", textAlign: "center" }}>
+            교환 상세 정보를 불러오지 못했습니다.
+            </div>
+            <Row className="mt-4 mb-5">
+            <Col className="text-center">
+                <Button style={confirmBtnStyle} onClick={() => navigate(-1)}>
+                목록
+                </Button>
+            </Col>
+            </Row>
+        </Container>
+        );
+    }
+
+    const statusText = toStatus(data.status);
+    const priceText =
+        data.price != null ? Number(data.price).toLocaleString() : "-";
+
+    // 화면에 “배송 진행 상태 / 회수 진행 여부”가 필요하면 status/returnPart로 분기해도 됨
+    // 여기서는 최소 구현: statusText를 그대로 표/진행상태로 표시
+
     return (
         <Container className="bg-white p-4" style={{ maxWidth: "860px" }}>
             {/* 제목 및 주문 정보 */}
@@ -26,8 +98,8 @@ export default function ExchangeDetail() {
                 <Col>
                     <h5 className="fw-bold">교환내역 상세보기</h5>
                     <div className="text-secondary mt-2">
-                        주문일 : <b>2025/07/15</b> &nbsp;&nbsp; / &nbsp;&nbsp; 주문번호 :
-                        <b> 8100126910234</b>
+                        주문일 : <b>{formatDate(data.orderAt)}</b> &nbsp;&nbsp; / &nbsp;&nbsp;
+                        주문번호 : <b>{data.orderId ?? "-"}</b>
                     </div>
                 </Col>
             </Row>
@@ -46,13 +118,13 @@ export default function ExchangeDetail() {
                         </thead>
                         <tbody>
                             <tr>
-                                <td>브리타 정수기 필터 엑스트라 프로 퓨어 퍼포먼스 3입</td>
-                                <td className="text-center">1개</td>
-                                <td className="text-center">21,900원</td>
+                                <td>{data.productName ?? "-"}</td>
                                 <td className="text-center">
-                                    <div size="sm" style={{ color: '#739FF2' }}>
-                                        교환완료
-                                    </div>
+                                    {data.quantity != null ? `${data.quantity}개` : "-"}
+                                </td>
+                                <td className="text-center">{priceText}원</td>
+                                <td className="text-center">
+                                    <div style={{ color: "#739FF2" }}>{statusText}</div>
                                 </td>
                             </tr>
                         </tbody>
@@ -70,15 +142,15 @@ export default function ExchangeDetail() {
                                 <tbody>
                                     <tr>
                                         <th style={{ width: "180px" }}>교환접수일자</th>
-                                        <td>2025/07/16</td>
+                                        <td>{formatDate(data.requestedAt)}</td>
                                     </tr>
                                     <tr>
                                         <th>교환접수번호</th>
-                                        <td>910031610875</td>
+                                        <td>{data.exchangeId ?? "-"}</td>
                                     </tr>
                                     <tr>
                                         <th>교환 사유</th>
-                                        <td>상품이 파손되어 배송됨</td>
+                                        <td>{data.reqReason ?? "-"}</td>
                                     </tr>
                                 </tbody>
                             </Table>
@@ -97,27 +169,33 @@ export default function ExchangeDetail() {
                                 <tbody>
                                     <tr>
                                         <th style={{ width: "180px" }}>배송 진행 상태</th>
-                                        <td>배송완료</td>
+                                        <td>{statusText}</td>
                                     </tr>
                                     <tr>
                                         <th>택배회사</th>
-                                        <td>쿠팡택배</td>
+                                        <td>{data.shippingCarrierName ?? "-"}</td>
                                     </tr>
                                     <tr>
                                         <th>송장번호</th>
-                                        <td>101001545354</td>
+                                        <td>{data.shippingTrackingNo ?? "-"}</td>
                                     </tr>
                                     <tr>
                                         <th>회수인</th>
-                                        <td>박도름</td>
+                                        <td>{data.shippingUsername ?? "-"}</td>
                                     </tr>
                                     <tr>
                                         <th>휴대폰</th>
-                                        <td>010-8456-3770</td>
+                                        <td>{data.shippingTel ?? "-"}</td>
                                     </tr>
                                     <tr>
                                         <th>주소</th>
-                                        <td>08007 서울특별시 양천구 목동 삼성아파트 103동 1501호</td>
+                                        <td>
+                                            {(data.shippingPostcode ?? "") +
+                                                " " +
+                                                (data.shippingAddress ?? "") +
+                                                " " +
+                                                (data.shippingDetailAddress ?? "") || "-"}
+                                        </td>
                                     </tr>
                                 </tbody>
                             </Table>
@@ -136,38 +214,41 @@ export default function ExchangeDetail() {
                                 <tbody>
                                     <tr>
                                         <th style={{ width: "180px" }}>상품회수 진행여부</th>
-                                        <td>판매자직접완료</td>
+                                        <td>{data.returnPart ?? "-"}</td>
                                     </tr>
                                     <tr>
                                         <th>택배회사</th>
-                                        <td>쿠팡택배</td>
+                                        <td>{data.returnCarrierName ?? "-"}</td>
                                     </tr>
                                     <tr>
                                         <th>송장번호</th>
-                                        <td>4564842364</td>
+                                        <td>{data.returnTrackingNo ?? "-"}</td>
                                     </tr>
                                     <tr>
                                         <th>회수인</th>
-                                        <td>김현정</td>
+                                        <td>{data.returnName ?? "-"}</td>
                                     </tr>
                                     <tr>
                                         <th>휴대폰</th>
-                                        <td>010-8456-3770</td>
+                                        <td>{data.returnTel ?? "-"}</td>
                                     </tr>
                                     <tr>
                                         <th>주소</th>
                                         <td>
-                                            08007 서울특별시 양천구 목동동로122길 45 삼성아파트 103동
-                                            1501호
+                                        {(data.returnPostcode ?? "") +
+                                            " " +
+                                            (data.returnAddress ?? "") +
+                                            " " +
+                                            (data.returnDetailAddress ?? "") || "-"}
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>회수 예정일</th>
-                                        <td>2025/07/17(목)</td>
+                                        <td>미구현</td>
                                     </tr>
                                     <tr>
                                         <th>회수 요청사항</th>
-                                        <td>문 앞</td>
+                                        <td>{data.returnNote ?? "-"}</td>
                                     </tr>
                                 </tbody>
                             </Table>
@@ -179,9 +260,13 @@ export default function ExchangeDetail() {
             {/* 목록 버튼 */}
             <Row className="mt-4 mb-5">
                 <Col className="text-center">
-                    <Button color="primary" style={confirmBtnStyle}>
-                        목록
-                    </Button>
+                <Button
+                    color="primary"
+                    style={confirmBtnStyle}
+                    onClick={() => navigate(-1)}
+                >
+                    목록
+                </Button>
                 </Col>
             </Row>
         </Container>

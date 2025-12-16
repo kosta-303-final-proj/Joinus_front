@@ -299,7 +299,10 @@ export default function CnclExchRtrnHisList() {
                   // 2) 상세 조회에 사용할 ID 결정
                   // - all: HistoryItemDto.requestId
                   // - 개별탭: Cancel/Return/ExchangeListDto.id
-                  const detailId = draftHistoryType === "all" ? item.requestId : item.id;
+                  const detailId =
+                    draftHistoryType === "all"
+                      ? (item.requestId ?? item.id)
+                      : (item.id ?? item.requestId);
 
                   if (!detailId) return;
 
