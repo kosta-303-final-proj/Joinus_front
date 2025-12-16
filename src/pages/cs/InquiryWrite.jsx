@@ -58,9 +58,7 @@ export default function InquiryWrite() {
         if (!formData.question.trim()) {
             newErrors.question = '문의 내용을 입력해주세요.';
         }
-        if (!mainFile) {
-            newErrors.imageFile = '이미지 파일을 업로드해주세요.';
-        }
+        // 이미지 파일은 선택사항이므로 검증 제거
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -176,7 +174,7 @@ export default function InquiryWrite() {
 
             {/* 상품 이미지 업로드 */}
             <FormGroup className="mb-4">
-            <Label className="fw-bold text-start d-block" style={{fontSize:"16px"}}>상품 이미지 *</Label>
+            <Label className="fw-bold text-start d-block" style={{fontSize:"16px"}}>상품 이미지</Label>
             {errors.imageFile && <div className="text-danger" style={{fontSize:"14px", marginBottom:"5px"}}>{errors.imageFile}</div>}
 
             <div className="bigUploadBox">
