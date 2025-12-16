@@ -90,7 +90,7 @@ import Policy from './pages/consumer/groups/Policy';
 import QAndA from './pages/consumer/groups/QAndA';
 import Pay from './pages/consumer/groups/Pay';
 import PayComplete from './pages/consumer/groups/PayComplete';
-import { CheckoutPage } from './tossPayment';
+import { CheckoutPage } from './TossPayment';
 // import { SuccessPage } from './Success';
 //관리자
 import ProposalDetailAdmin from './pages/admin/ProposalDetailAdmin';

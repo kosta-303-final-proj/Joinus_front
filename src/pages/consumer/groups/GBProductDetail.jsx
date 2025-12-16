@@ -1,5 +1,5 @@
 import { Label, Button, Input, FormGroup} from "reactstrap";
-import { Link, Outlet, useParams } from "react-router-dom";
+import { Link, Outlet, useParams ,useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { baseUrl, myAxios } from "../../../config";
 
@@ -9,7 +9,37 @@ export default function GBProductDetail() {
     
     const [timeLeft, setTimeLeft] = useState("");
     const [selectedOptions, setSelectedOptions] = useState({});
+    const navigate = useNavigate();
     
+    const handleParticipate = () => {
+      // 옵션 선택 체크
+      const selectedIds = Object.values(selectedOptions);
+
+      if (selectedIds.includes("") || selectedIds.length !== Object.keys(optionGroups).length) {
+        alert("모든 옵션을 선택해주세요");
+        return;
+      }
+
+      // 옵션 선택 완료 → 결제 페이지로 이동
+      navigate(`/pay/${detail.product.id}`, {
+        state: {
+          productId: detail.product.id,
+          thumbnail: detail.thumbnailFile?.fileName,
+          finalPrice: finalPrice,
+          productName: detail.product.name,
+          quantity: 1,
+          selectedOptions: Object.entries(selectedOptions).map(([groupName, optionId]) => {
+            const option = detail.options.find(opt => opt.id === Number(optionId));
+            return {
+              groupName,
+              optionId: Number(optionId),
+              optionName: option?.name || "",
+              optionPrice: option?.price || 0,
+            };
+          }),
+        },
+      });
+    };
 
     /* ========================= 타이머 ========================= */
     useEffect(()=>{
@@ -189,23 +219,6 @@ export default function GBProductDetail() {
                             </Label>
                            {/* 나중에 옵션 map으로 돌려 */}
                             {Object.entries(optionGroups).map(([groupName, options], idx) => (
-                                // <FormGroup key={idx}>
-                                //     <Input
-                                //         type="select"
-                                //         value={selectedOptions[groupName] || ""}
-                                //         onChange={(e) => {
-                                //             setSelectedOptions(prev => ({
-                                //                 ...prev,
-                                //                 [groupName]: e.target.value
-                                //             }));
-                                //         }}
-                                //     >
-                                //         <option value="" disabled>{groupName}</option>
-                                //         {options.map(opt => (
-                                //             <option key={opt.id} value={opt.id}>{opt.name.replace(/ /g, "\u00A0").padEnd(80, "\u00A0")}(+{opt.price})</option>
-                                //         ))}
-                                //     </Input>
-                                // </FormGroup>
                                 <FormGroup key={groupName}>
                                   <Input
                                     type="select"
@@ -256,7 +269,7 @@ export default function GBProductDetail() {
                                 <Button style={{backgroundColor:'#739FF2', width:"120px", height:"35px", fontSize:"16px", padding:"0", border:'none', marginRight:'10px'}}
                                   onClick={() => submit()}
                                 >장바구니</Button>
-                                <Link
+                                {/* <Link
                                   to={`/pay/${detail.product.id}`}
                                   state={{
                                     productId: detail.product.id,
@@ -275,9 +288,9 @@ export default function GBProductDetail() {
                                       };
                                     }),
                                   }}
-                                >
-                                  <Button style={{backgroundColor:'#F7F7F7', width:"120px", height:"35px", fontSize:"16px", padding:"0", color:'black', border:'1px solid black'}}>참여하기</Button>
-                                </Link>
+                                > */}
+                                  <Button  onClick={handleParticipate} style={{backgroundColor:'#F7F7F7', width:"120px", height:"35px", fontSize:"16px", padding:"0", color:'black', border:'1px solid black'}}>참여하기</Button>
+                                {/* </Link> */}
                             </div>
                         </div>
                     </div>

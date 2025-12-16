@@ -23,6 +23,21 @@ export default function ShopCartList() {
     fetchCartList();
   }, []);
 
+
+  const deleteCartList = async (cartId) => {
+    try {
+      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      const username = userInfo?.username;
+
+      await myAxios().post("/deleteCart",{ id: cartId, memberUsername: username });
+      setCartList(prev => prev.filter(item => item.cartId !== cartId));
+    } catch (error) {
+      console.error("삭제 실패", error);
+      alert("삭제 실패: " + error.response?.data);
+    }
+  };
+
+
   return (
     <div className="container">
       <div className="fw-bold d-block" style={{ fontSize: "20px", margin: "20px auto" }}>장바구니</div>
@@ -52,7 +67,7 @@ export default function ShopCartList() {
             <div className="productTotal">{(item.price * item.quantity).toLocaleString()}원</div>
             <div className="buttonGroup">
               <Button size="sm" className="buttonPrimary" style={{width:"70px"}}>결제</Button>
-              <Button size="sm" className="buttonSecondary">삭제</Button>
+              <Button size="sm" className="buttonSecondary" onClick={()=>deleteCartList(item.cartId)}>삭제</Button>
             </div>
           </FormGroup>
           ))}

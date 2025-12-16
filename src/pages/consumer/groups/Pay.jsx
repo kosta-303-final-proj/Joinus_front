@@ -24,6 +24,7 @@ export default function Pay(){
     const [streetAddress, setStreetAddress] = useState("");
     const [addressDetail, setAddressDetail] = useState("");
     const [accessInstructions, setAccessInstructions] = useState("");
+    const [note, setNote] = useState("");
     // Pay 내부 상태
     const [optionIds, setOptionIds] = useState(
         selectedOptionsFromDetail?.map(opt => opt.optionId) || []
@@ -79,16 +80,34 @@ export default function Pay(){
                 usingPoint,
                 shipRecipient,
                 phone,
-                postcode,
-                streetAddress,
-                addressDetail,
+                postcode, //우편번호
+                streetAddress, // 도로명 주소
+                addressDetail, //상세주소
                 accessInstructions,
+                note,
             });
             return response.data.orderId;
         } catch (e) {
             console.log("주문 생성 에러:", e.response?.data || e.message);
             throw e;
         }
+    };
+
+    // ===============================
+    // 다음 주소 검색
+    // ===============================
+    const openDaumPostcode = () => {
+        if (!window.daum || !window.daum.Postcode) {
+            alert("주소 검색 서비스를 불러오지 못했습니다.");
+            return;
+        }
+
+        new window.daum.Postcode({
+            oncomplete: function (data) {
+            setPostcode(data.zonecode);       // 우편번호
+            setStreetAddress(data.roadAddress); // 도로명 주소
+            },
+        }).open();
     };
 
 
@@ -201,7 +220,7 @@ export default function Pay(){
                         </div>
 
                         {/* 주소 */}
-                        <div style={row}>
+                        {/* <div style={row}>
                             <div style={leftCol}>주소</div>
                             <div style={rightCol}>
                             <Input
@@ -211,7 +230,45 @@ export default function Pay(){
                                 placeholder="도로명 주소 입력"
                             />
                             </div>
+                        </div> */}
+                        {/* 주소 */}
+                        <div style={row}>
+                        <div style={leftCol}>주소</div>
+                            <div style={rightCol}>
+                                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                                {/* 우편번호 + 도로명 주소 표시 */}
+                                <Input
+                                    type="text"
+                                    readOnly
+                                    value={postcode ? `[${postcode}] ${streetAddress}` : ""}
+                                    placeholder="[우편번호] 주소"
+                                    style={{ flex: 1, fontSize: "12px", height: "20px" }}
+                                />
+                                <button
+                                    type="button"
+                                    style={{
+                                    fontSize: "12px",
+                                    height: "20px",
+                                    padding: "0 5px",
+                                    whiteSpace: "nowrap",
+                                    }}
+                                    onClick={openDaumPostcode}
+                                >
+                                    주소 검색
+                                </button>
+                                </div>
+
+                                {/* 상세주소 입력 */}
+                                <Input
+                                type="text"
+                                value={addressDetail}
+                                onChange={(e) => setAddressDetail(e.target.value)}
+                                style={{ width: "100%", marginTop: "5px", fontSize: "12px", height: "20px" }}
+                                placeholder="상세주소를 입력하세요."
+                                />
+                            </div>
                         </div>
+      
 
                         {/* 이메일 */}
                         <div style={row}>
@@ -258,8 +315,8 @@ export default function Pay(){
                             <div style={rightCol}>
                             <Input
                                 type="textarea"
-                                value={addressDetail}
-                                onChange={(e) => setAddressDetail(e.target.value)}
+                                value={note}
+                                onChange={(e) => setNote(e.target.value)}
                                 style={{ fontSize: "12px", height: "50px", resize: "none" }}
                                 placeholder="배송 요청사항"
                             />

@@ -1,21 +1,38 @@
-import { Button,FormGroup,Label,Input } from "reactstrap";
+import { Button,FormGroup,Label,Input, PaginationItem ,PaginationLink,Pagination, } from "reactstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { baseUrl, myAxios } from "../../../config";
 
-export default function OrderList() {
+export default function OrderList({ id }) {
   const navigate = useNavigate();
 
   // ⭐ 리뷰 모달 상태
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  
+  const [orderList, setOrderList] = useState([]);
+  const [page, setPage] = useState(0);
+  const [size, setSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
 
-  // ⭐ 더미 주문 상태 데이터 (각 항목마다 상태 넣어 테스트 가능)
-  const orderList = [
-    { id: 1, status: "배송완료" },
-    { id: 2, status: "배송중" },
-    { id: 3, status: "결제완료" },
-  ];
+  const pageMove = () =>{
+    navigate("/mypage/orderList/orderDetail/:id");
+  }
 
+  useEffect(() => {
+    const fetchOrderList = async () => {
+      const username = "kakao_4436272679";
+
+      try {
+        const res = await myAxios().get("/orderList", { params: { username, page, size } });
+        setOrderList(res.data.content);  // Page의 content
+        setTotalPages(res.data.totalPages);
+      } catch (err) {
+        console.error("주문 목록 조회 실패", err);
+      }
+    };
+    fetchOrderList();
+  }, [page, size]);
   return (
     <>
         {/* 제목 영역 */}
@@ -71,29 +88,28 @@ export default function OrderList() {
                 {/* 헤더 영역 */}
                 <hr style={{margin:'0', border:'1px solid black'}}/>
                 <div style={{ display: "flex", backgroundColor: "#E7EBF3", padding: "12px 0", fontSize:'12px'}}>
-                    <div style={{ ...styles.rowHeader, width: "20%" }}>주문일자(주문번호)</div>
+                    <div style={{ ...styles.rowHeader, width: "20%" }}>{orderList.id}({orderList.createdAt})</div>
                     <div style={{ ...styles.rowHeader, width: "45%" }}>상품 정보</div>
                     <div style={{ ...styles.rowHeader, width: "10%" }}>수량</div>
-                    <div style={{ ...styles.rowHeader, width: "15%" }}>상품 금액</div>
+                    <div style={{ ...styles.rowHeader, width: "15%" }}>결제 금액</div>
                     <div style={{ ...styles.rowHeader, width: "10%" }}></div>
                 </div>
                 <hr style={{margin:'0', border:'1px solid black'}}/>
 
 
                 {orderList.map((order, index) => (
-                    <div key={index} style={{ ...styles.row, borderBottom: "1px solid #eee" }}>
-
+                  <div key={order.id ?? index} style={{ ...styles.row, borderBottom: "1px solid #eee" }}>
                         {/* 주문일자 */}
                         <div style={{ ...styles.col, width: "20%" }}>
-                            <span style={{ color: "#888", fontSize:'16x' }}>123456</span>
+                            <span style={{ color: "#888", fontSize:'16x' }}>{order.id}</span>
                         </div>
 
                         {/* 상품 정보 */}
                         <div style={{ ...styles.col, width: "45%", display: "flex", alignItems: "center" }}>
-                        <img src="/computer.png" alt="" style={{ width: "80px", height: "80px", marginRight: "10px" }} />
+                        <img src={`${baseUrl}/images/${order.thumbnailFileName}`} alt="" style={{ width: "80px", height: "80px", marginRight: "10px" }} />
                         <div style={{ flex: 1 }}>
-                            <div style={{fontSize:'14px'}}>Start Fuck 500ml 세트 묶음</div>
-                            <div style={{ color: "#777", fontSize: "12px" }}>주문 날짜: 2025-11-22</div>
+                            <div style={{fontSize:'14px'}}>{order.productName}</div>
+                            <div style={{ color: "#777", fontSize: "12px" }}>주문 날짜: {order.createdAt?.substring(0, 10)}</div>
                         </div>
                         <div style={{padding: "4px 10px", borderRadius: "6px", fontSize: "12px", marginLeft: "10px", whiteSpace: "nowrap", backgroundColor:'#F2F9FC', color:'#7693FC', border:'1px solid #7693FC'}}>
                           {order.status}
@@ -104,40 +120,44 @@ export default function OrderList() {
                         <div style={{ ...styles.col, width: "10%" }}>1</div>
 
                         {/* 가격 */}
-                        <div style={{ ...styles.col, width: "15%" }}>90,000원</div>
+                        <div style={{ ...styles.col, width: "15%" }}>{order.productPrice}원</div>
 
                         {/* 버튼 영역 —⭐ 상태별 조건 적용 */}
                         <div style={{ ...styles.col, width: "10%" }}>
-
-                          {order.status === "결제완료" && (
+                          {order.status === "READY" && (
                             <>
-                              <button style={styles.smallBtn}>주문 상세</button>
+                            </>
+                          )}
+
+                          {order.status === "PAID" && (
+                            <>
+                              <button style={styles.smallBtn}  onClick={pageMove}>주문 상세</button>
                               <button style={styles.smallBtn}>취소 신청</button>
                             </>
                           )}
 
                           {order.status === "해외배송중" && (
                             <>
-                              <button style={styles.smallBtn}>주문 상세</button>
+                              <button style={styles.smallBtn} onClick={pageMove}>주문 상세</button>
                             </>
                           )}
 
-                          {order.status === "취소완료" && (
+                          {order.status === "CANCELLED" && (
                             <>
                               <button style={styles.smallBtn}>취소 상세</button>
                             </>
                           )}
 
-                          {order.status === "배송중" && (
+                          {order.status === "SHIPPING" && (
                             <>
-                              <button style={styles.smallBtn}>주문 상세</button>
+                              <button style={styles.smallBtn} onClick={pageMove}>주문 상세</button>
                               <button style={styles.smallBtn}>배송 조회</button>
                             </>
                           )}
 
-                          {order.status === "배송완료" && (
+                          {order.status === "DELIVERED" && (
                             <>
-                              <button style={styles.smallBtn}>주문 상세</button>
+                              <button style={styles.smallBtn} onClick={pageMove}>주문 상세</button>
                               <button style={styles.smallBtn}>배송 조회</button>
                               <button style={styles.smallBtn}>반품 신청</button>
 
@@ -148,10 +168,30 @@ export default function OrderList() {
                               <button style={styles.smallBtn}>교환 신청</button>
                             </>
                           )}
-
                         </div>
                     </div>
                 ))}
+                <Pagination>
+                  <PaginationItem disabled={page === 0}>
+                    <PaginationLink first onClick={() => setPage(0)} />
+                  </PaginationItem>
+                  <PaginationItem disabled={page === 0}>
+                    <PaginationLink previous onClick={() => setPage(prev => Math.max(prev-1, 0))} />
+                  </PaginationItem>
+
+                  {[...Array(totalPages)].map((_, i) => (
+                    <PaginationItem active={i === page} key={i}>
+                      <PaginationLink onClick={() => setPage(i)}>{i+1}</PaginationLink>
+                    </PaginationItem>
+                  ))}
+
+                  <PaginationItem disabled={page === totalPages-1}>
+                    <PaginationLink next onClick={() => setPage(prev => Math.min(prev+1, totalPages-1))} />
+                  </PaginationItem>
+                  <PaginationItem disabled={page === totalPages-1}>
+                    <PaginationLink last onClick={() => setPage(totalPages-1)} />
+                  </PaginationItem>
+                </Pagination>
             </div>
         </div>
 
