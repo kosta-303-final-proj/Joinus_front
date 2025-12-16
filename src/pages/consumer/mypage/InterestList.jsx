@@ -5,6 +5,10 @@ import { myAxios } from "../../../config";
 import { useNavigate } from "react-router-dom";
 
 export default function InterestList() {
+    // 로그인 유저 정보 (추가)
+const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+const username = userInfo?.username;
+
     const [interestList, setInterestList] = useState([]);
     const navigate = useNavigate();
     //체크박스
@@ -42,7 +46,6 @@ export default function InterestList() {
     useEffect(() => {
     const fetchIntegerList = async () => {
       try {
-        const username = "kakao_4436272679";
         const response = await myAxios().get(`/interestList`, {
           params: { username }
         });
@@ -52,21 +55,23 @@ export default function InterestList() {
       }
     };
     fetchIntegerList();
-  }, []);
+ }, [username]);
 
-    const deleteInterest = async (id) => {
-        try {
-            const username = "kakao_4436272679";
-            await myAxios().post("/deleteWish", { id, username });
+  const deleteInterest = async (id) => {
+    try {
+        const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+        const username = userInfo?.username;
 
-            setInterestList(prev => prev.filter(item => item.id !== id));
-        } catch (error) {
-            console.error("관심상품 삭제 실패", error);
-        }
-    };
-    
-    const deleteSelected = async () => {
-        const username = "kakoa_4436272679";
+        await myAxios().post("/deleteWish", { id, username });
+
+        setInterestList(prev => prev.filter(item => item.id !== id));
+    } catch (error) {
+        console.error("관심상품 삭제 실패", error);
+    }
+};
+
+  const deleteSelected = async () => {
+    if (!username) return;
         const selectedIds = Object.keys(checkedItems).filter(id => checkedItems[id]);
         
         if(selectedIds.length === 0){
