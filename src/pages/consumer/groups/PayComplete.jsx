@@ -1,73 +1,109 @@
 import { Link,useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { Button } from "reactstrap";
 import { useEffect, useRef,useState } from "react";
-import { myAxios } from "../../../config";
+import { myAxios,baseUrl } from "../../../config";
 
 export default function PayComplete(){
+const didRun = useRef(false); // ✅ StrictMode 방어
+  const navigate = useNavigate();
+  const location = useLocation(); // CheckoutPage에서 전달받은 state
+//   const [searchParams] = useSearchParams();
 
-    const didRun = useRef(false); // ✅ StrictMode 방어
-    const navigate = useNavigate();
-    const location = useLocation(); // CheckoutPage에서 전달받은 state
-    // const [searchParams] = useSearchParams();
-    const [paymentConfirmed, setPaymentConfirmed] = useState(false); // 결제 확인 상태
-    const searchParams = new URLSearchParams(window.location.search);
+const searchParams = new URLSearchParams(window.location.search);
+  const [paymentConfirmed, setPaymentConfirmed] = useState(false); // 결제 확인 상태
     const orderId = searchParams.get("orderId");
-    const productId = searchParams.get("productId");
+    const gbProductId = searchParams.get("productId"); 
     const paymentKey = searchParams.get("paymentKey");
-    const amount = parseInt(searchParams.get("amount") || "0");
+    const amount = parseInt(searchParams.get("amount")) || 0;
+    const quantity = parseInt(searchParams.get("quantity")) || 1;
+    const selectedOptionsRaw = JSON.parse(searchParams.get("selectedOptions") || "[]");
+    const optionIds = selectedOptionsRaw.map(opt => opt.optionId);
 
-  useEffect(() => {
-    if (didRun.current) return;
-    didRun.current = true;
+    useEffect(() => {
+        if (didRun.current) return;
+        didRun.current = true;
 
-    async function confirmPayment() {
-      try {
-        // 서버에 orderId로 조회 후 금액 검증
-        const response = await myAxios().post("/payments/confirm", {
-          paymentKey,
-          orderId,
-          method: "CARD",
-          status: "PAID",
-          approvedAt: new Date().toISOString(),
-          amount: location.state?.amount || 0,
-        });
+        async function confirmPayment() {
+        try {
+            //이미 결제 확인했는지 체크 (새로고침 방어)
+            const confirmedKey = `payment_confirmed_${orderId}`;
+            if (sessionStorage.getItem(confirmedKey)) {
+                console.log("이미 결제 확인됨 - confirm 스킵");
+                return;
+            }
+            
+            // 서버에 orderId로 조회 후 금액 검증
+            const response = await myAxios().post("/payments/confirm", {
+            paymentKey,
+            orderId,
+            method: "CARD",
+            status: "PAID",
+            approvedAt: new Date().toISOString(),
+            amount: location.state?.amount || 0,
+            });
 
-        console.log("결제 성공:", response.data);
-        setPaymentConfirmed(true);
+            console.log("결제 성공:", response.data);
+            setPaymentConfirmed(true);
 
-        // 2️⃣ OrderItem 생성 전에 필수 값 체크
-        const productId = location.state?.productId;
-        const quantity = location.state?.quantity || 1;
-        const amount = location.state?.amount || 0;
-        const selectedOptions = location.state?.selectedOptions || [];
+            // ✅ confirm 성공 표시 저장
+            sessionStorage.setItem(confirmedKey, "true");
 
-        // if (!orderId || !productId) {
-        //     console.error("OrderId 또는 ProductId가 없습니다.", { orderId, productId });
-        //     return navigate(`/fail?message=필수 데이터 누락`);
-        // }
+            // 2️⃣ OrderItem 생성 전에 필수 값 체크
+            const productId = location.state?.productId;
+            const quantity = location.state?.quantity || 1;
+            // const amount = location.state?.amount || 0;
+            const selectedOptions = location.state?.selectedOptions || [];
 
-        // 3️⃣ OrderItem 생성
-        await myAxios().post("/orderItems", {
-          orderId,
-          memberUsername: "kakao_4436272679", // 실제 DB 존재 확인 필요
-          gbProductId: productId,
-          quantity,
-          unitPrice: amount,
-          lineSubtotal: amount * quantity,
-          total: amount,
-          gbProductOptionIds: selectedOptions, // 서버에서 JSON 변환
-        });
+            if (!orderId || !gbProductId) {
+                console.error("필수 데이터 누락", { orderId, gbProductId });
+                return navigate(`/fail?message=필수 데이터 누락`);
+            }
 
-        console.log("OrderItem 생성 완료");
-        
-      } catch (error) {
-        console.error("결제 확인 에러:", error);
-        navigate(`/fail?message=${error.message}`);
-      }
-    }
 
-    confirmPayment();
-  }, [navigate, location.state, orderId, paymentKey]);
+            // 3️⃣ OrderItem 생성
+            await myAxios().post("/orderItems", {
+            orderId,
+            memberUsername: "kakao_4436272679", // 실제 DB 존재 확인 필요
+            gbProductId,
+            quantity,
+            unitPrice: amount,
+            lineSubtotal: amount * quantity,
+            total: amount,
+            gbProductOptionIds: optionIds, // 서버에서 JSON 변환
+            });
+
+            console.log("OrderItem 생성 완료");
+            
+        } catch (error) {
+            console.error("결제 확인 에러:", error);
+            navigate(`/fail?message=${error.message}`);
+        }
+        }
+
+        confirmPayment();
+    }, [navigate, location.state, orderId, paymentKey, gbProductId, selectedOptionsRaw]);
+
+    const [order, setOrder] = useState(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(()=>{
+        if(!orderId)return;
+
+        async function fetchOrder() {
+            try {
+                const res = await myAxios().get(`/orders/${orderId}`)
+                setOrder(res.data);
+            } catch (error) {
+                console.log("주문 조회 실패", error)
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchOrder();
+    }, [orderId]);
+
+
+    if (loading) return <div>로딩중...</div>;
+    if (!order) return <div>주문 정보를 불러올 수 없습니다.</div>;
     return(
         <>
             <div style={styles.pageWrapper}>
@@ -78,7 +114,7 @@ export default function PayComplete(){
                             주문이 완료되었습니다.
                         </div>
                         <div style={{border:'1px solid black', backgroundColor:'#A09B9B', width:'300px', margin:'20px auto'}}>
-                            주문번호 : 207546412
+                            주문번호 : {order.orderId}
                         </div>
                         <Link to="">
                         <Button style={{backgroundColor:'#739FF2', color:'white', border:'none', fontSize:'12px'}}>
@@ -108,34 +144,35 @@ export default function PayComplete(){
                     <div style={{border: '1px solid black',borderRadius: '5px',overflow: 'hidden'}}>
                         <div style={row}>
                             <div style={leftCol}>주문 일자</div>
-                            <div style={rightCol}>2025-11-16</div>
+                            <div style={rightCol}>{new Date(order.createdAt).toLocaleDateString()}</div>
                         </div>
 
                         {/* 상품 정보 */}
                         <div style={row}>
                             <div style={leftCol }>상품 정보</div>
                             <div style={{ ...rightCol, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <img src="https://picsum.photos/80" style={{width: '80px',height: '80px',borderRadius: '8px', objectFit: 'cover'}}/>
-                                <div>샘플 상품명입니다</div>
+                                
+                                <img  src={`${baseUrl}/files/${order.thumbnailFileName}`} style={{width: '80px',height: '80px',borderRadius: '8px', objectFit: 'cover'}}/>
+                                <div>{order.productName}</div>
                             </div>
                         </div>
 
                         {/* 수량 */}
                         <div style={row}>
                             <div style={leftCol}>수량</div>
-                            <div style={rightCol}>1</div>
+                            <div style={rightCol}>{order.quantity}</div>
                         </div>
 
                         {/* 가격 */}
                         <div style={row}>
-                            <div style={leftCol}>가격</div>
-                            <div style={rightCol}>10,000원</div>
+                            <div style={leftCol}>결제 가격</div>
+                            <div style={rightCol}>{order.total.toLocaleString()}</div>
                         </div>
 
                         {/* 요청사항 */}
                         <div style={row}>
                             <div style={leftCol}>요청사항</div>
-                            <div style={rightCol}>요청사항 내용이 여기에 들어갑니다.</div>
+                            <div style={rightCol}>{order.orderNote || "요청사항 없음"}</div>
                         </div>
                     </div>
                     <br/><br/>

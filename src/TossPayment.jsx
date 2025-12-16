@@ -76,9 +76,8 @@ export function CheckoutPage() {
                 orderId: orderId,
                 // productId : productId,
                 orderName: productName || "상품 결제",
-                // successUrl: window.location.origin + "/paycomplate", // ✅ :id 제거
                 // successUrl: `${window.location.origin}/paycomplete?orderId=${orderId}&productId=${productId}&amount=${payAmount}`,
-                successUrl: `${window.location.origin}/paycomplete?orderId=${orderId}&productId=${productId}&amount=${payAmount}`,
+                successUrl: `${window.location.origin}/paycomplete?orderId=${orderId}&productId=${productId}&amount=${payAmount}&quantity=${quantity}&selectedOptions=${encodeURIComponent(JSON.stringify(selectedOptions))}`,
                 failUrl: window.location.origin + "/fail",
                 customerEmail: "customer123@gmail.com",
                 customerName: "김토스",
