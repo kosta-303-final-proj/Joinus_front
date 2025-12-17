@@ -16,6 +16,11 @@ export default function MypageMain() {
   // ===============================
   const [wishlist, setWishlist] = useState([]);
 
+  // ===============================
+  // 최근 주문 목록
+  // ===============================
+  const [recentOrders, setRecentOrders] = useState([]);
+
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   const username = userInfo?.username;
 
@@ -53,6 +58,29 @@ export default function MypageMain() {
       });
   }, [username]);
 
+  // ===============================
+  // 최근 주문 목록 조회
+  // ===============================
+  useEffect(() => {
+    if (!username) return;
+
+    myAxios()
+      .get(`/mypage/orderList/recent?username=${username}&limit=5`)
+      .then((res) => {
+        setRecentOrders(res.data);
+      })
+      .catch((err) => {
+        console.error("최근 주문 목록 조회 실패", err);
+        setRecentOrders([]);
+      });
+  }, [username]);
+
+  // 날짜 포맷팅
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "-";
+    return String(dateStr).substring(0, 10);
+  };
+
   return (
     <>
       {/* ================= 최근 주문 목록 ================= */}
@@ -76,21 +104,23 @@ export default function MypageMain() {
           </thead>
 
           <tbody>
-            <tr>
-              <td>ORD-20251108-001</td>
-              <td>천연 텀블러 500ml</td>
-              <td>2025-11-08</td>
-              <td>₩32,000</td>
-              <td>배송중</td>
-            </tr>
+            {recentOrders.length === 0 && (
+              <tr>
+                <td colSpan="5" style={{ textAlign: "center", padding: "20px", color: "#888" }}>
+                  주문 내역이 없습니다.
+                </td>
+              </tr>
+            )}
 
-            <tr>
-              <td>ORD-20251103-004</td>
-              <td>해외 직구 커피머신</td>
-              <td>2025-11-03</td>
-              <td>₩189,000</td>
-              <td>배송완료</td>
-            </tr>
+            {recentOrders.map((order) => (
+              <tr key={order.orderItemId}>
+                <td>{order.orderId}</td>
+                <td>{order.gbProductName}</td>
+                <td>{formatDate(order.orderedAt)}</td>
+                <td>₩{order.total?.toLocaleString()}</td>
+                <td>{order.orderStatusDescription || order.orderStatus}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
