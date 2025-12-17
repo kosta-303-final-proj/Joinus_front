@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, FormGroup, Input } from "reactstrap";
-import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import OrderItem from "./OrderItem";
+import { myAxios } from "../../../config";
 
 export default function CnclExchRtrnHisList() {
   
+  const navigate = useNavigate();
+
+  // 로그인
+  const [username, setUsername] = useState(null);
+
   // 실제 조회에 적용되는 값(조회 버튼 눌렀을 때만 변경)
   const [historyType, setHistoryType] = useState("all");
     
@@ -20,8 +25,29 @@ export default function CnclExchRtrnHisList() {
   const [historyList, setHistoryList] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // 임시 사용자
-  const username = "kakao_4633814946";
+  // 로그인 userInfo+access_token 체크
+  useEffect(() => {
+    const userInfoRaw = localStorage.getItem("userInfo");
+    const accessToken = localStorage.getItem("access_token");
+
+    let userInfo = null;
+    try {
+      userInfo = userInfoRaw ? JSON.parse(userInfoRaw) : null;
+    } catch {
+      userInfo = null;
+    }
+
+    const storedUsername = userInfo?.username;
+
+    if (!storedUsername || !accessToken) {
+      alert("로그인이 필요합니다.");
+      navigate("/login");
+      return;
+    }
+
+    setUsername(storedUsername);
+  }, [navigate]);
+
 
   // ============= 구매기간 버튼/날짜 추가 =============
   const pad2 = (n) => String(n).padStart(2, "0");
@@ -37,12 +63,6 @@ export default function CnclExchRtrnHisList() {
     setDraftEndDate(toYMD(today));
   };
 
-  // ============= 기간 필터 =============
-    const parseTime = (v) => {
-    const t = new Date(v ?? 0)  .getTime();
-    return Number.isNaN(t) ? 0 : t;
-  };
-
   // 조회 버튼 눌렀을 때 
   const onSearch = async () => {
     // 1) 적용값 업데이트
@@ -50,25 +70,26 @@ export default function CnclExchRtrnHisList() {
 
     // 2) 서버 조회
     await fetchHistory(draftHistoryType);
-
   };
 
   const fetchHistory = async (type) => {
+    if (!username) return;
+
     setLoading(true);
     try {
       let url = "";
 
-      if (type === "cancel") url = `/mypage/cnclExchRtrnHisList/cancel/${username}`;
-      else if (type === "return") url = `/mypage/cnclExchRtrnHisList/return/${username}`;
-      else if (type === "exchange") url = `/mypage/cnclExchRtrnHisList/exchange/${username}`;
-      else url = `/mypage/cnclExchRtrnHisList/all/${username}`;
+      if (type === "cancel") url = `/user/mypage/cnclExchRtrnHisList/cancel/${username}`;
+      else if (type === "return") url = `/user/mypage/cnclExchRtrnHisList/return/${username}`;
+      else if (type === "exchange") url = `/user/mypage/cnclExchRtrnHisList/exchange/${username}`;
+      else url = `/user/mypage/cnclExchRtrnHisList/all/${username}`;
 
-      // 백엔드 기간 필터 사용 (쿼리 파라미터)
+     // 백엔드 기간 필터 사용 (쿼리 파라미터)
       const params = {};
       if (draftStartDate) params.startDate = draftStartDate;
       if (draftEndDate) params.endDate = draftEndDate;
 
-      const res = await axios.get(`http://localhost:8080${url}`, { params });
+      const res = await myAxios().get(url, { params });
 
       if (type === "all") {
         const items = res.data?.items ?? [];
@@ -94,8 +115,10 @@ export default function CnclExchRtrnHisList() {
 
   // 기본 all 조회
   useEffect(() => {
+    if (!username) return;
     fetchHistory("all");
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [username]);
 
   const formatDate = (value) => {
     if (!value) return "-";
@@ -127,9 +150,6 @@ export default function CnclExchRtrnHisList() {
 
   // 탭 누르면 표시만 바뀌고, 실제 조회는 조회 버튼 눌러야 반영
   const isActive = (t) => draftHistoryType === t;
-
-  // 버튼 클릭 시 이동
-  const navigate = useNavigate();
 
   return (
     <>
