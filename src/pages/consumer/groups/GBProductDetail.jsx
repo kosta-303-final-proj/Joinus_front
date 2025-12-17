@@ -114,14 +114,18 @@ export default function GBProductDetail() {
   
 
   const submit = (quantity = 1) => {
+    
 
     const selectedIds = Object.values(selectedOptions); // 선택된 모든 옵션
     if (selectedIds.includes("") || selectedIds.length !== Object.keys(optionGroups).length) {
         alert("모든 옵션을 선택해주세요");
         return;
     }
+    const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+    const memberUsername = userInfo.username;
 
     myAxios().post(`/addCart`, {
+        username: memberUsername,
         gbProductId: detail.product.id,
         gbProductOptionIds: selectedIds.map(id => Number(id)), // 여러 옵션 전달
         quantity: quantity
@@ -138,8 +142,15 @@ export default function GBProductDetail() {
 
     /* ========================= 찜하기 ========================= */
     const handleWishList = () => {
+      const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+      const memberUsername = userInfo.username;
+
+      if (!memberUsername) {
+        alert("로그인 정보가 없습니다.");
+        return;
+      }
       myAxios().get("/product/productHeart", {
-        params: { gbProductId: id}
+        params: { username: memberUsername, gbProductId: id}
       })
       .then(res => {
         setIsHeart(res.data.isHeart);
@@ -149,10 +160,17 @@ export default function GBProductDetail() {
     }
 
     useEffect(() => {
+      const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+      const memberUsername = userInfo.username;
+
+      if (!memberUsername) {
+        console.error("로그인 정보 없음");
+        return;
+      }
       // 페이지 진입 시 하트 상태 + wishCount 가져오기
       myAxios()
         .get("/product/productHeart/status", {
-          params: { productId: id }
+          params: { productId: id,username: memberUsername }
         })
         .then(res => {
           setIsHeart(res.data.isHeart);  // true/false
@@ -160,6 +178,7 @@ export default function GBProductDetail() {
         })
         .catch(err => console.log(err));
     }, [id]);
+
 const progress =
   detail.product.minParticipants
     ? Math.min(
