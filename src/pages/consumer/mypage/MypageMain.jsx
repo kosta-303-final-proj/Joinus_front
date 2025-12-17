@@ -12,12 +12,39 @@ export default function MypageMain() {
   const [suggestions, setSuggestions] = useState([]);
 
   // ===============================
+  // 최근 주문 목록 (대시보드용)
+  // ===============================
+  const [recentOrders, setRecentOrders] = useState([]);
+
+
+  // ===============================
   // 관심상품 (Wishlist 대시보드용)
   // ===============================
   const [wishlist, setWishlist] = useState([]);
 
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   const username = userInfo?.username;
+
+useEffect(() => {
+  if (!username) return;
+
+  myAxios()
+    .get("/orderList", {
+      params: {
+        username,
+        page: 0,
+        size: 5,
+      },
+    })
+    .then((res) => {
+      setRecentOrders(res.data.content || []);
+    })
+    .catch((err) => {
+      console.error("대시보드 최근 주문 조회 실패", err);
+      setRecentOrders([]);
+    });
+}, [username]);
+
 
   // ===============================
   // 공동구매 요청 TOP 5
@@ -75,23 +102,30 @@ export default function MypageMain() {
             </tr>
           </thead>
 
-          <tbody>
-            <tr>
-              <td>ORD-20251108-001</td>
-              <td>천연 텀블러 500ml</td>
-              <td>2025-11-08</td>
-              <td>₩32,000</td>
-              <td>배송중</td>
-            </tr>
+     <tbody>
+  {recentOrders.length === 0 ? (
+    <tr>
+      <td colSpan="5" style={{ textAlign: "center" }}>
+        최근 주문 내역이 없습니다.
+      </td>
+    </tr>
+  ) : (
+    recentOrders.map((order) => (
+      <tr
+        key={order.id}
+        style={{ cursor: "pointer" }}
+        onClick={() => navigate(`/mypage/orderList/orderDetail/${order.id}`)}
+      >
+        <td>{order.id}</td>
+        <td>{order.productName}</td>
+        <td>{order.createdAt?.substring(0, 10)}</td>
+        <td>₩{order.productPrice?.toLocaleString()}</td>
+        <td>{order.status}</td>
+      </tr>
+    ))
+  )}
+</tbody>
 
-            <tr>
-              <td>ORD-20251103-004</td>
-              <td>해외 직구 커피머신</td>
-              <td>2025-11-03</td>
-              <td>₩189,000</td>
-              <td>배송완료</td>
-            </tr>
-          </tbody>
         </table>
       </div>
 
@@ -117,7 +151,8 @@ export default function MypageMain() {
             key={item.id}
             className="main-product-item"
             style={{ cursor: "pointer" }}
-            onClick={() => navigate(`/gbproduct/${item.gbProductId}`)}
+            onClick={() => navigate(`/gbProductDetail/${item.gbProductId}`)}
+
           >
             <div
               className="main-thumb"
@@ -156,10 +191,10 @@ export default function MypageMain() {
 
         {suggestions.map((item) => (
           <div
-            key={item.suggestionId}
+           key={item.id}
             className="main-product-item"
             style={{ cursor: "pointer" }}
-            onClick={() => navigate(`/suggestions/${item.suggestionId}`)}
+        onClick={() => navigate(`/proposalDetail/${item.id}`)}
           >
             <div className="main-thumb"></div>
             <div className="main-product-info">

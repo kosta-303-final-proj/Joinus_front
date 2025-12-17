@@ -122,7 +122,7 @@ export default function MypageSuggestions() {
                 <div className="card-actions">
                   <button
                     className="btn-detail"
-                    onClick={() => navigate(`/suggestions/${item.id}`)}
+                    onClick={() => navigate(`/proposalDetail/${item.id}`)}
                   >
                     상세보기
                   </button>

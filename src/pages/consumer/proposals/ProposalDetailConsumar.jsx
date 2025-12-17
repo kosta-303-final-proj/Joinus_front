@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { baseUrl, myAxios } from "../../../config";
 
 export default function ProposalDetailConsumar() {
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+const username = userInfo?.username;
     const {id} = useParams();
     const [proposal, setPropsal] = useState({id:id,category:'',description:'',productName:'',memberName:'',originalPrice:'',createdAt:'',originalSiteUrl:'',abroadShippingCost:'',imageUrl:'', gbProductId:'', rejectReason:'', status:'' });
     const total = 15;
@@ -17,9 +19,12 @@ export default function ProposalDetailConsumar() {
 
     // 댓글 등록 함수
     const submit = () => {
+if (!username) return alert("로그인이 필요합니다.");
+
+
       myAxios().post("/writeComment", {
         proposalId: id,
-        memberUsername: "kakao_4436272679",
+        memberUsername: username,
         content: comment // 여기서 textarea 내용 전달
       })
       .then(res => {
@@ -64,14 +69,16 @@ export default function ProposalDetailConsumar() {
 
     useEffect(() => {
       getProposal(); // getProposal에서 voteCount와 isDdabong 세팅
-    }, []);
+   }, [id]);
 
 
     const [voteCount, setVoteCount] = useState(0);
     const [isDdabong, setIsDdabong] = useState(false);
 
     const handleVote = () => {
-      myAxios().get("/proposalDdabong", { params: { proposalId: id, username: "kakao_4436272679" } })
+if (!username) return alert("로그인이 필요합니다.");
+
+      myAxios().get("/proposalDdabong", { params: { proposalId: id, username: username } })
         .then(res => {
           const voted = res.data; // true/false
           setIsDdabong(voted);
@@ -81,17 +88,18 @@ export default function ProposalDetailConsumar() {
     };
 
     useEffect(() => {
+       if (!username) return;
       // 페이지 진입 시 DB에서 vote 상태 가져오기
       myAxios()
         .get("/proposalDdabong/status", { 
-          params: { proposalId: id, username: "kakao_4436272679" }
+          params: { proposalId:id,username}
         })
         .then(res => {
           setIsDdabong(res.data.isDdabong); // true / false
           setVoteCount(res.data.voteCount); // DB에 저장된 실제 투표 수
         })
         .catch(err => console.log(err));
-    }, [id]);
+    }, [id,username]);
 
 
     return(
