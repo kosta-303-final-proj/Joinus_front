@@ -8,9 +8,19 @@ export default function PayComplete(){
     const navigate = useNavigate();
     const location = useLocation(); // CheckoutPage에서 전달받은 state
     const searchParams = new URLSearchParams(window.location.search);
+   // 로그인 정보 확인
+    const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+    const memberUsername = userInfo.username;
+
+    if (!memberUsername) {
+        console.error("로그인 정보 없음");
+        navigate(`/fail?message=로그인 정보 없음`);
+        return null; // 렌더링 중단
+    }
+    
 
     const [paymentConfirmed, setPaymentConfirmed] = useState(false); // 결제 확인 상태
-    const orderId = location.state?.orderId || searchParams.getAll("orderId")[0];
+    const orderId = location.state?.orderId || searchParams.get("orderId");
     const gbProductId = location.state?.productId || searchParams.get("productId");
     const amount = location.state?.amount || parseInt(searchParams.get("amount")) || 0;
     const quantity = location.state?.quantity || parseInt(searchParams.get("quantity")) || 1;
@@ -28,88 +38,69 @@ export default function PayComplete(){
         console.error("gbProductId가 없음");
         return navigate(`/fail?message=gbProductId가 없음`);
     }
+    const [order, setOrder] = useState(null);
+    const [orderCreated, setOrderCreated] = useState(false); // ✅ OrderItem 생성 완료 체크
 
     useEffect(() => {
         if (didRun.current) return;
         didRun.current = true;
 
         async function confirmPayment() {
-        try {
-            //이미 결제 확인했는지 체크 (새로고침 방어)
-            const confirmedKey = `payment_confirmed_${orderId}`;
-            if (sessionStorage.getItem(confirmedKey)) {
-                console.log("이미 결제 확인됨 - confirm 스킵");
-                return;
+            try {
+                const confirmedKey = `payment_confirmed_${orderId}`;
+                if (!sessionStorage.getItem(confirmedKey)) {
+                    await myAxios().post("/payments/confirm", {
+                        paymentKey,
+                        orderId,
+                        method: "CARD",
+                        status: "PAID",
+                        approvedAt: new Date().toISOString(),
+                        amount,
+                    });
+                    sessionStorage.setItem(confirmedKey, "true");
+                    setPaymentConfirmed(true);
+                } else {
+                    setPaymentConfirmed(true);
+                }
+
+                // OrderItem 생성
+                await myAxios().post("/orderItems", {
+                    orderId,
+                    gbProductId,
+                    quantity,
+                    unitPrice: amount,
+                    lineSubtotal: amount * quantity,
+                    total: amount,
+                    gbProductOptionIds: optionIds,
+                    memberUsername
+                });
+
+                setOrderCreated(true); // ✅ 생성 완료 표시
+
+            } catch (error) {
+                console.error("결제/OrderItem 생성 에러:", error);
+                navigate(`/fail?message=${error.message}`);
             }
-            
-            // 서버에 orderId로 조회 후 금액 검증
-            const response = await myAxios().post("/payments/confirm", {
-            paymentKey,
-            orderId,
-            method: "CARD",
-            status: "PAID",
-            approvedAt: new Date().toISOString(),
-            amount: location.state?.amount || 0,
-            });
-
-            console.log("결제 성공:", response.data);
-            setPaymentConfirmed(true);
-
-            // ✅ confirm 성공 표시 저장
-            sessionStorage.setItem(confirmedKey, "true");
-
-            // 2️⃣ OrderItem 생성 전에 필수 값 체크
-            const productId = location.state?.productId;
-            const quantity = location.state?.quantity || 1;
-            // const amount = location.state?.amount || 0;
-            const selectedOptions = location.state?.selectedOptions || [];
-
-            if (!orderId || !gbProductId) {
-                console.error("필수 데이터 누락", { orderId, gbProductId });
-                return navigate(`/fail?message=필수 데이터 누락`);
-            }
-
-
-            // 3️⃣ OrderItem 생성
-            await myAxios().post("/orderItems", {
-            orderId,
-            gbProductId,
-            quantity,
-            unitPrice: amount,
-            lineSubtotal: amount * quantity,
-            total: amount,
-            gbProductOptionIds: optionIds, // 서버에서 JSON 변환
-            });
-
-            console.log("OrderItem 생성 완료");
-            
-        } catch (error) {
-            console.error("결제 확인 에러:", error);
-            navigate(`/fail?message=${error.message}`);
-        }
         }
 
         confirmPayment();
-    }, [navigate, location.state, orderId, paymentKey, gbProductId, selectedOptionsRaw]);
+    }, [navigate, location.state, orderId]);
 
-    const [order, setOrder] = useState(null);
-    const [loading, setLoading] = useState(true);
+    // 결제 + OrderItem 생성 완료 후 주문 조회
     useEffect(() => {
-        if (!orderId) return; // 안전하게 처리
+        if (!orderId || !orderCreated) return;
 
         async function fetchOrder() {
             try {
-            const res = await myAxios().get(`/orders/${orderId}`);
-            setOrder(res.data);
+                const res = await myAxios().get(`/orders/${orderId}`);
+                setOrder(res.data);
             } catch (error) {
-            console.log("주문 조회 실패", error);
-            } 
-            // finally {
-            //     setLoading(false);
-            // }
+                console.error("주문 조회 실패", error);
+            }
         }
+
         fetchOrder();
-    }, [orderId, order]);
+    }, [orderId, orderCreated]);
 
     if (!order) return <div>주문 정보를 불러올 수 없습니다.</div>;
     
