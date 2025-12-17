@@ -32,6 +32,7 @@ const GBProductCreatePage = () => {
     shippingMethod: 'DEFAULT'
   });
 
+  const [categories, setCategories] = useState([]);
   const [mainImage, setMainImage] = useState(null);
   const [additionalImages, setAdditionalImages] = useState([]);
   const [detailImages, setDetailImages] = useState([]);
@@ -482,6 +483,21 @@ const GBProductCreatePage = () => {
     }
   }, []);
 
+  //카테고리 목록 조회
+  useEffect(() => {
+        fetchCategories();
+    }, []);
+    
+    const fetchCategories = async () => {
+        try {
+            const response = await myAxios().get('/admin/categories');
+            console.log('📥 카테고리 목록:', response.data);
+            setCategories(response.data);
+        } catch (error) {
+            console.error('카테고리 조회 실패:', error);
+        }
+    };
+
   // 가격 자동 계산
   useEffect(() => {
     const price = parseFloat(formData.originalPrice) || 0;
@@ -600,16 +616,19 @@ const GBProductCreatePage = () => {
           <section className="form-section">
             <h3 className="section-title">카테고리 선택</h3>
             <div className="form-field">
-              <select value={formData.category} onChange={(e) => updateField('category', e.target.value)}>
-                <option value="">카테고리 선택</option>
-                <option value="1">전자기기</option>
-                <option value="2">건강식품</option>
-                <option value="3">화장품</option>
-                <option value="4">생활용품</option>
-                <option value="5">패션/잡화</option>
-              </select>
-            </div>
-          </section>
+              <select 
+                        value={formData.category} 
+                        onChange={(e) => updateField('category', e.target.value)}
+                    >
+                        <option value="">카테고리 선택</option>                        
+                        {categories.map((category) => (
+                            <option key={category.id} value={category.id}>
+                                {category.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </section>
 
           {/* 기본 정보 */}
           <section className="form-section">

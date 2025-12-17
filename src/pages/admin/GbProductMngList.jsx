@@ -48,10 +48,10 @@ export default function GbProductMngList() {
 
       const params = {
         status: activeTab === '전체' ? null : activeTab,
-        searchType: filters.searchType || null, 
+        searchType: filters.searchType || null,
         searchKeyword: filters.searchKeyword || null,
-        startDate: filters.startDate || null,        
-        endDate: filters.endDate || null,   
+        startDate: filters.startDate || null,
+        endDate: filters.endDate || null,
         page: pagination.page,
         size: pagination.size,
         sort: getSortParam(sortBy)
@@ -208,7 +208,7 @@ export default function GbProductMngList() {
   };
 
 
-  
+
   return (
     <div className="admin-layout">
       <div className="main-content">
@@ -334,7 +334,18 @@ export default function GbProductMngList() {
                         </span>
                       </td>
                       <td>{product.id}</td>
-                      <td className="title-cell">{product.name}</td>
+                      {/* 공구명 - 상세 페이지 연결 */}
+                      <td
+                        className="title-cell"
+                        onClick={() => navigate(`/gbProductDetail/${product.id}`)}
+                        style={{
+                          cursor: 'pointer',
+                          color: '#0066cc',
+                          textDecoration: 'underline'
+                        }}
+                      >
+                        {product.name}
+                      </td>
                       <td>{product.price?.toLocaleString()}원</td>
                       <td>{new Date(product.startDate).toLocaleDateString()}</td>
                       <td>{new Date(product.endDate).toLocaleDateString()}</td>
@@ -412,11 +423,11 @@ export default function GbProductMngList() {
       )}
 
       {showParticipantsModal && (
-      <ParticipantsModal
-        productId={selectedProductId}
-        onClose={handleCloseModal}
-      />
-    )}
+        <ParticipantsModal
+          productId={selectedProductId}
+          onClose={handleCloseModal}
+        />
+      )}
     </div>
   );
 }
