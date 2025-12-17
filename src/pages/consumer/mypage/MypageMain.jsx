@@ -16,7 +16,6 @@ export default function MypageMain() {
   // ===============================
   const [recentOrders, setRecentOrders] = useState([]);
 
-
   // ===============================
   // 관심상품 (Wishlist 대시보드용)
   // ===============================
@@ -25,26 +24,24 @@ export default function MypageMain() {
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   const username = userInfo?.username;
 
-useEffect(() => {
-  if (!username) return;
+  // ===============================
+  // 최근 주문 목록 TOP 5
+  // ===============================
+  useEffect(() => {
+    if (!username) return;
 
-  myAxios()
-    .get("/orderList", {
-      params: {
-        username,
-        page: 0,
-        size: 5,
-      },
-    })
-    .then((res) => {
-      setRecentOrders(res.data.content || []);
-    })
-    .catch((err) => {
-      console.error("대시보드 최근 주문 조회 실패", err);
-      setRecentOrders([]);
-    });
-}, [username]);
-
+    myAxios()
+      .get("/mypage/orderList/recent", {
+        params: { username, limit: 5 },
+      })
+      .then((res) => {
+        setRecentOrders(res.data || []);
+      })
+      .catch((err) => {
+        console.error("최근 주문 목록 조회 실패", err);
+        setRecentOrders([]);
+      });
+  }, [username]);
 
   // ===============================
   // 공동구매 요청 TOP 5
@@ -53,9 +50,11 @@ useEffect(() => {
     if (!username) return;
 
     myAxios()
-      .get(`/mypage/dashboard/suggestions?username=${username}`)
+      .get(`/mypage/dashboard/suggestions`, {
+        params: { username },
+      })
       .then((res) => {
-        setSuggestions(res.data.slice(0, 5));
+        setSuggestions(res.data?.slice(0, 5) || []);
       })
       .catch((err) => {
         console.error("대시보드 공동구매 조회 실패", err);
@@ -70,15 +69,22 @@ useEffect(() => {
     if (!username) return;
 
     myAxios()
-      .get(`/mypage/dashboard/wishlist?username=${username}`)
+      .get(`/mypage/dashboard/wishlist`, {
+        params: { username },
+      })
       .then((res) => {
-        setWishlist(res.data); // 이미 5개만 내려옴
+        setWishlist(res.data || []);
       })
       .catch((err) => {
         console.error("대시보드 관심상품 조회 실패", err);
         setWishlist([]);
       });
   }, [username]);
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "-";
+    return String(dateStr).substring(0, 10);
+  };
 
   return (
     <>
@@ -102,30 +108,31 @@ useEffect(() => {
             </tr>
           </thead>
 
-     <tbody>
-  {recentOrders.length === 0 ? (
-    <tr>
-      <td colSpan="5" style={{ textAlign: "center" }}>
-        최근 주문 내역이 없습니다.
-      </td>
-    </tr>
-  ) : (
-    recentOrders.map((order) => (
-      <tr
-        key={order.id}
-        style={{ cursor: "pointer" }}
-        onClick={() => navigate(`/mypage/orderList/orderDetail/${order.id}`)}
-      >
-        <td>{order.id}</td>
-        <td>{order.productName}</td>
-        <td>{order.createdAt?.substring(0, 10)}</td>
-        <td>₩{order.productPrice?.toLocaleString()}</td>
-        <td>{order.status}</td>
-      </tr>
-    ))
-  )}
-</tbody>
-
+          <tbody>
+            {recentOrders.length === 0 ? (
+              <tr>
+                <td colSpan="5" style={{ textAlign: "center", padding: "20px" }}>
+                  주문 내역이 없습니다.
+                </td>
+              </tr>
+            ) : (
+              recentOrders.map((order) => (
+                <tr
+                  key={order.orderItemId}
+                  style={{ cursor: "pointer" }}
+                  onClick={() =>
+                    navigate(`/mypage/orderList/orderDetail/${order.orderId}`)
+                  }
+                >
+                  <td>{order.orderId}</td>
+                  <td>{order.gbProductName}</td>
+                  <td>{formatDate(order.orderedAt)}</td>
+                  <td>₩{order.total?.toLocaleString()}</td>
+                  <td>{order.orderStatusDescription || order.orderStatus}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
         </table>
       </div>
 
@@ -138,38 +145,37 @@ useEffect(() => {
           </Link>
         </h3>
 
-        {wishlist.length === 0 && (
+        {wishlist.length === 0 ? (
           <div className="main-product-item">
             <div className="main-product-info">
               <p>관심상품이 없습니다.</p>
             </div>
           </div>
-        )}
-
-        {wishlist.map((item) => (
-          <div
-            key={item.id}
-            className="main-product-item"
-            style={{ cursor: "pointer" }}
-            onClick={() => navigate(`/gbProductDetail/${item.gbProductId}`)}
-
-          >
+        ) : (
+          wishlist.map((item) => (
             <div
-              className="main-thumb"
-              style={{
-                backgroundImage: item.file
-                  ? `url(/file/${item.file.id})`
-                  : "none",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-            />
-            <div className="main-product-info">
-              <p>{item.product.name}</p>
-              <p>₩{item.product.price.toLocaleString()}</p>
+              key={item.id}
+              className="main-product-item"
+              style={{ cursor: "pointer" }}
+              onClick={() => navigate(`/gbProductDetail/${item.gbProductId}`)}
+            >
+              <div
+                className="main-thumb"
+                style={{
+                  backgroundImage: item.file
+                    ? `url(/file/${item.file.id})`
+                    : "none",
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              />
+              <div className="main-product-info">
+                <p>{item.product.name}</p>
+                <p>₩{item.product.price.toLocaleString()}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
       {/* ================= 공동구매 요청 ================= */}
@@ -181,28 +187,28 @@ useEffect(() => {
           </Link>
         </h3>
 
-        {suggestions.length === 0 && (
+        {suggestions.length === 0 ? (
           <div className="main-product-item">
             <div className="main-product-info">
               <p>참여 중인 공동구매가 없습니다.</p>
             </div>
           </div>
-        )}
-
-        {suggestions.map((item) => (
-          <div
-           key={item.id}
-            className="main-product-item"
-            style={{ cursor: "pointer" }}
-        onClick={() => navigate(`/proposalDetail/${item.id}`)}
-          >
-            <div className="main-thumb"></div>
-            <div className="main-product-info">
-              <p>{item.title}</p>
-              <p>참여자 {item.participantCount}명</p>
+        ) : (
+          suggestions.map((item) => (
+            <div
+              key={item.id}
+              className="main-product-item"
+              style={{ cursor: "pointer" }}
+              onClick={() => navigate(`/proposalDetail/${item.id}`)}
+            >
+              <div className="main-thumb"></div>
+              <div className="main-product-info">
+                <p>{item.title}</p>
+                <p>참여자 {item.participantCount}명</p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </>
   );

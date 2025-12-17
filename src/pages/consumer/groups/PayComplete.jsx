@@ -4,20 +4,18 @@ import { useEffect, useRef,useState } from "react";
 import { myAxios,baseUrl } from "../../../config";
 
 export default function PayComplete(){
-const didRun = useRef(false); // ✅ StrictMode 방어
-  const navigate = useNavigate();
-  const location = useLocation(); // CheckoutPage에서 전달받은 state
-//   const [searchParams] = useSearchParams();
-
+    const didRun = useRef(false); // ✅ StrictMode 방어
+    const navigate = useNavigate();
+    const location = useLocation(); // CheckoutPage에서 전달받은 state
     const searchParams = new URLSearchParams(window.location.search);
+
     const [paymentConfirmed, setPaymentConfirmed] = useState(false); // 결제 확인 상태
-      const orderId = location.state?.orderId || searchParams.get("orderId");
-    // const orderId = searchParams.get("orderId");
-    const gbProductId = searchParams.get("productId");
+    const orderId = location.state?.orderId || searchParams.getAll("orderId")[0];
+    const gbProductId = location.state?.productId || searchParams.get("productId");
+    const amount = location.state?.amount || parseInt(searchParams.get("amount")) || 0;
+    const quantity = location.state?.quantity || parseInt(searchParams.get("quantity")) || 1;
+    const selectedOptionsRaw = location.state?.selectedOptions || JSON.parse(searchParams.get("selectedOptions") || "[]");
     const paymentKey = searchParams.get("paymentKey");
-    const amount = parseInt(searchParams.get("amount")) || 0;
-    const quantity = parseInt(searchParams.get("quantity")) || 1;
-    const selectedOptionsRaw = JSON.parse(searchParams.get("selectedOptions") || "[]");
     const optionIds = selectedOptionsRaw.map(opt => opt.optionId);
 
     
@@ -105,23 +103,16 @@ const didRun = useRef(false); // ✅ StrictMode 방어
             setOrder(res.data);
             } catch (error) {
             console.log("주문 조회 실패", error);
-            } finally {
-            setLoading(false);
-            }
+            } 
+            // finally {
+            //     setLoading(false);
+            // }
         }
         fetchOrder();
-
-        // 두 번째 fetch: 100ms 뒤 재실행 (첫 렌더링 후 state 보완)
-        const timer = setTimeout(() => {
-            if (!order) fetchOrder();
-        }, 100);
-
-        return () => clearTimeout(timer);
     }, [orderId, order]);
 
-
-    if (loading) return <div>로딩중...</div>;
     if (!order) return <div>주문 정보를 불러올 수 없습니다.</div>;
+    
     return(
         <>
             <div style={styles.pageWrapper}>
