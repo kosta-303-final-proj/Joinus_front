@@ -21,7 +21,8 @@ export default function OrderList({ id }) {
 
   useEffect(() => {
     const fetchOrderList = async () => {
-      const username = "kakao_4436272679";
+      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+const username = userInfo?.username;
 
       try {
         const res = await myAxios().get("/orderList", { params: { username, page, size } });
