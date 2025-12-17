@@ -1,7 +1,42 @@
 import { Button } from "reactstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { baseUrl, myAxios } from "../../../config";
 export default function OrderDetail(){
     const navigate = useNavigate();
+    const { id } = useParams();
+    console.log("🔥 useParams id =", id);
+    const [orderDetail, setOrderDetail] = useState(null);
+
+    useEffect(() => {
+        if (!id) return;
+        async function fetchOrderdetail() {
+        try {
+            const res = await myAxios().get(`/orderDetail/${id}`);
+            setOrderDetail(res.data);
+        } catch (error) {
+            console.error("주문 상품이 없습니다.", error);
+        }
+        }
+        fetchOrderdetail();
+    }, [id]);
+
+    const items = orderDetail?.items || [];
+
+const totalQuantity = items.reduce(
+  (sum, item) => sum + item.quantity,
+  0
+);
+
+const totalProductAmount = items.reduce(
+  (sum, item) => sum + item.lineSubtotal,
+  0
+);
+
+    // ✅ 여기!!
+    if (!orderDetail) {
+        return <div style={{ textAlign: "center" }}>주문 정보를 불러오는 중입니다...</div>;
+    }
     return(
         <>
             <div style={styles.pageWrapper}>
@@ -39,26 +74,22 @@ export default function OrderDetail(){
                     <div style={{border: '1px solid black',borderRadius: '5px',overflow: 'hidden'}}>
                         <div style={row}>
                             <div style={leftCol}>주문 일자</div>
-                            <div style={rightCol}>2025-11-16</div>
+                            <div style={rightCol}>{new Date(orderDetail.createdAt).toLocaleDateString()}</div>
                         </div>
                         <div style={row}>
                             <div style={leftCol }>상품 정보</div>
                             <div style={{ ...rightCol, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <img src="https://picsum.photos/80" style={{width: '80px',height: '80px',borderRadius: '8px', objectFit: 'cover'}}/>
-                                <div>샘플 상품명입니다</div>
+                                <img src={`${baseUrl}/image/${orderDetail.thumbnailFileId}`} style={{width: '80px',height: '80px',borderRadius: '8px', objectFit: 'cover'}}/>
+                                <div>{orderDetail.productName}</div>
                             </div>
                         </div>
                         <div style={row}>
                             <div style={leftCol}>수량</div>
-                            <div style={rightCol}>1</div>
+                            <div style={rightCol}>{totalQuantity}</div>
                         </div>
                         <div style={row}>
                             <div style={leftCol}>가격</div>
-                            <div style={rightCol}>10,000원</div>
-                        </div>
-                        <div style={row}>
-                            <div style={leftCol}>요청사항</div>
-                            <div style={rightCol}>요청사항 내용이 여기에 들어갑니다.</div>
+                            <div style={rightCol}>{(orderDetail.porductPrice).toLocaleString()}원</div>
                         </div>
                     </div>
                 </div>
@@ -77,25 +108,25 @@ export default function OrderDetail(){
                     <div style={{border: '1px solid black',borderRadius: '5px',overflow: 'hidden'}}>
                         <div style={row}>
                             <div style={leftCol}>총 주문금액</div>
-                            <div style={rightCol}>1,057,314원</div>
+                            <div style={rightCol}>{(totalProductAmount).toLocaleString()}원</div>
                         </div>
                         <div style={row}>
                             <div style={leftCol }>국내 배송비</div>
                             <div style={{ ...rightCol, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <div>3,000원</div>
+                                <div>{(orderDetail.shippingAmount).toLocaleString()}원</div>
                             </div>
                         </div>
                         <div style={row}>
                             <div style={leftCol}>포인트 사용</div>
-                            <div style={rightCol}>1,000p</div>
+                            <div style={rightCol}>{(orderDetail.usingPoint).toLocaleString()}p</div>
                         </div>
                         <div style={row}>
                             <div style={leftCol}>결제 수단</div>
-                            <div style={rightCol}>신용카드</div>
+                            <div style={rightCol}>{orderDetail.method}</div>
                         </div>
                         <div style={row}>
                             <div style={leftCol}>최종 결제 금액</div>
-                            <div style={rightCol}>1,056,314원</div>
+                            <div style={rightCol}>{(orderDetail.totalAmount).toLocaleString()}원</div>
                         </div>
                     </div>
                 </div>
@@ -114,33 +145,33 @@ export default function OrderDetail(){
                     <div style={{border: '1px solid black',borderRadius: '5px',overflow: 'hidden'}}>
                         <div style={row}>
                             <div style={leftCol}>주문자 이름</div>
-                            <div style={rightCol}>최지성</div>
+                            <div style={rightCol}>{orderDetail.memberName}</div>
                         </div>
-                        <div style={row}>
+                        {/* <div style={row}>
                             <div style={leftCol }>수령인 이름</div>
                             <div style={{ ...rightCol, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <div>최지성</div>
+                                <div></div>
                             </div>
-                        </div>
+                        </div> */}
                         <div style={row}>
                             <div style={leftCol}>주소</div>
-                            <div style={rightCol}>경기도 수원시 권선구 경수대로 212번길 34 수원아이파크시티10단지 1002동 1002호</div>
+                            <div style={rightCol}>{(orderDetail.streetAddress)+(orderDetail.addressDetail)}</div>
                         </div>
                         <div style={row}>
                             <div style={leftCol}>이메일</div>
-                            <div style={rightCol}>jisung0628jisung@gmail.com</div>
+                            <div style={rightCol}>{orderDetail.email}</div>
                         </div>
                         <div style={row}>
                             <div style={leftCol}>전화번호</div>
-                            <div style={rightCol}>010-4627-6195</div>
+                            <div style={rightCol}>{orderDetail.phone}</div>
                         </div>
                         <div style={row}>
                             <div style={leftCol}>배달 요청사항</div>
-                            <div style={rightCol}>문 앞에 놓아주세요</div>
+                            <div style={rightCol}>{orderDetail.note}</div>
                         </div>
                         <div style={row}>
                             <div style={leftCol}>출입 요청사항</div>
-                            <div style={rightCol}>1234</div>
+                            <div style={rightCol}>{orderDetail.accessInstructions}</div>
                         </div>
                     </div>
                 </div>
