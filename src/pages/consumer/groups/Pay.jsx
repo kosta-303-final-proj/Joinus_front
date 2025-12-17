@@ -37,7 +37,14 @@ const username = userInfo?.username;
     
 
     const shippingAmount = 0;
-    const totalAmount = finalPrice + shippingAmount - usingPoint;
+
+    const maxUsablePoint = Math.min(memberPoint, finalPrice + shippingAmount);
+
+    const safeUsingPoint = Math.min(usingPoint, maxUsablePoint);
+
+    const totalAmount = Math.max(finalPrice + shippingAmount - safeUsingPoint, 0);
+
+    const remainingPoint = Math.max(memberPoint - safeUsingPoint, 0);
 
     const getMemberPoint = () => {
         myAxios().get("/member/detail", { 
@@ -115,6 +122,34 @@ const username = userInfo?.username;
         }).open();
     };
 
+    const validateShippingInfo = () => {
+        if (!shipRecipient.trim()) {
+            alert("배송지명을 입력해주세요.");
+            return false;
+        }
+        if (!name.trim()) {
+            alert("이름을 입력해주세요.");
+            return false;
+        }
+        if (!phone.trim()) {
+            alert("전화번호를 입력해주세요.");
+            return false;
+        }
+        if (!postcode || !streetAddress) {
+            alert("주소를 검색해주세요.");
+            return false;
+        }
+        if (!addressDetail.trim()) {
+            alert("상세주소를 입력해주세요.");
+            return false;
+        }
+        if (!email.trim()) {
+            alert("이메일을 입력해주세요.");
+            return false;
+        }
+        return true;
+    };
+
 
     return(
         <>
@@ -153,7 +188,7 @@ const username = userInfo?.username;
                     </div>
                 </div>
             </div>
-            {/* 배송지 + 오른쪽 박스 3개 */}
+            {/* 배송지 + 오른쪽 박스 2개 */}
             <div style={styles.pageWrapper}>
                 <div style={styles.container}>
                 <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
@@ -223,19 +258,6 @@ const username = userInfo?.username;
                             />
                             </div>
                         </div>
-
-                        {/* 주소 */}
-                        {/* <div style={row}>
-                            <div style={leftCol}>주소</div>
-                            <div style={rightCol}>
-                            <Input
-                                value={streetAddress}
-                                onChange={(e) => setStreetAddress(e.target.value)}
-                                style={{ fontSize: "12px", height: "20px" }}
-                                placeholder="도로명 주소 입력"
-                            />
-                            </div>
-                        </div> */}
                         {/* 주소 */}
                         <div style={row}>
                         <div style={leftCol}>주소</div>
@@ -331,7 +353,7 @@ const username = userInfo?.username;
 
                         {/* 오른쪽 박스 3개 */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                            <div style={{ border: '1px solid black', width: '500px', height: '110px' }}>
+                            <div style={{ border: '1px solid black', width: '500px', height: '145px' }}>
                                 <div style={row}>
                                     <div style={{width: '128px',padding: '5px',fontWeight: 'bold',borderRight: '1px solid #A09B9B',display: 'flex',          
                                         alignItems: 'center',justifyContent: 'center',textAlign: 'center', fontSize:'12px', height:'35px'}}>
@@ -349,16 +371,34 @@ const username = userInfo?.username;
                                     <div style={{width: '128px',padding: '5px',fontWeight: 'bold',borderRight: '1px solid #A09B9B',display: 'flex',          
                                         alignItems: 'center',justifyContent: 'center',textAlign: 'center', fontSize:'12px', height:'35px'}}>사용 포인트</div>
                                     <div style={{flex: 1, flexDirection: 'column', display:'flex',padding: '5px', justifyContent:'center'}}>
-                                        <Input style={{ fontSize: '12px', height: '20px' }}
-                                            value={usingPoint} onChange={(e) => {
-                                                const value = Number(e.target.value);
-                                                if (value <= memberPoint) {
-                                                setUsingPoint(value);
+                                        <Input
+                                            type="number"
+                                            style={{ fontSize: '12px', height: '20px' }}
+                                            value={usingPoint}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+
+                                                // ✅ 완전히 지운 경우
+                                                if (value === "") {
+                                                setUsingPoint("");
+                                                return;
                                                 }
+
+                                                const num = Number(value);
+
+                                                if (isNaN(num)) return;
+
+                                                // ✅ 최대 사용 포인트 제한
+                                                setUsingPoint(Math.min(num, maxUsablePoint));
                                             }}
                                             placeholder="사용할 포인트"
                                             />
                                     </div>
+                                </div>
+                                <div style={row}>
+                                    <div style={{width: '128px',padding: '5px',fontWeight: 'bold',borderRight: '1px solid #A09B9B',display: 'flex',          
+                                        alignItems: 'center',justifyContent: 'center',textAlign: 'center', fontSize:'12px', height:'34px'}}>남은 포인트</div>
+                                    <div style={{flex: 1, flexDirection: 'column', display:'flex',padding: '5px', justifyContent:'center', color:'#5173D2'}}>{remainingPoint.toLocaleString()}p</div>
                                 </div>
                             </div>
                             <div style={{ border: '1px solid black', width: '500px', height: '190px' }}>
@@ -393,6 +433,7 @@ const username = userInfo?.username;
                                     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                                             <Button style={{ fontSize: '12px', backgroundColor: '#739FF2', padding: '3px', border:'none'}}
                                                 onClick={async () => {
+                                                    if (!validateShippingInfo()) return;
                                                     try {
                                                     // 1️⃣ 주문 먼저 생성
                                                     const createdOrderId = await createOrder();

@@ -15,8 +15,8 @@ export default function OrderList({ id }) {
   const [size, setSize] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
 
-  const pageMove = () =>{
-    navigate("/mypage/orderList/orderDetail/:id");
+  const pageMove = (orderId) =>{
+    navigate(`/mypage/orderList/orderDetail/${orderId}`);
   }
 
   useEffect(() => {
@@ -121,7 +121,7 @@ const username = userInfo?.username;
                         <div style={{ ...styles.col, width: "10%" }}>1</div>
 
                         {/* 가격 */}
-                        <div style={{ ...styles.col, width: "15%" }}>{order.productPrice}원</div>
+                        <div style={{ ...styles.col, width: "15%" }}>{(order.productPrice).toLocaleString()}원</div>
 
                         {/* 버튼 영역 —⭐ 상태별 조건 적용 */}
                         <div style={{ ...styles.col, width: "10%" }}>
@@ -132,14 +132,14 @@ const username = userInfo?.username;
 
                           {order.status === "PAID" && (
                             <>
-                              <button style={styles.smallBtn}  onClick={pageMove}>주문 상세</button>
+                              <button style={styles.smallBtn}  onClick={() => {pageMove(order.id)}}>주문 상세</button>
                               <button style={styles.smallBtn}>취소 신청</button>
                             </>
                           )}
 
                           {order.status === "해외배송중" && (
                             <>
-                              <button style={styles.smallBtn} onClick={pageMove}>주문 상세</button>
+                              <button style={styles.smallBtn} onClick={() => pageMove(order.id)}>주문 상세</button>
                             </>
                           )}
 
@@ -151,14 +151,14 @@ const username = userInfo?.username;
 
                           {order.status === "SHIPPING" && (
                             <>
-                              <button style={styles.smallBtn} onClick={pageMove}>주문 상세</button>
+                              <button style={styles.smallBtn} onClick={() => pageMove(order.id)}>주문 상세</button>
                               <button style={styles.smallBtn}>배송 조회</button>
                             </>
                           )}
 
                           {order.status === "DELIVERED" && (
                             <>
-                              <button style={styles.smallBtn} onClick={pageMove}>주문 상세</button>
+                              <button style={styles.smallBtn} onClick={() => pageMove(order.id)}>주문 상세</button>
                               <button style={styles.smallBtn}>배송 조회</button>
                               <button style={styles.smallBtn}>반품 신청</button>
 
