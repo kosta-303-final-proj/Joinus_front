@@ -30,6 +30,7 @@ if (!username) return alert("로그인이 필요합니다.");
       .then(res => {
         console.log(res);
         setComment(''); // 입력 후 초기화
+        getComment();   // 새 댓글 바로 반영
       })
       .catch(err => console.log(err));
     };

@@ -131,7 +131,7 @@ export default function QAndA(){
                         </button>
                     </div>
 
-                    {modalOpen && <InquiryModal gbProductId={id}  onClose={() => setModalOpen(false)} />}
+                    {modalOpen && <InquiryModal gbProductId={id}  onClose={() => setModalOpen(false)}  onQnaAdded={() => fetchQna()}/>}
                 </div>
             </div>
              <Outlet context={{ id }} />
