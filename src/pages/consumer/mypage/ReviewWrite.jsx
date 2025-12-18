@@ -11,6 +11,9 @@ export default function ReviewWrite() {
     const [selectedItem, setSelectedItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const [rating, setRating] = useState(0); // 선택된 별점
+    const [hoverRating, setHoverRating] = useState(0); // 마우스 오버 별점 (선택 안 한 상태)
+
     const openModal = (item) => {
         setSelectedItem(item);
         setImages([]);
@@ -62,6 +65,7 @@ export default function ReviewWrite() {
                 console.error("주문 목록 조회 실패", error);
             }
         };
+        
 
         fetchReviewList();
     }, []);
@@ -79,7 +83,7 @@ export default function ReviewWrite() {
         formData.append("username", username);
         formData.append("orderItemId", selectedItem.id);
         formData.append("gbProductId", selectedItem.gbProductId);
-        formData.append("rating", 4);
+        formData.append("rating", rating);
         formData.append("content", content);
 
         images.forEach(file => formData.append("images", file));
@@ -90,6 +94,9 @@ export default function ReviewWrite() {
         });
 
         alert("리뷰 등록 완료");
+
+        // ✅ 화면에서 작성한 리뷰 항목 제거
+        setReviewList(prevList => prevList.filter(item => item.id !== selectedItem.id));
         closeModal();
         } catch (e) {
         console.error("리뷰 등록 실패", e);
@@ -158,16 +165,12 @@ export default function ReviewWrite() {
 
 /* ---------------- 리뷰 작성 모달 ---------------- */
 
-function ReviewModal({
-  item,
-  images,
-  setImages,
-  content,
-  setContent,
-  onSubmit,
-  onClose
-}) {
+function ReviewModal({ item, images, setImages, content, setContent, onSubmit, onClose }) {
   const fileInputRef = useRef(null);
+
+  // ⭐ 별점 상태를 모달 안에서 선언
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
@@ -181,11 +184,26 @@ function ReviewModal({
   return (
     <>
       <div style={modalOverlay} onClick={onClose} />
-
       <div style={modalBox}>
         <div style={modalTop}>
           <b>리뷰 작성</b>
           <span style={closeBtn} onClick={onClose}>✕</span>
+        </div>
+
+        {/* ⭐ 별점 */}
+        <div style={{ margin: "10px 0", fontWeight: "bold" }}>별점</div>
+        <div style={{ display: "flex", gap: "5px" }}>
+          {[1, 2, 3, 4, 5].map(star => (
+            <img
+              key={star}
+              src={star <= rating ? "/star.png" : "/writeStar.png"}
+              alt={`${star} 별`}
+              style={{ width: "30px", height: "30px", cursor: "pointer" }}
+              onClick={() => setRating(star)}
+              onMouseEnter={() => setHoverRating(star)}
+              onMouseLeave={() => setHoverRating(0)}
+            />
+          ))}
         </div>
 
         <div style={{ padding: "20px" }}>
@@ -217,13 +235,12 @@ function ReviewModal({
               />
             ))}
             {images.length < 3 && (
-              <div style={imgBox} onClick={() => fileInputRef.current.click()}>
-                +
-              </div>
+              <div style={imgBox} onClick={() => fileInputRef.current.click()}>+</div>
             )}
           </div>
 
-          <button style={submitBtn} onClick={onSubmit}>
+          {/* ⭐ submit 시 rating 전달 */}
+          <button style={submitBtn} onClick={() => onSubmit(rating)}>
             등록하기
           </button>
         </div>
@@ -231,7 +248,6 @@ function ReviewModal({
     </>
   );
 }
-
 /* ---------------- 스타일 ---------------- */
 
 const modalOverlay = {
