@@ -1,8 +1,52 @@
 import { Label,FormGroup,Button } from "reactstrap";
 import { Link } from "react-router-dom";
 import "../../../css/mypage/ReviewWrited.css";
+import { useState,useEffect } from "react";
+import { baseUrl, myAxios } from "../../../config";
+
 
 export default function ReviewWrited() {
+    const [ reviewList, setReviewList ] = useState([]);
+
+     useEffect(() => {
+        const fetchReviewList = async () => {
+          try {
+            const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+            const username = userInfo?.username;
+
+            const response = await myAxios().get(`/mypage/getReviewList`, {
+              params: { username }
+            });
+            setReviewList(response.data);
+          } catch (error) {
+            console.error("리뷰 조회 실패", error);
+          }
+        };
+        fetchReviewList();
+    }, []);
+
+    const deleteReview = async (reviewId) => {
+        try {
+            const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+            const username = userInfo?.username;
+
+            await myAxios().post("/mypage/deleteReview", {
+            id: reviewId,
+            memberUsername: username
+            });
+
+            // 🔥 화면 즉시 반영
+            setReviewList(prev => prev.filter(review => review.id !== reviewId));
+
+        } catch (error) {
+            console.error("삭제 실패", error);
+            alert("삭제 실패");
+        }
+    };
+
+
+
+
     return (
     <>
         <hr style={{ width: '860px', marginBottom: '0', border:'1px solid #000000' }} />
@@ -27,20 +71,25 @@ export default function ReviewWrited() {
         <hr style={{ width: '860px', marginTop: '0', border:'1px solid #000000' }} />
         
         <hr style={{ width: '860px', margin: '0' }} />
-        <div className="reviewWrite">
-            <FormGroup check className="reviewItem">
-                <img src="/note.png" alt="상품 이미지" className="reviewImg" />
-                <div>
-                    <div className="reviewName" style={{fontSize:'12px'}}>ASUS 비보북 S 16 M3607KA-SH035W (SSD 512GB)</div>
-                    <br/>
-                    <div className="reviewData" style={{fontSize:'12px'}}>리뷰 내용</div>
-                </div>
-                <div className="buttonGroup">
-                    <Button size="sm" className="buttonPrimary" style={{width:'80px'}}>삭제</Button>
-                </div>
-            </FormGroup>
+        {reviewList.map(review => (
+            <div className="reviewWrite" key={review.id}>
+                <div className="reviewWrite">
+                <FormGroup check className="reviewItem">
+                    <img src={`${baseUrl.replace(/\/$/, "")}${review.thumbnailUrl}`} alt="상품 이미지" className="reviewImg" />
+                    <div>
+                        <div className="reviewName" style={{fontSize:'12px'}}>{review.gbProductName}</div>
+                        <br/>
+                        <div className="reviewData" style={{fontSize:'12px'}}>{review.content}</div>
+                    </div>
+                    <div className="buttonGroup">
+                        <Button size="sm" className="buttonPrimary" style={{width:'80px'}} onClick={() => deleteReview(review.id)}>삭제</Button>
+                    </div>
+                </FormGroup>
+            </div>
+            <hr style={{ width: '860px', marginTop: '0' }} />
         </div>
-        <hr style={{ width: '860px', marginTop: '0' }} />
+        ))}
+        
     </>
   );
 }

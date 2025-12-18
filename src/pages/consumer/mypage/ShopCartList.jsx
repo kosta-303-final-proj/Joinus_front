@@ -11,7 +11,8 @@ export default function ShopCartList() {
   useEffect(() => {
     const fetchCartList = async () => {
       try {
-        const username = "kakao_4436272679";
+        const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      const username = userInfo?.username;
         const response = await myAxios().get(`/cartList`, {
           params: { username }
         });
