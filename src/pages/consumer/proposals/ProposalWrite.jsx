@@ -41,9 +41,12 @@ export default function ProposalWrite() {
     formData.append('category', category !== "선택하세요." ? category : "");
     formData.append('description', description);
     formData.append('originalSiteUrl', originalSiteUrl);
-    formData.append('originalPrice', originalPrice);
-    formData.append('abroadShippingCost', abroadShippingCost);
-    formData.append('minPart', minPart);
+    // formData.append('originalPrice', originalPrice);
+    // formData.append('abroadShippingCost', abroadShippingCost);
+    // formData.append('minPart', minPart);
+    formData.append('originalPrice', parseInt(originalPrice || 0, 10));
+    formData.append('abroadShippingCost', parseInt(abroadShippingCost || 0, 10));
+    formData.append('minPart', parseInt(minPart || 0, 10));
     
     formData.append('memberUsername', username);
     // 대표 이미지
@@ -196,13 +199,13 @@ export default function ProposalWrite() {
             {/* 원가 */}
             <FormGroup className="mb-4">
               <Label className="fw-bold text-start d-block">원가 *</Label>
-              <Input type="text" name="originalPrice" onChange={(e)=> setOriginalPrice(e.target.value)} placeholder="가격을 입력해주세요." />
+              <Input  type="number"  name="originalPrice"  onChange={(e) => setOriginalPrice(e.target.value)}  placeholder="가격을 입력해주세요." />
             </FormGroup>
 
             {/* 해외 배송비 */}
             <FormGroup className="mb-3">
               <Label className="fw-bold text-start d-block">해외 배송비 *</Label>
-              <Input type="text" name="abroadShippingCost" onChange={(e)=> setAbroadShippingCost(e.target.value)} placeholder="가격을 입력해주세요." />
+              <Input type="number" name="abroadShippingCost" onChange={(e)=> setAbroadShippingCost(e.target.value)} placeholder="가격을 입력해주세요." />
             </FormGroup>
 
             {/* 최소 참여 인원 */}
