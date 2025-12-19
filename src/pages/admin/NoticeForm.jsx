@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { myAxios } from '../../config';
 import AdminHeader from '../../components/layout/AdminHeader';
@@ -16,6 +16,26 @@ const NoticeForm = () => {
     content: '',
     images: []
   });
+
+  useEffect(() => {
+    if (isEdit) {
+      const fetchNotice = async () => {
+        try {
+          const response = await myAxios().get(`/admin/noticeDetail/${id}`);
+          const data = response.data;
+          setFormData({
+            title: data.title,
+            content: data.content,
+            images: [] // 기존 이미지는 보통 미리보기로 처리하지만 일단 비워둡니다.
+          });
+        } catch (error) {
+          console.error("데이터 불러오기 실패:", error);
+          alert("공지사항을 불러올 수 없습니다.");
+        }
+      };
+      fetchNotice();
+    }
+  }, [id, isEdit]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,16 +74,16 @@ const NoticeForm = () => {
 
 
     try {
-      // myAxios를 사용하여 POST 요청 전송
-      // 백엔드 URL: /admin/noticeForm
-      const response = await myAxios().post('/admin/noticeForm', data, {
-        // FormData를 보낼 때는 Content-Type을 명시적으로 'multipart/form-data'로 설정할 필요 없이
-        // axios가 FormData를 감지하고 자동으로 처리해줌.
-      });
-
-      alert(response.data); // "공지사항 등록이 성공했습니다.: [ID]"
+      if (isEdit) {
+        // 수정 요청 (보통 PUT이나 PATCH를 쓰지만, 편의상 POST로 처리하거나 URL을 다르게 합니다)
+        await myAxios().post(`/admin/noticeUpdate/${id}`, data); 
+        alert("수정되었습니다.");
+      } else {
+        // 등록 요청
+        await myAxios().post('/admin/noticeForm', data);
+        alert("등록되었습니다.");
+      }
       navigate('/admin/noticeList');
-
     } catch (error) {
       console.error("공지사항 등록 실패:", error);
       // 서버 응답이 400 Bad Request일 경우 메시지를 표시
@@ -79,7 +99,7 @@ const NoticeForm = () => {
     <div className="admin-layout">
 
       <div className="main-content">
-        <AdminHeader title="공지사항 등록" />
+        <AdminHeader title={isEdit ? "공지사항 수정" : "공지사항 등록"} />
 
         <div className="content-area">
           <div className="form-container">
@@ -135,7 +155,7 @@ const NoticeForm = () => {
                 취소
               </button>
               <button className="notice-button primary" onClick={handleSubmit}>
-                등록
+                {isEdit ? "수정" : "등록"}
               </button>
             </div>
           </div>

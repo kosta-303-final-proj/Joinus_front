@@ -586,8 +586,9 @@ const GBProductCreatePage = () => {
               <select value={formData.status} onChange={(e) => updateField('status', e.target.value)}>
                 <option value="DRAFT">미게시</option>
                 <option value="ONGOING">진행중</option>
-                <option value="PENDING_ORDER">발주대기</option>
+                <option value="PENDING_ORDER">구매대기</option>
                 <option value="COMPLETED">완료</option>
+                <option value="CANCELLED">취소</option>
               </select>
             </div>
           </section>

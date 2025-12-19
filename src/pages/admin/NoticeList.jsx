@@ -85,6 +85,10 @@ const NoticeList = () => {
           {/* 검색 필터 */}
           <SearchFilter
             variant="simple"
+            searchOptions={[
+              { value: 'title', label: '제목' },
+            ]}
+            showResetButton={false}
             onSearch={handleSearch}
             onReset={handleReset}
           />
@@ -111,20 +115,20 @@ const NoticeList = () => {
                   // ⭐️ notice.createdAt을 사용하여 게시 날짜 표시
                   noticePage.content.map((notice, index) => (
                     <tr key={notice.id}>
-                      {/* ⭐️ DB 순서가 아닌 화면에 보이는 순번 (전체 요소 수 기반) */}
+                      {/* DB 순서가 아닌 화면에 보이는 순번 (전체 요소 수 기반) */}
                       <td>{noticePage.totalElements - (noticePage.number * noticePage.size) - index}</td>
                       <td className="title-cell">{notice.title}</td>
                       <td>{notice.createdAt ? notice.createdAt.substring(0, 10) : 'N/A'}</td> {/* 날짜 포맷 */}
                       <td>
                         <button
-                          // ... 수정 버튼
+                        className="admin-button primary small"
+                        style={{ marginRight: '4px' }}
                           onClick={() => handleEdit(notice.id)}
                         >
                           수정
                         </button>
                         <button
-                          className="btn-secondary"
-                          style={{ padding: '6px 16px' }}
+                          className="admin-button secondary small"
                           onClick={() => handleDelete(notice.id)}
                         >
                           삭제

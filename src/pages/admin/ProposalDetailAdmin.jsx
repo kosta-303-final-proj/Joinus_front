@@ -14,6 +14,9 @@ export default function ProposalDetailAdmin() {
   const [voteCount, setVoteCount] = useState(0);
   const [isDdabong, setIsDdabong] = useState(false);
 
+  const [comment, setComment] = useState('');     
+  const [comments, setComments] = useState([]);
+
   const [reason, setReason] = useState("");
 
   const getProposal = () => {
@@ -31,30 +34,6 @@ export default function ProposalDetailAdmin() {
       .catch(err => console.log(err));
   };
 
-  // ========================================
-  // 공구 등록 페이지로 이동 (이 부분 추가했습니다.)
-  // ========================================
-  const handleCreateGbProduct = () => {
-    console.log('========== 공구 등록 버튼 클릭 ==========');
-    console.log('제안 ID:', id);
-    
-    if (!id) {
-      alert('제안 ID를 찾을 수 없습니다.');
-      return;
-    }
-    
-    const url = `/admin/gbProductCreate?proposalId=${id}`;
-    console.log('열릴 URL:', url);
-    
-    window.open(
-      url,
-      '_blank',
-      'width=1400,height=900'
-    );
-  };
-// ============================================
-
-
   useEffect(() => {
     getProposal();
   }, [])
@@ -69,24 +48,116 @@ export default function ProposalDetailAdmin() {
       .catch(err => console.log(err));
   };
 
-  const rejectReason = () => {
-    myAxios().post("/admin/rejectReason", { id: id, rejectReason: reason })
-      .then(res => {
-        console.log(res)
-        alert("반려처리 되었습니다.")
+  // ========================================
+  // 공구 등록 페이지로 이동 (이 부분 추가했습니다.)
+  // ========================================
+  const handleCreateGbProduct = () => {
+    console.log('========== 공구 등록 버튼 클릭 ==========');
+    console.log('제안 ID:', id);
 
-        // proposal 상태 직접 업데이트
-        setPropsal(prev => ({
-          ...prev,
-          rejectReason: reason,
-          gbProductId: '',   // gbProductId가 없으므로 승인 표시 제거
-        }));
-      })
-      .catch(err => {
-        console.log(err);
-        alert("반려 처리 ㄴㄴ")
-      })
+    if (!id) {
+      alert('제안 ID를 찾을 수 없습니다.');
+      return;
+    }
+
+    const url = `/admin/gbProductCreate?proposalId=${id}`;
+    console.log('열릴 URL:', url);
+
+    window.open(
+      url,
+      '_blank',
+      'width=1400,height=900'
+    );
+  };
+  // ============================================
+
+  // ========================================
+  // 반려 처리
+  // ========================================
+  const handleReject = async () => {
+    if (!reason.trim()) {
+      alert('반려 사유를 입력해주세요.');
+      return;
+    }
+
+    if (!window.confirm('이 제안을 반려하시겠습니까?\n제안자와 투표자들에게 알림이 발송됩니다.')) {
+      return;
+    }
+
+    try {
+      console.log('========== 반려 처리 시작 ==========');
+      console.log('제안 ID:', id);
+      console.log('반려 사유:', reason);
+
+      await myAxios().post(`/admin/proposal/${id}/reject`, {
+        reason: reason
+      });
+
+      alert('반려 처리가 완료되었습니다.\n제안자와 투표자들에게 알림이 발송되었습니다.');
+
+      // 제안 정보 다시 불러오기
+      getProposal();
+      setReason('');
+
+    } catch (error) {
+      console.error('반려 처리 실패:', error);
+      alert('반려 처리에 실패했습니다.');
+    }
+  };
+
+  // ========================================
+// 댓글 등록
+// ========================================
+const submit = () => {
+  const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+  const memberUsername = userInfo.username;
+  
+  if (!memberUsername) {
+    alert("로그인이 필요합니다.");
+    return;
   }
+
+  myAxios().post("/writeComment", {
+    proposalId: id,
+    memberUsername: memberUsername,
+    content: comment
+  })
+  .then(res => {
+    console.log(res);
+    setComment('');
+    getComment();
+  })
+  .catch(err => console.log(err));
+};
+
+
+// ========================================
+// 댓글 조회
+// ========================================
+const getComment = () => {
+  myAxios().get(`getComment/${id}`)
+  .then(res => {
+    console.log(res);
+    setComments(res.data);
+  })
+  .catch(err => {
+    console.log(err);
+  });
+};
+
+useEffect(() => {
+  getComment();
+}, [id]);
+
+
+  // ========================================
+  // 공구 상세 페이지로 이동
+  // ========================================
+  const handleGoToGbProduct = () => {
+    if (proposal.gbProductId) {
+      navigate(`/gbProductDetail/${proposal.gbProductId}`);
+    }
+  };
 
   return (
     <>
@@ -162,26 +233,65 @@ export default function ProposalDetailAdmin() {
                 <div style={{ display: 'flex', gap: '10px', alignItems: "center" }}>
                   <div>
                     {proposal.gbProductId ? (
+                      // 승인된 경우 → 공구 상세 보기
                       <>
                         <div className="fw-bold" style={{ fontSize: '14px' }}>공구 상세 URL</div>
-                        <Button style={{ backgroundColor: '#739FF2', width: "70px", height: "25px", fontSize: "12px", padding: "0", border: 'none' }}>바로가기</Button>
+                        <Button
+                          style={{ backgroundColor: '#739FF2', width: "100px", height: "25px", fontSize: "12px", padding: "0", border: 'none' }}
+                          onClick={() => navigate(`/gbProductDetail/${proposal.gbProductId}`)}
+                        >
+                          공구 상세 보기
+                        </Button>
                       </>
-                    ) : (
+                    ) : proposal.rejectReason ? (
+                      // 반려된 경우 → 반려 사유 표시
                       <div>
                         <div style={{ fontWeight: 'bold', marginBottom: '5px', fontSize: '12px' }}>반려 사유</div>
-                        <div style={{ fontSize: '12px', color: '#F55F5F' }}>
+                        <div style={{
+                          fontSize: '12px',
+                          color: '#F55F5F',
+                          padding: '8px',
+                          backgroundColor: '#fff5f5',
+                          borderRadius: '5px',
+                          border: '1px solid #fee'
+                        }}>
                           {proposal.rejectReason}
                         </div>
                       </div>
-                    )}
+                    ) : null}
+
                     <br />
-                    <div style={{ border: 'none', width: '460px', height: 'auto', backgroundColor: '#d9d9d9', padding: '10px' }}>
-                      <Input type="textarea" value={reason} onChange={(e) => setReason(e.target.value)} style={{ border: '1px solid black', width: '100%', height: '60px', backgroundColor: 'white', resize: 'none', fontSize: '12px' }} />
-                      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px', gap: '10px' }}>
-                        <Button style={{ fontSize: '12px', backgroundColor: '#739FF2', color: 'white', border: 'none' }}>공구 등록</Button>
-                        <Button onClick={rejectReason} style={{ fontSize: '12px', backgroundColor: '#F55F5F', color: 'white', border: 'none' }}>반려 처리</Button>
+
+                    {/* 검토대기 상태에만 표시 */}
+                    {!proposal.gbProductId && !proposal.rejectReason && (
+                      <div style={{ border: 'none', width: '460px', height: 'auto', backgroundColor: '#d9d9d9', padding: '10px' }}>
+                        <Input
+                          type="textarea"
+                          value={reason}
+                          onChange={(e) => setReason(e.target.value)}
+                          placeholder="반려 사유를 입력하세요"
+                          style={{ border: '1px solid black', width: '100%', height: '60px', backgroundColor: 'white', resize: 'none', fontSize: '12px' }}
+                          maxLength={500}
+                        />
+                        <small style={{ fontSize: '11px', color: '#666' }}>
+                          {reason.length}/500자
+                        </small>
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px', gap: '10px' }}>
+                          <Button
+                           style={{ fontSize: '12px', backgroundColor: '#739FF2', color: 'white', border: 'none' }}
+                            onClick={handleCreateGbProduct}
+                          >
+                            공구 주소 등록
+                          </Button>
+                          <Button
+                            onClick={handleReject}
+                            style={{ fontSize: '12px', backgroundColor: '#F55F5F', color: 'white', border: 'none' }}
+                          >
+                            반려 처리
+                          </Button>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </div>
                 <hr style={{ width: "460px", alignItems: 'center', margin: '10px 0 10px 0' }} />
@@ -194,7 +304,7 @@ export default function ProposalDetailAdmin() {
                     {isDdabong ? "취소하기" : "투표하기"}
                   </Button>
                   <Button style={{ backgroundColor: '#739FF2', width: "120px", height: "35px", fontSize: "16px", padding: "0", border: 'none' }}
-                   onClick={handleCreateGbProduct}
+                    onClick={handleCreateGbProduct}
                   >공구 등록</Button>
                 </div>
               </div>
@@ -220,16 +330,105 @@ export default function ProposalDetailAdmin() {
           </div>
         </div>
       </div>
+      {/* ========================================
+          댓글 목록
+          ======================================== */}
       <div style={styles.pageWrapper}>
         <div style={styles.container}>
-          <hr style={{ alignItems: 'center', margin: '10px 0 10px 0' }} />
-          <div style={{ padding: '0 10px', display: 'flex', alignContent: 'center', marginBottom: '10px' }}>
-            <div style={{}}>닉네임</div>
-            <img src="/grade/Silver.png" style={{ width: '25px' }} />
+          <hr style={{ alignItems:'center', margin:'10px 0 10px 0' }} />
+          {comments.map((c) => (
+            <div key={c.id} style={{ marginBottom:'15px' }}>
+              <div style={{ padding:'0 10px', display:'flex', alignContent:'center', marginBottom:'10px' }}>
+                <div style={{ marginRight:'10px' }}>{c.memberNickname}</div>
+                <img 
+                  src={`/grade/${c.grade.charAt(0) + c.grade.slice(1).toLowerCase()}.png`} 
+                  style={{ width:'25px' }}
+                />
+              </div>
+              <div style={{ padding:'0 10px' }}>{c.createdAt}</div>
+              <div style={{ padding:'0 10px' }}>{c.content}</div>
+              <hr style={{ alignItems:'center', margin:'10px 0 10px 0' }} />
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      {/* ========================================
+          댓글 작성
+          ======================================== */}
+      <div style={styles.pageWrapper}>
+        <div style={styles.container}>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            backgroundColor: 'white',
+            padding: '0',
+            gap: '12px'
+          }}>
+            <label style={{ fontWeight: 'bold', fontSize: '14px', color: '#333' }}>
+              댓글 작성
+            </label>
+            
+            <textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="여기에 댓글을 작성하세요..."
+              style={{
+                width: '100%',
+                minHeight: '80px',
+                resize: 'none',
+                borderRadius: '10px',
+                border: '1px solid #d1d9e6',
+                padding: '12px',
+                fontSize: '14px',
+                outline: 'none',
+                boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)',
+                backgroundColor: '#fff',
+                transition: '0.2s all'
+              }}
+              onFocus={(e) => e.target.style.borderColor = '#739FF2'}
+              onBlur={(e) => e.target.style.borderColor = '#d1d9e6'}
+            />
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+              <button
+                style={{
+                  backgroundColor: '#d9d9d9',
+                  color: '#000000',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '8px 18px',
+                  fontWeight: 'bold',
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  transition: '0.2s all'
+                }}
+                onClick={() => setComment('')}
+              >
+                취소
+              </button>
+
+              <button
+                style={{
+                  backgroundColor: '#739FF2',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '8px 18px',
+                  fontWeight: 'bold',
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  transition: '0.2s all',
+                  boxShadow: '0 4px 8px rgba(115, 159, 242, 0.4)'
+                }}
+                onMouseEnter={e => e.target.style.backgroundColor = '#5a7cd6'}
+                onMouseLeave={e => e.target.style.backgroundColor = '#739FF2'}
+                onClick={submit}
+              >
+                등록
+              </button>
+            </div>
           </div>
-          <div style={{ padding: '0 10px' }}>20025-11-30</div>
-          <div style={{ padding: '0 10px' }}>대충 공구 하자는 내용</div>
-          <hr style={{ alignItems: 'center', margin: '10px 0 10px 0' }} />
         </div>
       </div>
     </>
