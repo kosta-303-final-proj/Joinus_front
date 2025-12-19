@@ -1,19 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import {
-    Container,
-    Row,
-    Col,
-    Input,
-    Button,
-    Table,
-    Pagination,
-    PaginationItem,
-    PaginationLink
-} from "reactstrap";
 import { myAxios } from "../../config";
 import AdminHeader from "../../components/layout/AdminHeader";
-import "bootstrap/dist/css/bootstrap.min.css";
+import './admin-common.css';
 
 export default function AdminOrderDetail() {
     const { gbProductId } = useParams();
@@ -168,14 +157,6 @@ export default function AdminOrderDetail() {
     };
     
     
-    // 스타일
-    const tableHeaderStyle = {
-        background: '#eaf1ff',
-        textAlign: 'center',
-        verticalAlign: 'middle'
-    };
-    
-    
     // 로딩 중
     if (!orderDetail) {
         return (
@@ -183,9 +164,9 @@ export default function AdminOrderDetail() {
                 <div className="main-content">
                     <AdminHeader title="공구관리 > 주문 공구 상품" />
                     <div className="content-area">
-                        <Container fluid className="p-5">
+                        <div className="empty-state">
                             <p>로딩 중...</p>
-                        </Container>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -198,137 +179,148 @@ export default function AdminOrderDetail() {
             <div className="main-content">
                 <AdminHeader title="공구관리 > 구매한 공구 상품" />
                 <div className="content-area">
-                    <Container fluid className="p-5">
-                        
-                        {/* 공구 상품 카드 */}
-                        <div>
-                            <h6 
-                                className="fw-bold mb-3" 
-                                style={{ 
-                                    background: '#eaf1ff', 
-                                    padding: '10px',
-                                    borderRadius: '4px'
-                                }}
-                            >
-                                공구 상품
-                            </h6>
-                            <Row 
-                                className="align-items-center" 
-                                style={{ 
-                                    backgroundColor: 'white', 
-                                    minHeight: '250px', 
-                                    padding: '20px',
-                                    border: '1px solid #e0e0e0',
-                                    borderRadius: '4px'
-                                }}
-                            >
-                                {/* 이미지 */}
-                                <Col md="2" className="text-center">
-                                    <img
-                                        src={orderDetail.thumbnailFileId 
-                                            ? `http://localhost:8080/file/view/${orderDetail.thumbnailFileId}` 
-                                            : "/productSampleImg.png"}
-                                        alt="product"
-                                        className="img-fluid rounded"
-                                        style={{ 
-                                            width: '200px',
-                                            height: '200px',
-                                            objectFit: 'cover'
-                                        }}
-                                        onError={(e) => {
-                                            console.log('이미지 로드 실패:', e.target.src);
-                                            console.log('thumbnailFileId:', orderDetail.thumbnailFileId);
-                                            e.target.src = "/productSampleImg.png";
+                    
+                    {/* 공구 상품 카드 */}
+                    <div style={{ marginBottom: '32px' }}>
+                        <h6 
+                            style={{ 
+                                background: '#eaf1ff', 
+                                padding: '10px 16px',
+                                borderRadius: '6px',
+                                fontWeight: 600,
+                                fontSize: '16px',
+                                marginBottom: '16px'
+                            }}
+                        >
+                            공구 상품
+                        </h6>
+                        <div 
+                            style={{ 
+                                background: 'white',
+                                border: '1px solid #e0e0e0',
+                                borderRadius: '8px',
+                                padding: '24px',
+                                display: 'flex',
+                                gap: '24px',
+                                alignItems: 'flex-start'
+                            }}
+                        >
+                            {/* 이미지 */}
+                            <div style={{ flexShrink: 0 }}>
+                                <img
+                                    src={orderDetail.thumbnailFileId 
+                                        ? `http://localhost:8080/file/view/${orderDetail.thumbnailFileId}` 
+                                        : "/productSampleImg.png"}
+                                    alt="product"
+                                    style={{ 
+                                        width: '200px',
+                                        height: '200px',
+                                        objectFit: 'cover',
+                                        borderRadius: '8px'
+                                    }}
+                                    onError={(e) => {
+                                        console.log('이미지 로드 실패');
+                                        e.target.src = "/productSampleImg.png";
+                                    }}
+                                />
+                            </div>
+
+                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                {/* 주문번호 입력 */}
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <strong style={{ minWidth: '100px' }}>주문번호:</strong>
+                                    <input 
+                                        type="text" 
+                                        placeholder="주문번호 입력"
+                                        value={adminOrderNo}
+                                        onChange={(e) => setAdminOrderNo(e.target.value)}
+                                        disabled={!!orderDetail.adminOrderId}
+                                        style={{
+                                            flex: 1,
+                                            maxWidth: '400px',
+                                            padding: '8px 12px',
+                                            border: '1px solid #d1d5db',
+                                            borderRadius: '6px'
                                         }}
                                     />
-                                </Col>
-
-                                <Col md="10">
-                                    {/* 주문번호 입력 */}
-                                    <div className="d-flex flex-row gap-2 align-items-center mb-3">
-                                        <div style={{ minWidth: '100px' }}>
-                                            <strong>주문번호:</strong>
-                                        </div>
-                                        <div style={{ flex: 1, maxWidth: '400px' }}>
-                                            <Input 
-                                                type="text" 
-                                                placeholder="주문번호 입력"
-                                                value={adminOrderNo}
-                                                onChange={(e) => setAdminOrderNo(e.target.value)}
-                                                disabled={!!orderDetail.adminOrderId}
-                                            />
-                                        </div>
-                                        <div>
-                                            <Button 
-                                                style={{ backgroundColor: '#739FF2', border: 'none' }}
-                                                onClick={handleSaveAdminOrder}
-                                                disabled={!!orderDetail.adminOrderId}
-                                            >
-                                                저장
-                                            </Button>
-                                        </div>
+                                    <button 
+                                        className="admin-button primary small"
+                                        onClick={handleSaveAdminOrder}
+                                        disabled={!!orderDetail.adminOrderId}
+                                    >
+                                        저장
+                                    </button>
+                                </div>
+                                
+                                {/* 상품 상세정보 */}
+                                <div style={{ fontSize: '14px', lineHeight: 1.6 }}>
+                                    <strong>상품명:</strong> {orderDetail.gbProductName}
+                                </div>
+                                
+                                {/* 옵션별 수량 */}
+                                {orderDetail.optionSummaries?.map((option) => (
+                                    <div key={option.optionId} style={{ fontSize: '14px', lineHeight: 1.6 }}>
+                                        <strong>옵션:</strong> {option.optionName} / <strong>수량:</strong> {option.totalQuantity}
                                     </div>
-                                    
-                                    {/* 상품 상세정보 */}
-                                    <div className="mb-2">
-                                        <strong>상품명:</strong> {orderDetail.gbProductName}
-                                    </div>
-                                    
-                                    {/* 옵션별 수량 */}
-                                    {orderDetail.optionSummaries?.map((option) => (
-                                        <div key={option.optionId} className="mb-1">
-                                            <strong>옵션:</strong> {option.optionName} / <strong>수량:</strong> {option.totalQuantity}
-                                        </div>
-                                    ))}
+                                ))}
 
-                                    {orderDetail.originalSiteUrl && (
-                                        <div className="mt-3">
-                                            <a 
-                                                href={orderDetail.originalSiteUrl} 
-                                                target="_blank" 
-                                                rel="noopener noreferrer"
-                                                className="text-primary" 
-                                                style={{ fontSize: "0.9rem", textDecoration: 'none' }}
-                                            >
-                                                🔗 원 사이트 주소: {orderDetail.originalSiteUrl}
-                                            </a>
-                                        </div>
-                                    )}
-                                </Col>
-                            </Row>
+                                {orderDetail.originalSiteUrl && (
+                                    <div style={{ marginTop: '12px', fontSize: '14px' }}>
+                                        <a 
+                                            href={orderDetail.originalSiteUrl} 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            style={{ 
+                                                color: '#0066cc',
+                                                textDecoration: 'none'
+                                            }}
+                                        >
+                                            🔗 원 사이트 주소: {orderDetail.originalSiteUrl}
+                                        </a>
+                                    </div>
+                                )}
+                            </div>
                         </div>
+                    </div>
 
-                        {/* 참여자 테이블 */}
-                        <div className="mt-4">
-                            <h6 
-                                className="fw-bold mb-3" 
-                                style={{ 
-                                    background: '#eaf1ff', 
-                                    padding: '10px',
-                                    borderRadius: '4px'
-                                }}
-                            >
-                                참여자 목록
-                            </h6>
-                            <Table bordered hover className="align-middle text-center">
+                    {/* 참여자 테이블 */}
+                    <div style={{ marginTop: '32px' }}>
+                        <h6 
+                            style={{ 
+                                background: '#eaf1ff', 
+                                padding: '10px 16px',
+                                borderRadius: '6px',
+                                fontWeight: 600,
+                                fontSize: '16px',
+                                marginBottom: '16px'
+                            }}
+                        >
+                            참여자 목록
+                        </h6>
+                        <div className="table-container">
+                            <table className="admin-table">
                                 <thead>
                                     <tr>
-                                        <th style={tableHeaderStyle}>주문번호</th>
-                                        <th style={tableHeaderStyle}>주문일</th>
-                                        <th style={tableHeaderStyle}>주문자명</th>
-                                        <th style={tableHeaderStyle}>옵션명</th>
-                                        <th style={tableHeaderStyle}>수량</th>
-                                        <th style={tableHeaderStyle}>결제수단</th>
-                                        <th style={tableHeaderStyle}>결제금액</th>
-                                        <th style={tableHeaderStyle}>택배사</th>
-                                        <th style={tableHeaderStyle}>송장번호</th>
-                                        <th style={tableHeaderStyle}></th>
+                                        <th>주문번호</th>
+                                        <th>주문일</th>
+                                        <th>주문자명</th>
+                                        <th>옵션명</th>
+                                        <th>수량</th>
+                                        <th>결제수단</th>
+                                        <th>결제금액</th>
+                                        <th>택배사</th>
+                                        <th>송장번호</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {participantPage.content.length === 0 ? (
                                         <tr>
-                                            <td colSpan="10">참여자가 없습니다.</td>
+                                            <td colSpan="10">
+                                                <div className="empty-state">
+                                                    <p>참여자가 없습니다.</p>
+                                                </div>
+                                            </td>
                                         </tr>
                                     ) : (
                                         participantPage.content.map((participant) => (
@@ -358,17 +350,21 @@ export default function AdminOrderDetail() {
                                                     {participant.trackingNo ? (
                                                         participant.carrierName || '-'
                                                     ) : (
-                                                        <Input 
-                                                            type="select"
+                                                        <select 
                                                             value={carrierInputs[participant.orderId] || "CJ대한통운"}
                                                             onChange={(e) => handleCarrierChange(participant.orderId, e.target.value)}
-                                                            style={{ minWidth: '120px' }}
+                                                            style={{ 
+                                                                minWidth: '120px',
+                                                                padding: '6px',
+                                                                border: '1px solid #d1d5db',
+                                                                borderRadius: '4px'
+                                                            }}
                                                         >
                                                             <option>CJ대한통운</option>
                                                             <option>우체국택배</option>
                                                             <option>한진택배</option>
                                                             <option>롯데택배</option>
-                                                        </Input>
+                                                        </select>
                                                     )}
                                                 </td>
                                                 
@@ -377,50 +373,51 @@ export default function AdminOrderDetail() {
                                                     {participant.trackingNo ? (
                                                         participant.trackingNo
                                                     ) : (
-                                                        <Input 
+                                                        <input 
                                                             type="text"
                                                             placeholder="송장번호 입력"
                                                             value={trackingInputs[participant.orderId] || ""}
                                                             onChange={(e) => handleTrackingChange(participant.orderId, e.target.value)}
+                                                            style={{
+                                                                padding: '6px',
+                                                                border: '1px solid #d1d5db',
+                                                                borderRadius: '4px'
+                                                            }}
                                                         />
                                                     )}
                                                 </td>
                                                 
                                                 <td>
-                                                    <Button 
-                                                        className="px-3" 
-                                                        style={{ 
-                                                            backgroundColor: '#739FF2',
-                                                            border: 'none'
-                                                        }}
+                                                    <button 
+                                                        className="admin-button primary small"
                                                         onClick={() => handleSaveTracking(participant.orderId)}
                                                         disabled={!!participant.trackingNo}
                                                     >
                                                         저장
-                                                    </Button>
+                                                    </button>
                                                 </td>
                                             </tr>
                                         ))
                                     )}
                                 </tbody>
-                            </Table>
+                            </table>
                         </div>
+                    </div>
 
-                        {/* 페이지네이션 */}
-                        {participantPage.totalPages > 0 && (
-                            <div className="d-flex justify-content-center mt-4">
-                                <Pagination>
-                                    {Array.from({ length: participantPage.totalPages }, (_, i) => (
-                                        <PaginationItem key={i} active={i === currentPage}>
-                                            <PaginationLink onClick={() => handlePageChange(i)}>
-                                                {i + 1}
-                                            </PaginationLink>
-                                        </PaginationItem>
-                                    ))}
-                                </Pagination>
-                            </div>
-                        )}
-                    </Container>
+                    {/* 페이지네이션 */}
+                    {participantPage.totalPages > 0 && (
+                        <div className="pagination">
+                            {Array.from({ length: participantPage.totalPages }, (_, i) => (
+                                <button
+                                    key={i}
+                                    className={`page-btn ${currentPage === i ? 'active' : ''}`}
+                                    onClick={() => handlePageChange(i)}
+                                >
+                                    {i + 1}
+                                </button>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

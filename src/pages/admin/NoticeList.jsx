@@ -143,7 +143,7 @@ const NoticeList = () => {
             justifyContent: 'flex-end'
           }}>
             <button
-              className="btn-primary"
+              className="admin-button primary"
               onClick={() => navigate('/admin/noticeForm')}
             >
               공지사항 등록

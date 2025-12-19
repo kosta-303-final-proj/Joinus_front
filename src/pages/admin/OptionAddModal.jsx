@@ -67,22 +67,22 @@ const OptionAddModal = ({ onClose, onAdd }) => {
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+    <div className="option-add-modal-overlay" onClick={onClose}>
+      <div className="option-add-modal-content" onClick={(e) => e.stopPropagation()}>
         
         {/* 헤더 */}
-        <div className="modal-header">
+        <div className="option-add-modal-header">
           <h3>옵션 추가</h3>
-          <button className="close-btn" onClick={onClose}>
+          <button className="option-add-modal-close-btn" onClick={onClose}>
             <X size={20} />
           </button>
         </div>
 
         {/* 바디 */}
-        <div className="modal-body">
+        <div className="option-add-modal-body">
           
           {/* 옵션 그룹명 */}
-          <div className="form-field">
+          <div className="option-add-modal-form-field">
             <label>옵션 그룹명 *</label>
             <input 
               type="text" 
@@ -93,28 +93,28 @@ const OptionAddModal = ({ onClose, onAdd }) => {
           </div>
 
           {/* 옵션 목록 */}
-          <div className="options-list">
+          <div className="option-add-modal-options-list">
             <label>옵션 목록 *</label>
             
             {options.map((option, index) => (
-              <div key={option.id} className="option-row">
-                <div className="option-inputs">
+              <div key={option.id} className="option-add-modal-option-row">
+                <div className="option-add-modal-option-inputs">
                   <input 
                     type="text"
                     placeholder="옵션명 (예: S)"
                     value={option.name}
                     onChange={(e) => handleOptionChange(option.id, 'name', e.target.value)}
-                    className="option-name-input"
+                    className="option-add-modal-option-name-input"
                   />
                   <input 
                     type="number"
                     placeholder="추가 가격 (예: 0)"
                     value={option.price}
                     onChange={(e) => handleOptionChange(option.id, 'price', e.target.value)}
-                    className="option-price-input"
+                    className="option-add-modal-option-price-input"
                   />
                   <button 
-                    className="delete-btn"
+                    className="option-add-modal-delete-btn"
                     onClick={() => handleRemoveOption(option.id)}
                     disabled={options.length === 1}
                   >
@@ -126,7 +126,7 @@ const OptionAddModal = ({ onClose, onAdd }) => {
 
             {/* 옵션 추가 버튼 */}
             <button 
-              className="add-option-btn"
+              className="option-add-modal-add-option-btn"
               onClick={handleAddOption}
             >
               <Plus size={16} /> 옵션 추가
@@ -136,11 +136,11 @@ const OptionAddModal = ({ onClose, onAdd }) => {
         </div>
 
         {/* 푸터 */}
-        <div className="modal-footer">
-          <button className="btn-secondary" onClick={onClose}>
+        <div className="option-add-modal-footer">
+          <button className="option-add-modal-btn-secondary" onClick={onClose}>
             취소
           </button>
-          <button className="btn-primary" onClick={handleConfirm}>
+          <button className="option-add-modal-btn-primary" onClick={handleConfirm}>
             확인
           </button>
         </div>

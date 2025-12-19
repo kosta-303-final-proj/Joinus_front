@@ -10,6 +10,7 @@ import '../../styles/components/table.css';
 import './admin-common.css';
 import './GbProductMngList.css';
 
+
 export default function GbProductMngList() {
   const navigate = useNavigate();
 
@@ -352,13 +353,13 @@ export default function GbProductMngList() {
                       <td>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                           <button
-                            className="action-btn"
+                            className="admin-button primary small"
                             onClick={() => handleEdit(product.id)}
                           >
                             수정
                           </button>
                           <button
-                            className="action-btn secondary"
+                            className="admin-button secondary small"
                             onClick={() => handleViewParticipants(product.id)}
                           >
                             참여인원
@@ -382,13 +383,13 @@ export default function GbProductMngList() {
           {/* 하단 버튼 영역 */}
           <div className="bottom-actions">
             <button
-              className="btn-secondary notification-btn"
+              className="admin-button secondary"
               onClick={handleNotification}
             >
               알림 발송
             </button>
             <button
-              className="btn-primary create-btn"
+              className="admin-button primary"
               onClick={handleOpenCreateWindow}
             >
               새 공구 등록

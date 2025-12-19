@@ -1,5 +1,5 @@
 /* 모달 오버레이 */
-.modal-overlay {
+.option-add-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -13,7 +13,7 @@
 }
 
 /* 모달 컨텐츠 */
-.modal-content {
+.option-add-modal-content {
   background-color: white;
   border-radius: 8px;
   width: 600px;
@@ -25,7 +25,7 @@
 }
 
 /* 모달 헤더 */
-.modal-header {
+.option-add-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -33,14 +33,14 @@
   border-bottom: 1px solid #e5e7eb;
 }
 
-.modal-header h3 {
+.option-add-modal-header h3 {
   margin: 0;
   font-size: 18px;
   font-weight: 600;
   color: #111827;
 }
 
-.close-btn {
+.option-add-modal-close-btn {
   background: none;
   border: none;
   cursor: pointer;
@@ -53,24 +53,24 @@
   transition: all 0.2s;
 }
 
-.close-btn:hover {
+.option-add-modal-close-btn:hover {
   background: #f3f4f6;
   color: #111827;
 }
 
 /* 모달 바디 */
-.modal-body {
+.option-add-modal-body {
   padding: 24px;
   overflow-y: auto;
   flex: 1;
 }
 
 /* 폼 필드 */
-.form-field {
+.option-add-modal-form-field {
   margin-bottom: 20px;
 }
 
-.form-field label {
+.option-add-modal-form-field label {
   display: block;
   margin: 16px 0;
   font-weight: 500;
@@ -78,7 +78,7 @@
   color: #374151;
 }
 
-.form-field input {
+.option-add-modal-form-field input {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid #d1d5db;
@@ -87,22 +87,22 @@
   transition: all 0.2s;
 }
 
-.form-field input:focus {
+.option-add-modal-form-field input:focus {
   outline: none;
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-.form-field input::placeholder {
+.option-add-modal-form-field input::placeholder {
   color: #9ca3af;
 }
 
 /* 옵션 목록 */
-.options-list {
+.option-add-modal-options-list {
   margin-top: 24px;
 }
 
-.options-list > label {
+.option-add-modal-options-list > label {
   display: block;
   margin-bottom: 12px;
   font-weight: 500;
@@ -111,17 +111,17 @@
 }
 
 /* 옵션 행 */
-.option-row {
+.option-add-modal-option-row {
   margin-bottom: 12px;
 }
 
-.option-inputs {
+.option-add-modal-option-inputs {
   display: flex;
   gap: 8px;
   align-items: center;
 }
 
-.option-name-input {
+.option-add-modal-option-name-input {
   flex: 2;
   padding: 10px 12px;
   border: 1px solid #d1d5db;
@@ -130,13 +130,13 @@
   transition: all 0.2s;
 }
 
-.option-name-input:focus {
+.option-add-modal-option-name-input:focus {
   outline: none;
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-.option-price-input {
+.option-add-modal-option-price-input {
   flex: 1.5;
   padding: 10px 12px;
   border: 1px solid #d1d5db;
@@ -145,14 +145,14 @@
   transition: all 0.2s;
 }
 
-.option-price-input:focus {
+.option-add-modal-option-price-input:focus {
   outline: none;
   border-color: #3b82f6;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 /* 삭제 버튼 */
-.delete-btn {
+.option-add-modal-delete-btn {
   padding: 10px;
   background: #fee2e2;
   border: none;
@@ -166,11 +166,11 @@
   flex-shrink: 0;
 }
 
-.delete-btn:hover:not(:disabled) {
+.option-add-modal-delete-btn:hover:not(:disabled) {
   background: #fecaca;
 }
 
-.delete-btn:disabled {
+.option-add-modal-delete-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   background: #f3f4f6;
@@ -178,7 +178,7 @@
 }
 
 /* 옵션 추가 버튼 */
-.add-option-btn {
+.option-add-modal-add-option-btn {
   width: 100%;
   padding: 10px;
   background: #f9fafb;
@@ -196,14 +196,14 @@
   transition: all 0.2s;
 }
 
-.add-option-btn:hover {
+.option-add-modal-add-option-btn:hover {
   background: #f3f4f6;
   border-color: #9ca3af;
   color: #374151;
 }
 
 /* 모달 푸터 */
-.modal-footer {
+.option-add-modal-footer {
   padding: 16px 24px;
   border-top: 1px solid #e5e7eb;
   display: flex;
@@ -212,8 +212,8 @@
   margin-top: 16px;
 }
 
-.btn-secondary,
-.btn-primary {
+.option-add-modal-btn-secondary,
+.option-add-modal-btn-primary {
   padding: 10px 20px;
   border-radius: 6px;
   font-size: 14px;
@@ -223,44 +223,44 @@
   border: none;
 }
 
-.btn-secondary {
+.option-add-modal-btn-secondary {
   background: white;
   border: 1px solid #d1d5db;
   color: #374151;
 }
 
-.btn-secondary:hover {
+.option-add-modal-btn-secondary:hover {
   background: #f9fafb;
   border-color: #9ca3af;
 }
 
-.btn-primary {
+.option-add-modal-btn-primary {
   background: #3b82f6;
   color: white;
 }
 
-.btn-primary:hover {
+.option-add-modal-btn-primary:hover {
   background: #2563eb;
 }
 
 /* 반응형 */
 @media (max-width: 640px) {
-  .modal-content {
+  .option-add-modal-content {
     width: 95vw;
     max-height: 90vh;
   }
 
-  .option-inputs {
+  .option-add-modal-option-inputs {
     flex-direction: column;
     gap: 8px;
   }
 
-  .option-name-input,
-  .option-price-input {
+  .option-add-modal-option-name-input,
+  .option-add-modal-option-price-input {
     width: 100%;
   }
 
-  .delete-btn {
+  .option-add-modal-delete-btn {
     width: 100%;
   }
 }

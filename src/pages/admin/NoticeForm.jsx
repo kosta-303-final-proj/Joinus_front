@@ -51,6 +51,8 @@ const NoticeForm = () => {
       data.append('images', file);
     });
 
+
+
     try {
       // myAxios를 사용하여 POST 요청 전송
       // 백엔드 URL: /admin/noticeForm
@@ -129,10 +131,10 @@ const NoticeForm = () => {
 
             {/* 버튼 */}
             <div className="form-actions">
-              <button className="btn-secondary" onClick={handleCancel}>
+              <button className="notice-button secondary" onClick={handleCancel}>
                 취소
               </button>
-              <button className="btn-primary" onClick={handleSubmit}>
+              <button className="notice-button primary" onClick={handleSubmit}>
                 등록
               </button>
             </div>

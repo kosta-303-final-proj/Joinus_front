@@ -15,16 +15,6 @@ const MemberDetail = () => {
 
   // 회원 정보
   const [memberInfo, setMemberInfo] = useState(null);
-
-  // 페이지 상태
-  const [proposalPage, setProposalPage] = useState(0);
-  const [reviewPage, setReviewPage] = useState(0);
-  const [pointPage, setPointPage] = useState(0);
-
-  // 임시 데이터
-  const [proposals, setProposals] = useState([]);
-  const [reviews, setReviews] = useState([]);
-  const [pointHistory, setPointHistory] = useState([]);
   const [shippingAddresses, setShippingAddresses] = useState([]);
 
   // 공구내역 State
@@ -38,29 +28,25 @@ const MemberDetail = () => {
     startDate: '',
     endDate: '',
     searchType: 'gbProductName',
-    searchKeyword: ''  
+    searchKeyword: ''
   });
 
-  // ========================================
-  // 회원 상세 정보 조회
-  // ========================================
-  useEffect(() => {
-    const fetchMemberDetail = async () => {
-      try {
-        setLoading(true);
-        const response = await myAxios().get(`/admin/memberDetail/${username}`);
-        setMemberInfo(response.data);
-      } catch (error) {
-        console.error('회원 정보 조회 실패:', error);
-        alert('회원 정보를 불러오는데 실패했습니다.');
-        navigate('/admin/memberList');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const [proposalPage, setProposalPage] = useState({
+    content: [],
+    totalPages: 0,
+    number: 0
+  });
+  const [reviewPage, setReviewPage] = useState({
+    content: [],
+    totalPages: 0,
+    number: 0
+  });
+  const [pointPage, setPointPage] = useState({
+    content: [],
+    totalPages: 0,
+    number: 0
+  });
 
-    fetchMemberDetail();
-  }, [username, navigate]);
 
   // ========================================
   // 공구내역 조회
@@ -87,14 +73,51 @@ const MemberDetail = () => {
     }
   };
 
+
   // ========================================
-  // 탭 변경 시 데이터 로드
+  // 제안 목록 조회
   // ========================================
-  useEffect(() => {
-    if (activeTab === 'purchase') {
-      fetchPurchases();
+  const fetchProposals = async (page = 0) => {
+    try {
+      const response = await myAxios().get(
+        `/admin/memberDetail/${username}/proposals`,
+        { params: { page, size: 10 } }
+      );
+      setProposalPage(response.data);
+    } catch (error) {
+      console.error('제안 목록 조회 실패:', error);
     }
-  }, [activeTab, purchaseFilters]);
+  };
+
+  // ========================================
+  // 리뷰 목록 조회
+  // ========================================
+  const fetchReviews = async (page = 0) => {
+    try {
+      const response = await myAxios().get(
+        `/admin/memberDetail/${username}/reviews`,
+        { params: { page, size: 10 } }
+      );
+      setReviewPage(response.data);
+    } catch (error) {
+      console.error('리뷰 목록 조회 실패:', error);
+    }
+  };
+
+  // ========================================
+  // 포인트 내역 조회
+  // ========================================
+  const fetchPoints = async (page = 0) => {
+    try {
+      const response = await myAxios().get(
+        `/admin/memberDetail/${username}/points`,
+        { params: { page, size: 10 } }
+      );
+      setPointPage(response.data);
+    } catch (error) {
+      console.error('포인트 내역 조회 실패:', error);
+    }
+  };
 
   // ========================================
   // 공구내역 검색
@@ -113,7 +136,7 @@ const MemberDetail = () => {
       startDate: '',
       endDate: '',
       searchType: 'gbProductName',
-      searchKeyword: ''  
+      searchKeyword: ''
     });
   };
 
@@ -124,6 +147,53 @@ const MemberDetail = () => {
     navigate(`/gbProduct/${gbProductId}`);
     // 또는 새 창: window.open(`/gbProduct/${gbProductId}`, '_blank');
   };
+
+
+  // ========================================
+  // 회원 상세 정보 조회
+  // ========================================
+  useEffect(() => {
+    const fetchMemberDetail = async () => {
+      try {
+        console.log('========== 회원 정보 조회 시작 ==========');
+        console.log('Username:', username);
+
+        setLoading(true);
+        const response = await myAxios().get(`/admin/memberDetail/${username}`);
+
+        console.log('✅ 응답:', response.data);
+
+        setMemberInfo(response.data);
+
+        if (response.data.shippingAddresses) {
+          setShippingAddresses(response.data.shippingAddresses);
+        }
+
+      } catch (error) {
+        console.error('회원 정보 조회 실패:', error);
+        alert('회원 정보를 불러오는데 실패했습니다.');
+        navigate('/admin/memberList');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMemberDetail();
+  }, [username, navigate]);
+
+
+  // ========================================
+  // 탭 변경 시 데이터 로드
+  // ========================================
+  useEffect(() => {
+    if (activeTab === 'purchase') {
+      fetchPurchases();
+    } else if (activeTab === 'activity') {
+      fetchProposals();
+      fetchReviews();
+      fetchPoints();
+    }
+  }, [activeTab]);
 
   // ========================================
   // 로딩 중
@@ -150,6 +220,7 @@ const MemberDetail = () => {
       </div>
     );
   }
+
 
   return (
     <div className="admin-layout">
@@ -198,9 +269,8 @@ const MemberDetail = () => {
                     <td>{memberInfo.email}</td>
                     <td>{memberInfo.pointBalance?.toLocaleString() || 0}p</td>
                     <td>
-                      <span className={`status-badge ${
-                        memberInfo.status === 'ACTIVE' ? 'blue' : 'gray'
-                      }`}>
+                      <span className={`status-badge ${memberInfo.status === 'ACTIVE' ? 'blue' : 'gray'
+                        }`}>
                         {memberInfo.statusDescription}
                       </span>
                     </td>
@@ -380,10 +450,9 @@ const MemberDetail = () => {
                               : 'N/A'}
                           </td>
                           <td>
-                            <span className={`status-badge ${
-                              purchase.orderStatus === 'COMPLETED' ? 'green' :
+                            <span className={`status-badge ${purchase.orderStatus === 'COMPLETED' ? 'green' :
                               purchase.orderStatus === 'PENDING' ? 'blue' : 'gray'
-                            }`}>
+                              }`}>
                               {purchase.orderStatusDescription}
                             </span>
                           </td>
@@ -422,35 +491,58 @@ const MemberDetail = () => {
                       <tr>
                         <th>#</th>
                         <th>작성 날짜</th>
-                        <th>제목</th>
-                        <th>내용</th>
-                        <th>투표</th>
+                        <th>상품명</th>
+                        <th>설명</th>
+                        <th>투표수</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {proposals.length === 0 ? (
+                      {proposalPage.content.length === 0 ? (
                         <tr>
                           <td colSpan="5" className="empty-state">
                             <p>제안한 상품이 없습니다.</p>
                           </td>
                         </tr>
                       ) : (
-                        proposals.map((proposal, index) => (
-                          <tr key={proposal.id}>
-                            <td>{index + 1}</td>
-                            <td>{proposal.date}</td>
-                            <td>{proposal.store}</td>
-                            <td style={{ textAlign: 'left' }}>{proposal.product}</td>
-                            <td>{proposal.views}</td>
+                        proposalPage.content.map((proposal, index) => (
+                          <tr
+                            key={proposal.proposalId}
+                            onClick={() => navigate(`/admin/proposalDetail/${proposal.proposalId}`)}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <td>{proposalPage.number * 10 + index + 1}</td>
+                            <td>
+                              {proposal.createdAt
+                                ? new Date(proposal.createdAt).toLocaleDateString('ko-KR')
+                                : 'N/A'}
+                            </td>
+                            <td>{proposal.productName}</td>
+                            <td style={{ textAlign: 'left' }}>{proposal.description}</td>
+                            <td>{proposal.voteCount || 0}</td>
                           </tr>
                         ))
                       )}
                     </tbody>
                   </table>
                 </div>
+
+                {/* 페이지네이션 */}
+                {proposalPage.totalPages > 0 && (
+                  <div className="pagination">
+                    {Array.from({ length: proposalPage.totalPages }, (_, i) => (
+                      <button
+                        key={i}
+                        className={`page-btn ${proposalPage.number === i ? 'active' : ''}`}
+                        onClick={() => fetchProposals(i)}
+                      >
+                        {i + 1}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
-              {/* 작성한 리뷰 =============== 나중에 구현해야 함==============*/}
+              {/* 작성한 리뷰 */}
               <div className="activity-section">
                 <h3>작성한 리뷰</h3>
                 <div className="table-container">
@@ -465,26 +557,49 @@ const MemberDetail = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {reviews.length === 0 ? (
+                      {reviewPage.content.length === 0 ? (
                         <tr>
                           <td colSpan="5" className="empty-state">
                             <p>작성한 리뷰가 없습니다.</p>
                           </td>
                         </tr>
                       ) : (
-                        reviews.map((review, index) => (
-                          <tr key={review.id}>
-                            <td>{index + 1}</td>
-                            <td>{review.date}</td>
-                            <td>{review.store}</td>
+                        reviewPage.content.map((review, index) => (
+                          <tr
+                            key={review.id}
+                            onClick={() => navigate(`/gbProductDetail/${review.gbProductId}`)}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <td>{reviewPage.number * 10 + index + 1}</td>
+                            <td>
+                              {review.createdAt
+                                ? new Date(review.createdAt).toLocaleDateString('ko-KR')
+                                : 'N/A'}
+                            </td>
+                            <td>{review.gbProductName}</td>
                             <td style={{ textAlign: 'left' }}>{review.content}</td>
-                            <td>{'⭐'.repeat(review.rating)}</td>
+                            <td>{'⭐'.repeat(review.rating || 0)}</td>
                           </tr>
                         ))
                       )}
                     </tbody>
                   </table>
                 </div>
+
+                {/* 페이지네이션 */}
+                {reviewPage.totalPages > 0 && (
+                  <div className="pagination">
+                    {Array.from({ length: reviewPage.totalPages }, (_, i) => (
+                      <button
+                        key={i}
+                        className={`page-btn ${reviewPage.number === i ? 'active' : ''}`}
+                        onClick={() => fetchReviews(i)}
+                      >
+                        {i + 1}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* 포인트 내역 */}
@@ -501,32 +616,58 @@ const MemberDetail = () => {
                         <th>날짜</th>
                         <th>포인트 내역</th>
                         <th>포인트</th>
-                        <th>사용 내역</th>
-                        <th>소멸기한</th>
+                        <th>주문번호</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {pointHistory.length === 0 ? (
+                      {pointPage.content.length === 0 ? (
                         <tr>
-                          <td colSpan="6" className="empty-state">
+                          <td colSpan="5" className="empty-state">
                             <p>포인트 내역이 없습니다.</p>
                           </td>
                         </tr>
                       ) : (
-                        pointHistory.map((point, index) => (
+                        pointPage.content.map((point, index) => (
                           <tr key={point.id}>
-                            <td>{index + 1}</td>
-                            <td>{point.date}</td>
-                            <td style={{ textAlign: 'left' }}>{point.type}</td>
-                            <td>{point.points}</td>
-                            <td>{point.status}</td>
-                            <td>{point.expiry}</td>
+                            <td>{pointPage.number * 10 + index + 1}</td>
+                            <td>
+                              {point.createdAt
+                                ? new Date(point.createdAt).toLocaleDateString('ko-KR')
+                                : 'N/A'}
+                            </td>
+                            <td style={{ textAlign: 'left' }}>
+                              {point.reasonType || 'N/A'}
+                            </td>
+                            <td>
+                              <span style={{
+                                color: point.amount > 0 ? '#22c55e' : '#ef4444',
+                                fontWeight: 600
+                              }}>
+                                {point.amount > 0 ? '+' : ''}{point.amount?.toLocaleString() || 0}p
+                              </span>
+                            </td>
+                            <td>{point.orderId || '-'}</td>
                           </tr>
                         ))
                       )}
                     </tbody>
                   </table>
                 </div>
+
+                {/* 페이지네이션 */}
+                {pointPage.totalPages > 0 && (
+                  <div className="pagination">
+                    {Array.from({ length: pointPage.totalPages }, (_, i) => (
+                      <button
+                        key={i}
+                        className={`page-btn ${pointPage.number === i ? 'active' : ''}`}
+                        onClick={() => fetchPoints(i)}
+                      >
+                        {i + 1}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}
