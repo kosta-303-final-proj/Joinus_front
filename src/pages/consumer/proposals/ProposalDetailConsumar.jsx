@@ -7,7 +7,7 @@ export default function ProposalDetailConsumar() {
   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 const username = userInfo?.username;
     const {id} = useParams();
-    const [proposal, setPropsal] = useState({id:id,category:'',description:'',productName:'',memberName:'',originalPrice:'',createdAt:'',originalSiteUrl:'',abroadShippingCost:'',imageUrl:'', gbProductId:'', rejectReason:'', status:'' });
+    const [proposal, setPropsal] = useState({id:id,category:'',description:'',productName:'',memberName:'',originalPrice:'',createdAt:'',originalSiteUrl:'',abroadShippingCost:'',imageUrl:'', gbProductId:'', rejectReason:'', status:'', memberUsername:'' });
     const total = 15;
     const joined = 10;
     const percentage = (joined/total) * 100;
@@ -21,10 +21,13 @@ const username = userInfo?.username;
     const submit = () => {
       if (!username) return alert("로그인이 필요합니다.");
 
+        const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+        const memberUsername = userInfo.username;
+
 
       myAxios().post("/writeComment", {
         proposalId: id,
-        memberUsername: username,
+        username: memberUsername,
         content: comment // 여기서 textarea 내용 전달
       })
       .then(res => {
@@ -101,7 +104,10 @@ if (!username) return alert("로그인이 필요합니다.");
         })
         .catch(err => console.log(err));
     }, [id,username]);
-
+useEffect(() => {
+  console.log("로그인한 username:", username);
+  console.log("proposal.memberUsername:", proposal.memberUsername);
+}, [proposal]);
 
     return(
         <>
@@ -193,9 +199,20 @@ if (!username) return alert("로그인이 필요합니다.");
                                   </Button>
                                 </div>
                                 <div>
-                                  <Link to={`/proposalsList/proposalModify/${proposal.id}`}>
-                                  <Button style={{backgroundColor:'#739FF2', width:"120px", height:"35px", fontSize:"16px", padding:"0", border:'none', marginRight:'10px'}}>수정하기</Button>
-                                  </Link>
+                                  {username === proposal.memberUsername ? (
+                                    <Link to={`/proposalsList/proposalModify/${proposal.id}`}>
+                                      <Button 
+                                        style={{ backgroundColor:'#739FF2',  width:"120px",  height:"35px",  fontSize:"16px", padding:"0",  border:'none', marginRight:'10px' }} >
+                                        수정하기
+                                      </Button>
+                                    </Link>
+                                  ) : (
+                                    <Button 
+                                      style={{ backgroundColor:'#d1d9e6', width:"120px", height:"35px", fontSize:"16px",padding:"0", border:'none',  marginRight:'10px', cursor: 'not-allowed'}}
+                                      disabled title="작성자만 수정할 수 있습니다.">
+                                      수정하기
+                                    </Button>
+                                  )}
                                 </div>
                             </div>
                         </div>
