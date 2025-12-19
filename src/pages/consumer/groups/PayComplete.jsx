@@ -103,7 +103,7 @@ export default function PayComplete(){
         fetchOrder();
     }, [orderId, orderCreated]);
 
-    if (!order) return <div>주문 정보를 불러올 수 없습니다.</div>;
+    if (!order) return <div>주문 정보를 불러오고 있는 중입니다.</div>;
     
     return(
         <>
@@ -117,7 +117,7 @@ export default function PayComplete(){
                         <div style={{border:'1px solid black', backgroundColor:'#A09B9B', width:'300px', margin:'20px auto'}}>
                             주문번호 : {order.orderId}
                         </div>
-                        <Link to="">
+                        <Link to={`/mypage/orderList/orderDetail/${order.orderId}`}>
                         <Button style={{backgroundColor:'#739FF2', color:'white', border:'none', fontSize:'12px'}}>
                             주문 상세
                         </Button>
@@ -167,7 +167,7 @@ export default function PayComplete(){
                         {/* 가격 */}
                         <div style={row}>
                             <div style={leftCol}>결제 가격</div>
-                            <div style={rightCol}>{order.total.toLocaleString()}</div>
+                            <div style={rightCol}>{order.total.toLocaleString()}원</div>
                         </div>
 
                         {/* 요청사항 */}

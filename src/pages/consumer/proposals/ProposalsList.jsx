@@ -11,29 +11,26 @@ export default function ProposalsList() {
 
   const [proposals, setProposals] = useState([]);
   const [loading, setLoading] = useState(true);
+  const categoryParam = searchParams.get("category");
 
   const type = searchParams.get("type") || "popular";
 
   // 카테고리 및 정렬 클릭 적용
-  const [selectCategory, setSelectCategory] = useState(["전체"]);//초기값
+  const [selectCategory, setSelectCategory] = useState([]);
   const [selectedSort, setSelectedSort] = useState("최신순");
-  const allCategories = ["전체", "뷰티", "패션", "전자기기", "홈&리빙", "식품", "스포츠"];
+  const allCategories = ["뷰티", "패션", "전자기기", "홈&리빙", "식품", "스포츠"];
   const sortOptions = ["최신순", "투표순"];
 
   const handleCartegopryClick = (category) => {
-    if (category === "전체") {
-      setSelectCategory(["전체"]);
+    let newCategories = [...selectCategory];
+
+    if (newCategories.includes(category)) {
+    newCategories = newCategories.filter((c) => c !== category);
     } else {
-      let newCategories = [...selectCategory];
-      if (newCategories.includes("전체")) newCategories = [];
-      if (newCategories.includes(category)) {
-        newCategories = newCategories.filter((c) => c !== category);
-      } else {
-        newCategories.push(category);
-      }
-      if (newCategories.length === 0) newCategories = ["전체"];
-      setSelectCategory(newCategories);
+    newCategories.push(category);
     }
+
+    setSelectCategory(newCategories);
   };
 
   const handleSortClick = (sort) => {
@@ -42,10 +39,24 @@ export default function ProposalsList() {
   };
 
   // 필터링 적용
-  const filteredProposals = proposals.filter((p) => {
-    if (selectCategory.includes("전체")) return true;
+  const filteredProposals = proposals
+  .filter((p) => {
+    if (selectCategory.length === 0) return true;
     return selectCategory.includes(p.category);
+  })
+  .sort((a, b) => {
+    if (selectedSort === "최신순") {
+      // 최신순 (createdAt 기준, 없으면 id 기준)
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    }
+
+    if (selectedSort === "투표순") {
+      return b.voteCount - a.voteCount;
+    }
+
+    return 0;
   });
+  
 
   useEffect(() => {
     const fetchProposals = async () => {
@@ -69,7 +80,13 @@ export default function ProposalsList() {
     fetchProposals();
   }, [type]);
 
-  
+  useEffect(() => {
+    if (categoryParam) {
+      setSelectCategory([categoryParam]);
+    } else {
+      setSelectCategory([]);
+    }
+  }, [categoryParam]);
 
   return (
     <>
@@ -101,7 +118,7 @@ export default function ProposalsList() {
           <div style={{ display: "flex", alignItems: "center", marginBottom: "15px" }}>
             <div style={{ width: "120px", fontWeight: "bold" }}>카테고리</div>
             <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-              {allCategories.slice(1).map((category) => (
+              {allCategories.slice(0).map((category) => (
                 <span
                   key={category}
                   style={selectCategory.includes(category) ? styles.tagWhite : styles.tag}
@@ -214,7 +231,8 @@ const styles = {
   },
 
   tag: {
-    backgroundColor: "#E7EBF3",
+    backgroundColor: "#FFFFFF",
+    border: "1px solid #CED4DA",
     padding: "5px 12px",
     borderRadius: "20px",
     fontSize: "14px",
@@ -222,11 +240,12 @@ const styles = {
     },
 
 tagWhite: {
-  backgroundColor: "#FFFFFF",
-  border: "1px solid #CED4DA",
+  backgroundColor: "#739FF2",
+  border: "1px solid #739FF2",
   padding: "5px 12px",
   borderRadius: "20px",
   fontSize: "14px",
   cursor: "pointer",
+  color:"white"
 }
 };

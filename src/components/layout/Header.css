@@ -144,7 +144,7 @@
 /* ========== Search Box ========== */
 .search-box {
   margin-left: auto;
-  width: 300px;
+  width: 470px;
   height: 36px;
   border-radius: 20px;
   background: #f7f7f7;
@@ -200,9 +200,10 @@
   padding: 0;
   margin: 0;
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 12px;
+  /* flex-direction: column; */
+  gap: 50px;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 /* 링크만 클릭 */

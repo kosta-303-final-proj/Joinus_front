@@ -15,6 +15,8 @@ const username = userInfo?.username;
 
     const [comment, setComment] = useState(''); // ← 여기 추가
     const [comments, setComments] = useState([]); // 댓글 리스트 (있으면)
+    const canVote = !proposal.gbProductId && !proposal.rejectReason;
+    
 
 
     // 댓글 등록 함수
@@ -27,7 +29,7 @@ const username = userInfo?.username;
 
       myAxios().post("/writeComment", {
         proposalId: id,
-        username: memberUsername,
+        memberUsername: memberUsername,
         content: comment // 여기서 textarea 내용 전달
       })
       .then(res => {
@@ -40,6 +42,9 @@ const username = userInfo?.username;
 
     //댓글 get 함수
     const getComment = () => {
+      const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+      const memberUsername = userInfo.username;
+
       myAxios().get(`getComment/${id}`)
       .then(res=>{
         console.log(res)
@@ -80,15 +85,18 @@ const username = userInfo?.username;
     const [isDdabong, setIsDdabong] = useState(false);
 
     const handleVote = () => {
-if (!username) return alert("로그인이 필요합니다.");
+      if (!username) return alert("로그인이 필요합니다.");
+      if (!canVote) return alert("검토 대기 상태에서만 투표할 수 있습니다.");
 
-      myAxios().get("/proposalDdabong", { params: { proposalId: id, username: username } })
-        .then(res => {
-          const voted = res.data; // true/false
-          setIsDdabong(voted);
-          setVoteCount(prev => voted ? prev + 1 : prev - 1);
-        })
-        .catch(err => console.log(err));
+      myAxios().get("/proposalDdabong", {
+        params: { proposalId: id, username }
+      })
+      .then(res => {
+        const voted = res.data;
+        setIsDdabong(voted);
+        setVoteCount(prev => voted ? prev + 1 : prev - 1);
+      })
+      .catch(err => console.log(err));
     };
 
     useEffect(() => {
@@ -190,12 +198,14 @@ useEffect(() => {
                             
                             <div style={{display:"flex",alignItems: "center", justifyContent:'space-between'}}>
                                 <div style={{display:'flex'}}>
-                                  <img src={isDdabong ? "/colorddabong.png" : "/ddabong.png"} style={{width:"25px", height:'25px', marginRight:'10px'}}/>
+                                  <img src={isDdabong ? "/colorddabong.png" : "/ddabong.png"} style={{width:"25px", height:'25px', marginRight:'10px', opacity: canVote ? 1 : 0.4}}/>
                                   <div style={{fontSize:'24px', marginRight:'20px'}}>{voteCount}</div>
-                                  <Button style={{backgroundColor:'#739FF2', width:"120px", height:"35px", fontSize:"16px", padding:"0", border:'none', marginRight:'10px'}}
-                                    onClick={handleVote}
-                                  >
-                                    {isDdabong ? "취소하기" : "투표하기"}
+                                  <Button style={{ backgroundColor: canVote ? '#739FF2' : '#d1d9e6', width: "120px",
+                                          height: "35px",fontSize: "16px",padding: "0", border: 'none', cursor: canVote ? 'pointer' : 'not-allowed'}}
+                                    disabled={!canVote} onClick={handleVote}>
+                                    {canVote
+                                      ? (isDdabong ? "취소하기" : "투표하기")
+                                      : "투표 불가"}
                                   </Button>
                                 </div>
                                 <div>

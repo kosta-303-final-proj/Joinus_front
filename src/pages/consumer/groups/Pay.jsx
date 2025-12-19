@@ -91,6 +91,7 @@ const username = userInfo?.username;
                 totalAmount,
                 usingPoint,
                 shipRecipient,
+                email,
                 phone,
                 postcode, //우편번호
                 streetAddress, // 도로명 주소

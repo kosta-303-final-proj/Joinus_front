@@ -24,6 +24,8 @@ export default function ShopCartList() {
     fetchCartList();
   }, []);
 
+  
+
 
   const deleteCartList = async (cartId) => {
     try {

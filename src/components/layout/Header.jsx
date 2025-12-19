@@ -135,7 +135,7 @@ export default function Header() {
             <li><Link to="/mypage/shopCartList">장바구니</Link></li>
             <li><Link to="/mypage/orderList">주문배송</Link></li>
             <li><Link to="/proposalWrite">제안하기</Link></li>
-            <li><Link to="/contact/supply">납품문의</Link></li>
+            <li><Link to="/Partnership">납품문의</Link></li>
 
           </ul>
         </div>
@@ -191,25 +191,25 @@ export default function Header() {
         <div className="dropdown-inner">
           {hoverMenu === "group" && (
             <ul>
-              <li><Link to="/group-purchase">전체 보기</Link></li>
-              <li><Link to="/group-purchase/beauty">뷰티</Link></li>
-              <li><Link to="/group-purchase/fashion">패션</Link></li>
-              <li><Link to="/group-purchase/electronics">전자기기</Link></li>
-              <li><Link to="/group-purchase/home-living">홈앤리빙</Link></li>
-              <li><Link to="/group-purchase/food">식품</Link></li>
-              <li><Link to="/group-purchase/sports">스포츠</Link></li>
+              <li><Link to="/gbProductList">공구 전체 보기</Link></li>
+              <li><Link to="/gbProductList?category=뷰티">뷰티</Link></li>
+              <li><Link to="/gbProductList?category=패션">패션</Link></li>
+              <li><Link to="/gbProductList?category=전자기기">전자기기</Link></li>
+              <li><Link to="/gbProductList?category=홈&리빙">홈앤리빙</Link></li>
+              <li><Link to="/gbProductList?category=식품">식품</Link></li>
+              <li><Link to="/gbProductList?category=스포츠">스포츠</Link></li>
             </ul>
           )}
 
           {hoverMenu === "suggest" && (
             <ul>
-              <li><Link to="/proposalsList">전체 보기</Link></li>
-              <li><Link to="/proposalsList/beauty">뷰티</Link></li>
-              <li><Link to="/proposalsList/fashion">패션</Link></li>
-              <li><Link to="/proposalsList/electronics">전자기기</Link></li>
-              <li><Link to="/proposalsList/home-living">홈앤리빙</Link></li>
-              <li><Link to="/proposalsList/food">식품</Link></li>
-              <li><Link to="/proposalsList/sports">스포츠</Link></li>
+              <li><Link to="/proposalsList">제안 전체 보기</Link></li>
+              <li><Link to="/proposalsList?category=뷰티">뷰티</Link></li>
+              <li><Link to="/proposalsList?category=패션">패션</Link></li>
+              <li><Link to="/proposalsList?category=전자기기">전자기기</Link></li>
+              <li><Link to="/proposalsList?category=홈&리빙">홈앤리빙</Link></li>
+              <li><Link to="/proposalsList?category=식품">식품</Link></li>
+              <li><Link to="/proposalsList?category=스포츠">스포츠</Link></li>
             </ul>
           )}
         </div>

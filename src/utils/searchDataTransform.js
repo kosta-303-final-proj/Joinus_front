@@ -36,6 +36,8 @@ export const transformGbProduct = (product) => {
     rating: null,  // 평점은 추후 구현
     currentParticipants: product.participants || 0,  // participants → currentParticipants
     maxParticipants: product.minParticipants || 0,  // minParticipants → maxParticipants
+    createdAt: product.createdAt,   // 최신순
+    deadlineAt: product.endDate,     // 마감순
     deadlineTime: calculateDeadlineTime(product.endDate),  // endDate → deadlineTime 계산
     badge: (product.participants >= 100) ? 'HOT' : null,  // HOT 배지 계산
     image: product.thumbnailFileName ? `${baseUrl}/gbProductImageView?filename=${product.thumbnailFileName}` : null,  // 이미지 URL

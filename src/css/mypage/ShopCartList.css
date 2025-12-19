@@ -27,7 +27,6 @@
 }
 
 .productList {
-  max-height: 400px;
   overflow-y: auto;
   margin-top: 5px;
 }

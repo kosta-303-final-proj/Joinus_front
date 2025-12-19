@@ -10,47 +10,42 @@ export default function GBProductList() {
   const [searchParams] = useSearchParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  const categoryParam = searchParams.get("category");
+
+  const allCategories = ["뷰티", "패션", "전자기기", "홈&리빙", "식품", "스포츠"];
+  const sortOptions = ["최신순", "찜순", "마감순"];
+  const allStatus = ["진행중","취소"];
 
   // 카테고리 및 정렬 클릭 적용
-  const [selectCategory, setSelectCategory] = useState(["전체"]);//초기값
+  const [selectCategory, setSelectCategory] = useState([]);
   const [selectedSort, setSelectedSort] = useState("최신순");
-  const [selectStatus, setSelectStatus] = useState(["전체"]);
-
-  const allCategories = ["전체", "뷰티", "패션", "전자기기", "홈&리빙", "식품", "스포츠"];
-  const sortOptions = ["최신순", "투표순"];
-  const allStatus = ["전체","진행중","마감","취소"];
+  const [selectStatus, setSelectStatus] = useState(["진행중"]);
 
   const handleCartegopryClick = (category) => {
-    if (category === "전체") {
-      setSelectCategory(["전체"]);
+    let newCategories = [...selectCategory];
+
+    if (newCategories.includes(category)) {
+      newCategories = newCategories.filter((c) => c !== category);
     } else {
-      let newCategories = [...selectCategory];
-      if (newCategories.includes("전체")) newCategories = [];
-      if (newCategories.includes(category)) {
-        newCategories = newCategories.filter((c) => c !== category);
-      } else {
-        newCategories.push(category);
-      }
-      if (newCategories.length === 0) newCategories = ["전체"];
-      setSelectCategory(newCategories);
+      newCategories.push(category);
     }
+
+    setSelectCategory(newCategories);
   };
 
   // 진행상태 (중복 선택 가능)
   const handleStatusClick = (status) => {
-    if (status === "전체") {
-      setSelectStatus(["전체"]);
+    let newStatus = [...selectStatus];
+
+    if (newStatus.includes(status)) {
+      newStatus = newStatus.filter(s => s !== status);
     } else {
-      let newStatus = [...selectStatus];
-      if (newStatus.includes("전체")) newStatus = [];
-      if (newStatus.includes(status)) {
-        newStatus = newStatus.filter(s => s !== status);
-      } else {
-        newStatus.push(status);
-      }
-      if (newStatus.length === 0) newStatus = ["전체"];
-      setSelectStatus(newStatus);
+      newStatus.push(status);
     }
+
+    if (newStatus.length === 0) return;
+    setSelectStatus(newStatus);
   };
 
   const handleSortClick = (sort) => {
@@ -59,29 +54,44 @@ export default function GBProductList() {
 
   // 필터링 적용
   const filteredProducts = products.filter((p) => {
-    // 카테고리 필터
-    const categoryCheck = selectCategory.includes("전체") || selectCategory.includes(p.category);
+    const categoryCheck =
+      selectCategory.length === 0 || selectCategory.includes(p.category);
 
-    // 진행상태 필터
-    const statusCheck = selectStatus.includes("전체") || selectStatus.includes(p.status);
+    const statusCheck = selectStatus.includes(p.status);
 
     return categoryCheck && statusCheck;
   });
+
+  // ✅ 정렬 적용 (마감순: 숫자 작은 것부터)
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+  if (selectedSort === "최신순") {
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  }
+
+  if (selectedSort === "투표순") {
+    return b.currentParticipants - a.currentParticipants;
+  }
+
+  if (selectedSort === "마감순") {
+    return new Date(a.deadlineAt) - new Date(b.deadlineAt);
+  }
+
+  return 0;
+});
+
 
   // URL에서 type 파라미터 추출
   // type 파라미터가 없으면 ongoing로 설정
   const type = searchParams.get("type") || "ongoing";
 
-  // useEffect가 컴포넌트 마운트될 때 실행
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
         const response = await myAxios().get('/api/gb-products', {
-          params: { type },  
+          params: { type },
         });
 
-        // transformGbProduct를 사용하여 데이터 변환
         const transformed = response.data.map(transformGbProduct);
         setProducts(transformed);
       } catch (e) {
@@ -100,6 +110,14 @@ export default function GBProductList() {
     if (type === "popular") return "인기 공구";
     return "진행중 공구";
   };
+
+  useEffect(() => {
+    if (categoryParam) {
+      setSelectCategory([categoryParam]);
+    } else {
+      setSelectCategory([]);
+    }
+  }, [categoryParam]);
 
   return (
     <>
@@ -183,7 +201,7 @@ export default function GBProductList() {
               <div style={{ textAlign: 'center', padding: '20px' }}>공구가 없습니다.</div>
             ) : (
               <div className="card-grid" style={{ gap: "20px" }}>
-              {filteredProducts.map((item) => (
+              {sortedProducts.map((item) => (
                 <GroupBuyCard
                   key={item.id}
                   image={item.image}
@@ -262,7 +280,8 @@ const styles = {
   },
 
   tag: {
-    backgroundColor: "#E7EBF3",
+    backgroundColor: "#FFFFFF",
+    border: "1px solid #CED4DA",
     padding: "5px 12px",
     borderRadius: "20px",
     fontSize: "14px",
@@ -270,11 +289,12 @@ const styles = {
     },
 
 tagWhite: {
-  backgroundColor: "#FFFFFF",
-  border: "1px solid #CED4DA",
+  backgroundColor: "#739FF2",
+  border: "1px solid #739FF2",
   padding: "5px 12px",
   borderRadius: "20px",
   fontSize: "14px",
   cursor: "pointer",
+  color:"white"
 }
 };
