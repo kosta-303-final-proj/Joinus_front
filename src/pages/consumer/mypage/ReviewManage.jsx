@@ -9,7 +9,7 @@ export default function ReviewManage({children}) {
     const [pointBalance, setPointBalance] = useState(0);
 
     useEffect(() => {
-        const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+        const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
         const username = userInfo?.username;
         myAxios().get(`/mypage/reviewInfo/${username}`)
             .then(res => {

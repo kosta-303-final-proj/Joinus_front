@@ -35,8 +35,8 @@ const AdminHeader = ({ title = '페이지 제목' }) => {
 
   const handleLogout = () => {
     setShowUserMenu(false);
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
+    sessionStorage.removeItem('accessToken');
+    sessionStorage.removeItem('refreshToken');
     alert('로그아웃되었습니다.');
     navigate('/admin/login');
   };

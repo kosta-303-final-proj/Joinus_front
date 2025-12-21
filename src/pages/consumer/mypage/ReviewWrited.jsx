@@ -11,7 +11,7 @@ export default function ReviewWrited() {
      useEffect(() => {
         const fetchReviewList = async () => {
           try {
-            const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+            const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
             const username = userInfo?.username;
 
             const response = await myAxios().get(`/mypage/getReviewList`, {
@@ -27,7 +27,7 @@ export default function ReviewWrited() {
 
     const deleteReview = async (reviewId) => {
         try {
-            const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+            const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
             const username = userInfo?.username;
 
             await myAxios().post("/mypage/deleteReview", {

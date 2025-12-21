@@ -9,7 +9,7 @@ export default function PayComplete(){
     const location = useLocation(); // CheckoutPage에서 전달받은 state
     const searchParams = new URLSearchParams(window.location.search);
    // 로그인 정보 확인
-    const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+    const userInfo = JSON.parse(sessionStorage.getItem("userInfo") || "{}");
     const memberUsername = userInfo.username;
 
     if (!memberUsername) {

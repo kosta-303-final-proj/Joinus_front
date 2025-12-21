@@ -5,9 +5,15 @@ import { myAxios, baseUrl } from "../../../config";
 import { useNavigate } from "react-router-dom";
 
 export default function InterestList() {
+//     // 로그인 유저 정보 (추가)
+const userInfo =
+  JSON.parse(sessionStorage.getItem("userInfo")) ||
+  JSON.parse(localStorage.getItem("userInfo"));
+const username = userInfo?.username;
 
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  const username = userInfo?.username;
+  // 로그인 유저 정보
+  // const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  // const username = userInfo?.username;
 
   const [interestList, setInterestList] = useState([]);
   const [checkedItems, setCheckedItems] = useState({});
@@ -16,6 +22,7 @@ export default function InterestList() {
   // ⭐ 페이징 상태
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const size = 10;
 
   const navigate = useNavigate();
 
@@ -41,77 +48,78 @@ export default function InterestList() {
 
     setCheckedItems(updatedChecked);
 
-    const allSelected = interestList.every(item => updatedChecked[item.id]);
+    const allSelected = interestList.every(
+      item => updatedChecked[item.id]
+    );
     setAllChecked(allSelected);
   };
 
+  // 관심상품 조회 (페이징)
   useEffect(() => {
     const fetchInterestList = async () => {
-        try {
+      try {
         const response = await myAxios().get("/interestList", {
-            params: {
+          params: {
             username,
             page,
-            size: 10
-            }
+            size
+          }
         });
 
         const data = response.data;
-console.log("interestList response:", data);
-        // ✅ myAxios가 배열을 주는 경우 + Page 둘 다 대응
-        // setInterestList(Array.isArray(data) ? data : data?.content ?? []);
-        // setTotalPages(Array.isArray(data) ? 1 : data?.totalPages ?? 0);
 
-        setTotalPages(Math.ceil(data.length / 10));
+        // Page 객체 대응
+        setInterestList(data?.content ?? []);
+        setTotalPages(data?.totalPages ?? 0);
 
-        const start = page * 10;
-        const end = start + 10;
-        setInterestList(data.slice(start, end));
-
-        // setInterestList(data?.content ?? []);
-        // setTotalPages(data?.totalPages ?? 0);
         setCheckedItems({});
         setAllChecked(false);
 
-        } catch (error) {
+      } catch (error) {
         console.error("관심상품 조회 실패", error);
-        }
+      }
     };
 
     if (username) fetchInterestList();
-    }, [username, page]);
+  }, [username, page]);
 
-    const deleteInterest = async (id) => {
-        try {
-        await myAxios().post("/deleteWish", { id, username });
-        setInterestList(prev => prev.filter(item => item.id !== id));
-        } catch (error) {
-        console.error("관심상품 삭제 실패", error);
-        }
-    };
+  // 개별 삭제
+  const deleteInterest = async (id) => {
+    try {
+      await myAxios().post("/deleteWish", { id, username });
+      setInterestList(prev => prev.filter(item => item.id !== id));
+    } catch (error) {
+      console.error("관심상품 삭제 실패", error);
+    }
+  };
 
-    const deleteSelected = async () => {
-        const selectedIds = Object.keys(checkedItems).filter(id => checkedItems[id]);
+  // 선택 삭제
+  const deleteSelected = async () => {
+    const selectedIds = Object.keys(checkedItems).filter(
+      id => checkedItems[id]
+    );
 
-        if (selectedIds.length === 0) {
-        alert("선택된 항목이 없습니다.");
-        return;
-        }
+    if (selectedIds.length === 0) {
+      alert("선택된 항목이 없습니다.");
+      return;
+    }
 
-        try {
-        await Promise.all(
-            selectedIds.map(id =>
-            myAxios().post("/deleteAllWish", { id, username })
-            )
-        );
+    try {
+      await Promise.all(
+        selectedIds.map(id =>
+          myAxios().post("/deleteAllWish", { id, username })
+        )
+      );
 
-        setInterestList(prev =>
-            prev.filter(item => !selectedIds.includes(String(item.id)))
-        );
-        } catch (error) {
-        console.error("선택 삭제 실패", error);
-        }
-    };
+      setInterestList(prev =>
+        prev.filter(item => !selectedIds.includes(String(item.id)))
+      );
+
+    } catch (error) {
+      console.error("선택 삭제 실패", error);
+    }
+  };
+
 
   return (
     <>

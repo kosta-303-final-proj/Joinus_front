@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { myAxios, baseUrl } from '../../config';
 import './Login.css';
 
 export default function Login() {
@@ -23,33 +24,51 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      const url = 'http://localhost:8080';
+      // const url = 'http://localhost:8080';
 
       // FormData로 username, password 전송
       const formDataToSend = new FormData();
       formDataToSend.append('username', formData.userId);
       formDataToSend.append('password', formData.password);
 
-      const response = await fetch(`${url}/login`, {
-        method: 'POST',
-        body: formDataToSend,
-      });
-
-      if (!response.ok) {
-        throw new Error('로그인에 실패했습니다.');
-      }
-
-    // 응답 헤더에서 Authorization 토큰 가져오기
-    const authHeader = response.headers.get('Authorization');
-    if (authHeader) {
-      const tokenData = JSON.parse(authHeader);
-      localStorage.setItem('access_token', tokenData.access_token);
-      localStorage.setItem('refresh_token', tokenData.refresh_token);
+      // const response = await fetch(`${url}/login`, {
+      //   method: 'POST',
+      //   body: formDataToSend,
+      // });
+      
+      // myAxios를 사용하여 '/login' 엔드포인트로 POST 요청을 보냄
+      // formDataToSend에는 로그인 폼에서 입력한 사용자 아이디와 비밀번호가 담겨 있다.
+      // 이 요청을 통해 백엔드에서 인증 처리 후 적절한 응답(토큰 또는 사용자 정보 등)을 반환받는다.
+      const response = await myAxios().post('/login', formDataToSend);
+      
+      // axios의 경우 response.ok가 없습니다. response.status로 상태를 확인해야 합니다.
+      // if (!response.ok) {
+      //   throw new Error('로그인에 실패했습니다.');
+      // }
+  
+      
+    // 응답 헤더에서 Authorization 토큰 가져오기 (표준 Bearer 형식)
+    // myAxios의 interceptor가 자동 저장하지만, 확실히 하기 위해
+    const authHeader = response.headers['authorization'] || response.headers['Authorization'];
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const accessToken = authHeader.replace('Bearer ', '');
+      sessionStorage.setItem('access_token', accessToken);
+    }
+    
+    // Refresh Token은 별도 헤더에서
+    const refreshHeader = response.headers['x-refresh-token'] || response.headers['X-Refresh-Token'];
+    if (refreshHeader && refreshHeader.startsWith('Bearer ')) {
+      const refreshToken = refreshHeader.replace('Bearer ', '');
+      sessionStorage.setItem('refresh_token', refreshToken);
     }
 
     // 응답 body에서 사용자 정보 가져오기
-    const userInfo = await response.json();
-    localStorage.setItem('userInfo', JSON.stringify(userInfo));
+    // axios로 API를 호출하면 fetch와 다르게 response.json()이 아니라,
+    // 서버 응답 데이터는 응답 객체의 data 프로퍼티(response.data)로 바로 얻을 수 있습니다.
+    // 그래서 아래와 같이 바꿔야 정상 동작합니다.
+    // 응답 body에서 사용자 정보 가져오기
+    const userInfo = response.data;
+    sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
 
     // ROLE에 따라 리다이렉트 분기
     const userRole = userInfo.roles;

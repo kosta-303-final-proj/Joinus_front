@@ -122,7 +122,7 @@ export default function GBProductDetail() {
         alert("모든 옵션을 선택해주세요");
         return;
     }
-    const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+    const userInfo = JSON.parse(sessionStorage.getItem("userInfo") || "{}");
     const memberUsername = userInfo.username;
 
     myAxios().post(`/addCart`, {
@@ -143,7 +143,7 @@ export default function GBProductDetail() {
 
     /* ========================= 찜하기 ========================= */
     const handleWishList = () => {
-      const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+      const userInfo = JSON.parse(sessionStorage.getItem("userInfo") || "{}");
       const memberUsername = userInfo.username;
 
       if (!memberUsername) {
@@ -161,7 +161,7 @@ export default function GBProductDetail() {
     }
 
     useEffect(() => {
-      const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+      const userInfo = JSON.parse(sessionStorage.getItem("userInfo") || "{}");
       const memberUsername = userInfo.username;
 
       if (!memberUsername) {

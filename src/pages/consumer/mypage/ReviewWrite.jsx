@@ -52,7 +52,7 @@ export default function ReviewWrite() {
     useEffect(() => {
         const fetchReviewList = async () => {
             try {
-                const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+                const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
                 const username = userInfo?.username;
 
                 const res = await myAxios().get(
@@ -76,7 +76,7 @@ export default function ReviewWrite() {
         return;
         }
 
-        const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+        const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
         const username = userInfo?.username;
 
         const formData = new FormData();

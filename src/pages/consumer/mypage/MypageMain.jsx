@@ -21,7 +21,7 @@ export default function MypageMain() {
   // ===============================
   const [wishlist, setWishlist] = useState([]);
 
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
   const username = userInfo?.username;
 
   // ===============================

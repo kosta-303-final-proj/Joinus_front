@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { baseUrl, myAxios } from "../../../config";
 
 export default function ProposalDetailConsumar() {
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
 const username = userInfo?.username;
     const {id} = useParams();
     const [proposal, setPropsal] = useState({id:id,category:'',description:'',productName:'',memberName:'',originalPrice:'',createdAt:'',originalSiteUrl:'',abroadShippingCost:'',imageUrl:'', gbProductId:'', rejectReason:'', status:'', memberUsername:'' });
@@ -23,7 +23,7 @@ const username = userInfo?.username;
     const submit = () => {
       if (!username) return alert("로그인이 필요합니다.");
 
-        const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+        const userInfo = JSON.parse(sessionStorage.getItem("userInfo") || "{}");
         const memberUsername = userInfo.username;
 
 
@@ -42,7 +42,7 @@ const username = userInfo?.username;
 
     //댓글 get 함수
     const getComment = () => {
-      const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+      const userInfo = JSON.parse(sessionStorage.getItem("userInfo") || "{}");
       const memberUsername = userInfo.username;
 
       myAxios().get(`getComment/${id}`)

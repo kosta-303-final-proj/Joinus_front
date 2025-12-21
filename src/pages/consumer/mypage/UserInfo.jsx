@@ -5,7 +5,7 @@ import { myAxios } from "../../../config";
 
 export default function UserInfo() {
 
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
   const username = userInfo?.username;  
 
   const [member, setMember] = useState({username:username, grade:'', pointBalance:'', name:''});

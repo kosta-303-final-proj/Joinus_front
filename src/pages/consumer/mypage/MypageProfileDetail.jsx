@@ -6,7 +6,7 @@ import axios from "axios";
 export default function MypageProfileDetail() {
   const navigate = useNavigate();
 
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
   const username = userInfo?.username;
 
   const [data, setData] = useState({

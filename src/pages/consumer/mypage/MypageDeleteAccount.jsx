@@ -13,7 +13,7 @@ export default function MypageDeleteAccount() {
   const [otherReason, setOtherReason] = useState("");
 
 useEffect(() => {
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
   const username = userInfo?.username;
 
   if (!username) return; // 🔒 안전장치
@@ -28,7 +28,7 @@ useEffect(() => {
 
 
 const handleDelete = () => {
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
   const username = userInfo?.username;
 
   if (!reason) {
@@ -49,7 +49,7 @@ const handleDelete = () => {
   })
   .then(() => {
     alert("회원탈퇴가 완료되었습니다.");
-    localStorage.removeItem("userInfo");
+    sessionStorage.removeItem("userInfo");
     navigate("/");
   })
   .catch(err => console.error(err));
