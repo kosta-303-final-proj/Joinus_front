@@ -11,6 +11,8 @@ const userInfo =
   JSON.parse(localStorage.getItem("userInfo"));
 const username = userInfo?.username;
 
+const [timeLeftMap, setTimeLeftMap] = useState({});
+
   // 로그인 유저 정보
   // const userInfo = JSON.parse(localStorage.getItem("userInfo"));
   // const username = userInfo?.username;
@@ -119,6 +121,59 @@ const username = userInfo?.username;
       console.error("선택 삭제 실패", error);
     }
   };
+  
+const parseEndDate = (endDate) => {
+  if (!endDate) return null;
+
+  // ✅ Timestamp 객체 대응
+  if (typeof endDate === "object" && endDate.time) {
+    return endDate.time;
+  }
+
+  // 문자열일 경우도 대비
+  if (typeof endDate === "string") {
+    return new Date(endDate.replace(" ", "T")).getTime();
+  }
+
+  return null;
+};
+
+useEffect(() => {
+  if (interestList.length === 0) return;
+
+  const interval = setInterval(() => {
+    const now = Date.now();
+    const updated = {};
+
+    interestList.forEach(item => {
+      const endTime = parseEndDate(item.product?.endDate);
+
+      if (!endTime) {
+        updated[item.id] = "날짜 없음";
+        return;
+      }
+
+      const distance = endTime - now;
+
+      if (distance <= 0) {
+        updated[item.id] = "종료";
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((distance / (1000 * 60)) % 60);
+      const seconds = Math.floor((distance / 1000) % 60);
+
+      updated[item.id] =
+        `${days}일 ${hours}시간 ${minutes}분 ${seconds}초`;
+    });
+
+    setTimeLeftMap(updated);
+  }, 1000);
+
+  return () => clearInterval(interval);
+}, [interestList]);
 
 
   return (
@@ -138,6 +193,7 @@ const username = userInfo?.username;
           {/* 헤더 */}
           <div style={{ display: "flex", gap: "15px", alignItems: "center" }}>
             <Label style={{ color: "black", fontSize: "12px", margin: "0 500px 0 0 " }}>상품명</Label>
+            <Label style={{ color: "black", fontSize: "12px", margin: "0 35px 0 0" }}>마감날짜</Label>
             <Label style={{ color: "black", fontSize: "12px", margin: "0 35px 0 0" }}>주문</Label>
           </div>
         </FormGroup>
@@ -163,6 +219,10 @@ const username = userInfo?.username;
                     {item.product?.name}
                 </div>
                 </div>
+                <div style={{ fontSize: "12px", color: "red", minWidth: "100px", marginRight: "20px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {timeLeftMap[item.id] ?? "계산 중"}
+                </div>
+                
 
                 {/* 삭제 버튼 */}
                 <div style={{ display: "flex", flexDirection: "column", gap: "5px", marginLeft: "auto",padding:'10px' }}>

@@ -122,7 +122,9 @@ export default function GBProductDetail() {
         alert("모든 옵션을 선택해주세요");
         return;
     }
-    const userInfo = JSON.parse(sessionStorage.getItem("userInfo") || "{}");
+    const userInfo =
+      JSON.parse(sessionStorage.getItem("userInfo")) ||
+      JSON.parse(localStorage.getItem("userInfo"));
     const memberUsername = userInfo.username;
 
     myAxios().post(`/addCart`, {
