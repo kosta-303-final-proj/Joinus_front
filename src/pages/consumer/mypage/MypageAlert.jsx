@@ -12,7 +12,7 @@ export default function MypageAlert() {
   const itemsPerPage = 10;
 
   // 로그인 유저 정보
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
   const username = userInfo?.username;
 
   // 알림 리스트 조회

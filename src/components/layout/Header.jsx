@@ -14,8 +14,8 @@ export default function Header() {
   // ========== Login 여부 확인 ==========
   useEffect(() => {
     const checkLoginStatus = () => {
-      const accessToken = localStorage.getItem('access_token');
-      const storedUserInfo = localStorage.getItem('userInfo');
+      const accessToken = sessionStorage.getItem('access_token');
+      const storedUserInfo = sessionStorage.getItem('userInfo');
       
       if (accessToken && storedUserInfo) {
         setIsLoggedIn(true);
@@ -31,17 +31,21 @@ export default function Header() {
       }
     };
 
+    
+    // ⚠️ 주의: sessionStorage는 같은 탭에서만 작동하므로 
+    // storage 이벤트 리스너는 의미가 없을 수 있습니다.
+    // 같은 탭에서만 동기화되므로 interval만 사용하는 것을 고려하세요.
+    
+    // // storage 이벤트 리스너 추가 (다른 탭에서 로그인/로그아웃 시 동기화)
+    // window.addEventListener('storage', checkLoginStatus);
+    
     // 초기 로드 시 확인
     checkLoginStatus();
-
-    // storage 이벤트 리스너 추가 (다른 탭에서 로그인/로그아웃 시 동기화)
-    window.addEventListener('storage', checkLoginStatus);
-
     // 주기적으로 확인 (같은 탭에서 로그인/로그아웃 시)
     const interval = setInterval(checkLoginStatus, 1000);
 
     return () => {
-      window.removeEventListener('storage', checkLoginStatus);
+      // window.removeEventListener('storage', checkLoginStatus);
       clearInterval(interval);
     };
   }, []);

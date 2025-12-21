@@ -6,7 +6,7 @@ import "./AddressAdd.css";
 export default function AddressAdd() {
   const navigate = useNavigate();
 
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
   const username = userInfo?.username;
 
   // 서버로 보낼 폼 데이터

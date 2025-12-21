@@ -19,7 +19,7 @@ export default function MypageSuggestions() {
   const itemsPerPage = 10;
 
   // 로그인 정보
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
   const username = userInfo?.username;
 
   // ===============================

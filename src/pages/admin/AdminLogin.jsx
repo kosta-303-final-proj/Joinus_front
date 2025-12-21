@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { myAxios } from '../../config';
 import '../auth/Login.css';
 
 export default function AdminLogin() {
@@ -23,33 +24,30 @@ export default function AdminLogin() {
     setIsLoading(true);
 
     try {
-      const url = 'http://localhost:8080';
-
       // FormData로 username, password 전송
       const formDataToSend = new FormData();
       formDataToSend.append('username', formData.userId);
       formDataToSend.append('password', formData.password);
 
-      const response = await fetch(`${url}/login`, {
-        method: 'POST',
-        body: formDataToSend,
-      });
+      const response = await myAxios().post('/login', formDataToSend);
 
-      if (!response.ok) {
-        throw new Error('로그인에 실패했습니다.');
+      // 응답 헤더에서 Authorization 토큰 가져오기 (표준 Bearer 형식)
+      const authHeader = response.headers['Authorization'] || response.headers['authorization'];
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        const accessToken = authHeader.replace('Bearer ', '');
+        sessionStorage.setItem('access_token', accessToken);
       }
-
-      // 응답 헤더에서 Authorization 토큰 가져오기
-      const authHeader = response.headers.get('Authorization');
-      if (authHeader) {
-        const tokenData = JSON.parse(authHeader);
-        localStorage.setItem('access_token', tokenData.access_token);
-        localStorage.setItem('refresh_token', tokenData.refresh_token);
+      
+      // Refresh Token은 별도 헤더에서
+      const refreshHeader = response.headers['X-Refresh-Token'];
+      if (refreshHeader && refreshHeader.startsWith('Bearer ')) {
+        const refreshToken = refreshHeader.replace('Bearer ', '');
+        sessionStorage.setItem('refresh_token', refreshToken);
       }
 
       // 응답 body에서 사용자 정보 가져오기
-      const userInfo = await response.json();
-      localStorage.setItem('userInfo', JSON.stringify(userInfo));
+      const userInfo = response.data;
+      sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
 
       // ROLE에 따라 리다이렉트 분기
       const userRole = userInfo.roles;
@@ -60,9 +58,9 @@ export default function AdminLogin() {
       } else {
         // 일반 사용자인 경우 - 관리자 로그인 페이지에서는 관리자 권한이 필요
         alert('관리자 권한이 필요합니다.');
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        localStorage.removeItem('userInfo');
+        sessionStorage.removeItem('access_token');
+        sessionStorage.removeItem('refresh_token');
+        sessionStorage.removeItem('userInfo');
       }
     } catch (error) {
       console.error('로그인 실패:', error);

@@ -109,7 +109,7 @@ export default function ProposalDetailAdmin() {
 // 댓글 등록
 // ========================================
 const submit = () => {
-  const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+  const userInfo = JSON.parse(sessionStorage.getItem("userInfo") || "{}");
   const memberUsername = userInfo.username;
   
   if (!memberUsername) {

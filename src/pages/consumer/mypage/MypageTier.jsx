@@ -8,7 +8,7 @@ export default function MypageTier() {
   const [nextGrade, setNextGrade] = useState(null);
   const [neededAmount, setNeededAmount] = useState(0);
 
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
   const username = userInfo?.username;
 
   useEffect(() => {

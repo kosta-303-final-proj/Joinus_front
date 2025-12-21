@@ -24,7 +24,7 @@ const [subFiles, setSubFiles] = useState([null, null, null, null]); // 서버 �
 
 const submit = () => {
 
-   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+   const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
   const username = userInfo?.username;
 
   const formData = new FormData();

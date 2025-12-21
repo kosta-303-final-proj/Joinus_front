@@ -27,8 +27,8 @@ export default function CnclExchRtrnHisList() {
 
   // 로그인 userInfo+access_token 체크
   useEffect(() => {
-    const userInfoRaw = localStorage.getItem("userInfo");
-    const accessToken = localStorage.getItem("access_token");
+    const userInfoRaw = sessionStorage.getItem("userInfo");
+    const accessToken = sessionStorage.getItem("access_token");
 
     let userInfo = null;
     try {

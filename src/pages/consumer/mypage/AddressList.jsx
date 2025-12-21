@@ -8,7 +8,7 @@ export default function AddressList() {
   const [addressList, setAddressList] = useState([]);
 
   // ✅ 로그인 유저 정보
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
   const username = userInfo?.username;
 
   const handleAddAddress = () => {

@@ -7,7 +7,7 @@ export default function AddressEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
   const username = userInfo?.username;
 
   const [form, setForm] = useState({

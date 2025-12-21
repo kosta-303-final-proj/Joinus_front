@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { baseUrl } from '../../config';
+import { myAxios } from '../../config';
 import '../../styles/components/button.css';
 import './FindPassword.css';
 
@@ -30,24 +30,13 @@ export default function FindPassword() {
     setTempPassword(null);
 
     try {
-      // 일반 fetch 사용 (인증 불필요한 API)
-      const response = await fetch(`${baseUrl}/find-pw`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: formData.userId,
-          name: formData.name,
-          email: formData.email
-        })
+      const response = await myAxios().post('/find-pw', {
+        username: formData.userId,
+        name: formData.name,
+        email: formData.email
       });
 
-      if (!response.ok) {
-        throw new Error('비밀번호 찾기에 실패했습니다.');
-      }
-
-      const password = await response.text(); // 백엔드가 String으로 반환
+      const password = response.data; // 백엔드가 String으로 반환
       
       if (password && password !== 'null') {
         setTempPassword(password);

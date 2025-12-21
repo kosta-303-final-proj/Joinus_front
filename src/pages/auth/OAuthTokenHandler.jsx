@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { baseUrl } from '../../config';
 import { myAxios } from '../../config';
 
 /**
@@ -25,31 +24,24 @@ export default function OAuthTokenHandler() {
           return;
         }
 
-        // 세션에서 토큰 교환 API 호출
-        const response = await fetch(`${baseUrl}/api/auth/oauth/token`, {
-          method: 'GET',
-          credentials: 'include', // 쿠키(세션) 포함 필수
-          headers: {
-            'Content-Type': 'application/json',
-          },
+        const response = await myAxios().get('/api/auth/oauth/token', {
+          withCredentials: true,  // 쿠키(세션) 포함
         });
 
-        if (!response.ok) {
-          if (response.status === 401) {
-            throw new Error('토큰이 만료되었거나 이미 사용되었습니다.');
-          }
-          throw new Error('토큰 교환에 실패했습니다.');
-        }
-
-        // 토큰 받기
-        const tokenData = await response.json();
+        const tokenData = response.data;
         
-        // 토큰 저장
+        // 토큰 저장 (Bearer 접두사 제거)
         if (tokenData.access_token) {
-          localStorage.setItem('access_token', tokenData.access_token);
+          const accessToken = tokenData.access_token.startsWith('Bearer ') 
+            ? tokenData.access_token.replace('Bearer ', '') 
+            : tokenData.access_token;
+          sessionStorage.setItem('access_token', accessToken);
         }
         if (tokenData.refresh_token) {
-          localStorage.setItem('refresh_token', tokenData.refresh_token);
+          const refreshToken = tokenData.refresh_token.startsWith('Bearer ') 
+            ? tokenData.refresh_token.replace('Bearer ', '') 
+            : tokenData.refresh_token;
+          sessionStorage.setItem('refresh_token', refreshToken);
         }
 
         // 사용자 정보 가져오기
@@ -59,7 +51,7 @@ export default function OAuthTokenHandler() {
         const response = await myAxios().post('/user');
         if (response.status === 200) {
           userInfo = response.data;
-          localStorage.setItem('userInfo', JSON.stringify(userInfo));
+          sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
         }
         } catch (error) {
           console.warn('사용자 정보 가져오기 실패:', error);

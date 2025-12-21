@@ -8,7 +8,7 @@ export default function OrderList({ id }) {
   const navigate = useNavigate();
 
   //  사용자 정보 추가
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
   const username = userInfo?.username;
 
   //  리뷰 모달 상태

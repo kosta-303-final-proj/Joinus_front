@@ -4,7 +4,7 @@ import { Link, useParams, useLocation, useNavigate  } from "react-router-dom";
 import { myAxios , baseUrl} from "../../../config";
 
 export default function Pay(){
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
 const username = userInfo?.username;
     const [addressType, setAddressType] = useState("new");
     

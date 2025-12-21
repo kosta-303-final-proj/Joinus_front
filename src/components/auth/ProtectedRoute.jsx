@@ -6,9 +6,9 @@ import { Navigate } from 'react-router-dom';
  * @param {string[]} requiredRoles - 필요한 권한 (선택)
  */
 export default function ProtectedRoute({ children, requiredRoles = null }) {
-  // localStorage에서 토큰과 사용자 정보 확인
-  const accessToken = localStorage.getItem('access_token');
-  const userInfoStr = localStorage.getItem('userInfo');
+  // sessionStorage 토큰과 사용자 정보 확인
+  const accessToken = sessionStorage.getItem('access_token');
+  const userInfoStr = sessionStorage.getItem('userInfo');
   
   // 로그인 안 되어 있으면 로그인 페이지로 리다이렉트
   if (!accessToken) {
