@@ -366,12 +366,10 @@ const GBProductCreatePage = () => {
       productFormData.append('note', formData.productMemo || '');
       productFormData.append('status', formData.status);
 
-      // ✅ proposalId 추가
       if (formData.proposalId) {
         productFormData.append('proposalId', extractProposalId(formData.proposalId));
       }
 
-      // 이미지 추가
       if (mainImage) productFormData.append('thumbnail', mainImage);
       if (additionalImages.length > 0) {
         additionalImages.forEach(img => productFormData.append('images', img));
@@ -409,9 +407,18 @@ const GBProductCreatePage = () => {
 
       alert(`공구가 ${isEditMode ? '수정' : '등록'}되었습니다!`);
 
-      // ✅ 제안 기반 등록이면 알림 안내
+      // 제안 기반 등록이면 알림 안내
       if (formData.proposalId) {
         alert('제안자와 투표자들에게 알림이 발송되었습니다.');
+      }
+
+      // 취소 상태로 변경 시 알림
+      if (formData.status === 'CANCELLED') {
+        alert(
+          '공구가 취소되었습니다.\n' +
+          '참여자들에게 알림 발송 및 환불 처리를 진행해주세요.\n' +
+          '(참여인원 모달에서 "공구 취소" 버튼 이용)'
+        );
       }
 
       if (window.opener && !window.opener.closed) {

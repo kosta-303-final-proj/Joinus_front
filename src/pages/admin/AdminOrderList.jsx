@@ -102,7 +102,7 @@ export default function AdminOrderList() {
     return (
         <div className="admin-layout">
             <div className="main-content">
-                <AdminHeader title="공구 관리 > 구매 대기 상품" />
+                <AdminHeader title="구매 대기 상품" />
                 
                 <div className="content-area">
                     {/* 검색 필터 */}
@@ -122,13 +122,13 @@ export default function AdminOrderList() {
                         <table className="admin-table">
                             <thead>
                                 <tr>
-                                    <th>공구번호</th>
-                                    <th>공구명</th>
-                                    <th>수량</th>
-                                    <th>공구마감일</th>
-                                    <th>가격</th>
-                                    <th>관리자 주문번호</th>
-                                    <th>관리자 주문일</th>
+                                    <th style={{ width: '100px' }}>공구번호</th>
+                                    <th style={{ width: '30%' }}>공구명</th>
+                                    <th style={{ width: '60px' }}>수량</th>
+                                    <th style={{ width: '100px' }}>공구마감일</th>
+                                    <th style={{ width: '100px' }}>가격</th>
+                                    <th style={{ width: '100px' }}>관리자 주문번호</th>
+                                    <th style={{ width: '100px' }}>관리자 주문일</th>
                                 </tr>
                             </thead>
                             <tbody>

@@ -177,7 +177,7 @@ export default function AdminOrderDetail() {
     return (
         <div className="admin-layout">
             <div className="main-content">
-                <AdminHeader title="공구관리 > 구매한 공구 상품" />
+                <AdminHeader title="참여인원 조회 및 배송관리" />
                 <div className="content-area">
                     
                     {/* 공구 상품 카드 */}

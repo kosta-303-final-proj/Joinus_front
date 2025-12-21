@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { myAxios } from '../../config';
-import NotificationSendModal from './NotificationSendModal'; 
+import NotificationSendModal from './NotificationSendModal';
 import './ParticipantsModal.css';
 
-const ParticipantsModal = ({ productId, productName, onClose }) => {  
+const ParticipantsModal = ({ productId, productName, onClose }) => {
   const [participants, setParticipants] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showNotificationModal, setShowNotificationModal] = useState(false);  
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false); 
+  const [cancelReason, setCancelReason] = useState('');
 
   useEffect(() => {
     const fetchParticipants = async () => {
@@ -38,33 +40,70 @@ const ParticipantsModal = ({ productId, productName, onClose }) => {
   };
 
   
+  // ========================================
+  // 알림 발송
+  // ========================================
   const handleSendNotification = async ({ title, content }) => {
-  try {
-    console.log('========== 알림 발송 시작 ==========');
-    console.log('공구 ID:', productId);
-    console.log('공구명:', productName);
-    console.log('참여자 수:', participants.length);
-    console.log('제목:', title);
-    console.log('내용:', content);
-    
-    //  참여자 username 확인
-    const usernames = participants.map(p => p.customerName);
-    console.log('참여자 이름들:', usernames);
-    
-    await myAxios().post(`/admin/gbProduct/${productId}/notify`, {
-      title,
-      content
-    });
-    
-    alert(`알림이 ${participants.length}명에게 발송되었습니다!`);
-    setShowNotificationModal(false);
-    
-  } catch (error) {
-    console.error('알림 발송 실패:', error);
-    console.error('응답:', error.response?.data);
-    alert('알림 발송에 실패했습니다.');
-  }
-};
+    try {
+      await myAxios().post(`/admin/gbProduct/${productId}/notify`, {
+        title,
+        content
+      });
+      
+      alert(`알림이 ${participants.length}명에게 발송되었습니다!`);
+      setShowNotificationModal(false);
+      
+    } catch (error) {
+      console.error('알림 발송 실패:', error);
+      alert('알림 발송에 실패했습니다.');
+    }
+  };
+
+
+  // ========================================
+  // 공구 취소
+  // ========================================
+  const handleCancelGbProduct = async () => {
+    if (!cancelReason.trim()) {
+      alert('취소 사유를 입력해주세요.');
+      return;
+    }
+
+    if (!window.confirm(
+      '공구를 취소하시겠습니까?\n' +
+      '- 참여자들에게 간단한 알림이 자동 발송됩니다.\n' +
+      '- 자세한 사항은 "알림 발송" 기능을 이용해주세요.\n' +
+      '- 환불 처리가 진행됩니다.'
+    )) {
+      return;
+    }
+
+    try {
+      console.log('========== 공구 취소 시작 ==========');
+      console.log('공구 ID:', productId);
+      console.log('취소 사유:', cancelReason);
+
+      // 공구 취소 + 환불 처리
+      await myAxios().post(`/admin/gbProduct/${productId}/cancel`, {
+        reason: cancelReason
+      });
+
+      alert(
+        '공구가 취소되었습니다.\n' +
+        '- 간단한 알림이 발송되었습니다.\n' +
+        '- 자세한 안내는 "알림 발송"을 이용해주세요.\n' +
+        '- 환불 처리가 완료되었습니다.'
+      );
+
+      setShowCancelModal(false);
+      setCancelReason('');
+      onClose();  // 모달 닫기
+
+    } catch (error) {
+      console.error('공구 취소 실패:', error);
+      alert('공구 취소에 실패했습니다.');
+    }
+  };
 
 
   return (
@@ -91,12 +130,31 @@ const ParticipantsModal = ({ productId, productName, onClose }) => {
                 {/* 요약 */}
                 <div className="participants-modal-summary">
                   <span>총 참여인원: <strong>{participants.length}명</strong></span>
-                  <button 
-                    className="participants-modal-notify-btn"
-                    onClick={handleOpenNotificationModal}
-                  >
-                    📢 알림 발송
-                  </button>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button 
+                      className="participants-modal-notify-btn"
+                      onClick={handleOpenNotificationModal}
+                    >
+                      📢 알림 발송
+                    </button>
+                    {/* 공구 취소 */}
+                    <button 
+                      className="participants-modal-cancel-btn"
+                      onClick={() => setShowCancelModal(true)}
+                      style={{
+                        backgroundColor: '#ef4444',
+                        color: 'white',
+                        border: 'none',
+                        padding: '8px 16px',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        fontWeight: '500'
+                      }}
+                    >
+                      ❌ 공구 취소
+                    </button>
+                  </div>
                 </div>
 
                 {/* 테이블 */}
@@ -147,6 +205,74 @@ const ParticipantsModal = ({ productId, productName, onClose }) => {
           onClose={() => setShowNotificationModal(false)}
           onSend={handleSendNotification}
         />
+      )}
+
+      {/* 공구 취소 모달 */}
+      {showCancelModal && (
+        <div className="notification-modal-overlay" onClick={() => setShowCancelModal(false)}>
+          <div className="notification-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="notification-modal-header">
+              <h2>공구 취소</h2>
+              <button className="notification-modal-close-btn" onClick={() => setShowCancelModal(false)}>×</button>
+            </div>
+
+            <div className="notification-modal-body">
+              <div className="notification-modal-field">
+                <label>공구 상품</label>
+                <div className="notification-modal-product-info">
+                  <strong>{productName}</strong> (ID: {productId})
+                </div>
+              </div>
+
+              <div className="notification-modal-field">
+                <label>취소 사유 (간단히) *</label>
+                <textarea 
+                  placeholder="예: 재고 부족으로 인한 취소"
+                  value={cancelReason}
+                  onChange={(e) => setCancelReason(e.target.value)}
+                  className="notification-modal-textarea"
+                  rows={4}
+                  maxLength={200}
+                />
+                <small className="notification-modal-hint">
+                  {cancelReason.length}/200자 (자세한 안내는 "알림 발송" 이용)
+                </small>
+              </div>
+
+              <div style={{
+                padding: '12px',
+                backgroundColor: '#fff3cd',
+                border: '1px solid #ffc107',
+                borderRadius: '6px',
+                fontSize: '13px',
+                color: '#856404'
+              }}>
+                <strong>안내:</strong>
+                <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px' }}>
+                  <li>간단한 취소 알림이 자동 발송됩니다</li>
+                  <li>자세한 사과문은 "알림 발송" 기능을 이용하세요</li>
+                  <li>환불은 자동으로 처리됩니다</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="notification-modal-footer">
+              <button 
+                className="notification-modal-btn secondary" 
+                onClick={() => setShowCancelModal(false)}
+              >
+                취소
+              </button>
+              <button 
+                className="notification-modal-btn primary" 
+                onClick={handleCancelGbProduct}
+                style={{ backgroundColor: '#ef4444' }}
+              >
+                공구 취소 확정
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

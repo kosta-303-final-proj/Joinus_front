@@ -268,14 +268,14 @@ export default function GbProductMngList() {
               <table className="admin-table">
                 <thead>
                   <tr>
-                    <th>현재 인원</th>
-                    <th>상태</th>
-                    <th>공구 코드</th>
-                    <th>공구명</th>
-                    <th>가격</th>
-                    <th>시작 날짜</th>
-                    <th>종료 날짜</th>
-                    <th>작업</th>
+                    <th style={{ width: '50px' }}>현재 인원</th>
+                    <th style={{ width: '70px' }}>상태</th>
+                    <th style={{ width: '100px' }}>공구 코드</th>
+                    <th style={{ width: '30%' }}>공구명</th>
+                    <th style={{ width: '80px' }}>가격</th>
+                    <th style={{ width: '100px' }}>시작 날짜</th>
+                    <th style={{ width: '100px' }}>종료 날짜</th>
+                    <th style={{ width: '60px' }}>작업</th>
                   </tr>
                 </thead>
                 <tbody>
