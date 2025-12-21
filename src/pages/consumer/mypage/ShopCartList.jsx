@@ -2,38 +2,79 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Label, FormGroup, Input, Button, Pagination, PaginationItem, PaginationLink } from "reactstrap";
 import '../../../css/mypage/ShopCartList.css';
 import { useState, useEffect } from "react";
-import { myAxios } from "../../../config";
+import { myAxios, baseUrl } from "../../../config";
+import { useNavigate } from "react-router-dom";
 
 export default function ShopCartList() {
+  const navigate = useNavigate();
 
   const [cartList, setCartList] = useState([]);
+  const [page, setPage] = useState(0);          // ⭐ 현재 페이지
+  const [totalPages, setTotalPages] = useState(0);
+
+  const size = 10; // ⭐ 페이지당 개수
 
   useEffect(() => {
     const fetchCartList = async () => {
       try {
-        const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+        const userInfo =
+      JSON.parse(sessionStorage.getItem("userInfo")) ||
+      JSON.parse(localStorage.getItem("userInfo"));
       const username = userInfo?.username;
+
         const response = await myAxios().get(`/cartList`, {
           params: { username }
         });
-        setCartList(response.data);
+
+        const data = response.data;
+
+        setCartList(data);
+        setTotalPages(Math.ceil(data.length / size)); // ⭐ 전체 페이지 수
       } catch (error) {
         console.error("장바구니 조회 실패", error);
       }
     };
+
     fetchCartList();
   }, []);
 
-  
+  // ⭐ 현재 페이지 데이터
+  const pagedCartList = cartList.slice(
+    page * size,
+    page * size + size
+  );
 
+
+  const handlePay = (item) => {
+    navigate(`/pay/${item.productId}`, {
+      state: {
+        productId: item.productId,
+        productName: item.productName,
+        thumbnail: item.thumbnailPath.split('/').pop(), // 파일명만
+        finalPrice: item.price * item.quantity,
+        quantity: item.quantity,
+        optionIds: item.optionIds
+      }
+    });
+  };
+ 
 
   const deleteCartList = async (cartId) => {
     try {
-      const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+      const userInfo =
+      JSON.parse(sessionStorage.getItem("userInfo")) ||
+      JSON.parse(localStorage.getItem("userInfo"));
       const username = userInfo?.username;
 
-      await myAxios().post("/deleteCart",{ id: cartId, memberUsername: username });
-      setCartList(prev => prev.filter(item => item.cartId !== cartId));
+      await myAxios().post("/deleteCart", { id: cartId, memberUsername: username });
+
+      const updated = cartList.filter(item => item.cartId !== cartId);
+      setCartList(updated);
+      setTotalPages(Math.ceil(updated.length / size));
+
+      if (page > 0 && updated.length <= page * size) {
+        setPage(page - 1);
+      }
     } catch (error) {
       console.error("삭제 실패", error);
       alert("삭제 실패: " + error.response?.data);
@@ -57,11 +98,10 @@ export default function ShopCartList() {
       <hr style={{ margin: "0 auto 5px auto" }} />
       {/* 상품 리스트 */}
       <div className="productList">
-        {cartList.map(item=>(
+        {pagedCartList.map(item=>(
           <FormGroup  check className="productItem" key={item.cartId}>
-            {/* <img src={item.thumbnailPath} className="productImg" /> */}
             <img
-                    src={`http://localhost:8080/file/proposal/${item.product?.thumbnail?.fileName}`}
+                    src={`${baseUrl}/file/gbProduct/${item.thumbnailPath.split('/').pop()}`}
                     style={{ width: "70px", height: "70px", marginRight: "20px" }}
                 />
             <div className="productName">{item.productName}</div>
@@ -69,7 +109,7 @@ export default function ShopCartList() {
             <div className="productQuantity">{item.quantity}</div>
             <div className="productTotal">{(item.price * item.quantity).toLocaleString()}원</div>
             <div className="buttonGroup">
-              <Button size="sm" className="buttonPrimary" style={{width:"70px"}}>결제</Button>
+              <Button size="sm" className="buttonPrimary" style={{width:"70px"}} onClick={() => handlePay(item)}>결제</Button>
               <Button size="sm" className="buttonSecondary" onClick={()=>deleteCartList(item.cartId)}>삭제</Button>
             </div>
           </FormGroup>
@@ -79,15 +119,17 @@ export default function ShopCartList() {
       
 
       {/* 페이지네이션 */}
-      <Pagination className="paginationContainer">
-        <PaginationItem><PaginationLink first href="#" /></PaginationItem>
-        <PaginationItem><PaginationLink previous href="#" /></PaginationItem>
-        {[1,2,3,4,5].map(num => (
-          <PaginationItem key={num}><PaginationLink href="#">{num}</PaginationLink></PaginationItem>
-        ))}
-        <PaginationItem><PaginationLink next href="#" /></PaginationItem>
-        <PaginationItem><PaginationLink last href="#" /></PaginationItem>
-      </Pagination>
+      {totalPages > 1 && (
+        <Pagination className="paginationContainer">
+          {[...Array(totalPages)].map((_, idx) => (
+            <PaginationItem key={idx} active={page === idx}>
+              <PaginationLink onClick={() => setPage(idx)}>
+                {idx + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+        </Pagination>
+      )}
     </div>
   );
 }

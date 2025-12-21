@@ -9,6 +9,7 @@ export default function GBProductDetail() {
     
     const [timeLeft, setTimeLeft] = useState("");
     const [selectedOptions, setSelectedOptions] = useState({});
+    
     const navigate = useNavigate();
     
     const handleParticipate = () => {

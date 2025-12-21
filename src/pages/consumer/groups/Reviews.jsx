@@ -1,7 +1,7 @@
 import { Label } from "reactstrap";
 import { Link, useParams, Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { myAxios } from "../../../config";
+import { myAxios, baseUrl } from "../../../config";
 
 export default function Reviews() {
     const { id } = useParams();
@@ -30,6 +30,16 @@ export default function Reviews() {
         }
         return stars;
     };
+    // const renderStars = (rating) => {
+    //     return Array.from({ length: 5 }, (_, index) => (
+    //         <img
+    //             key={index}
+    //             src={index < rating ? "/star.png" : "/whStar.png"}
+    //             alt="star"
+    //             style={{ width: "20px" }}
+    //         />
+    //     ));
+    // };
 
     return (
         <>
@@ -85,10 +95,27 @@ export default function Reviews() {
                                 <div style={{ padding: "0 20px", marginTop: '5px' }}>{review.content}</div>
 
                                 {/* 리뷰 이미지 */}
-                                <div style={{ display: 'flex', gap: '10px', padding: '0 20px', marginTop: '10px' }}>
-                                    {review.image1Path && <img src={review.image1Path} alt="리뷰이미지1" style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '4px' }} />}
-                                    {review.image2Path && <img src={review.image2Path} alt="리뷰이미지2" style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '4px' }} />}
-                                    {review.image3Path && <img src={review.image3Path} alt="리뷰이미지3" style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '4px' }} />}
+                                <div style={{ display: 'flex', gap: '10px', padding: '0 20px', marginTop: '10px' }}>{console.log("리뷰 이미지1 URL:", baseUrl + review.fileName)}
+                                    {review.image1Path && (
+                                        <img src={`${baseUrl}/review/image/${review.image1Path}`}
+                                            alt="리뷰이미지1" 
+                                            style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '4px',marginRight:'30px' }} 
+                                        />
+                                    )}
+                                    {review.image2Path && (
+                                        <img 
+                                            src={`${baseUrl}/review/image/${review.image2Path}`} 
+                                            alt="리뷰이미지2" 
+                                            style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '4px',marginRight:'30px' }} 
+                                        />
+                                    )}
+                                    {review.image3Path && (
+                                        <img 
+                                            src={`${baseUrl}/review/image/${review.image3Path}`} 
+                                            alt="리뷰이미지3" 
+                                            style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '4px',marginRight:'30px' }} 
+                                        />
+                                    )}
                                 </div>
 
                                 <hr style={{ marginTop: '20px' }} />
