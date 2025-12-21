@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { baseUrl } from '../../config';
 import { myAxios } from '../../config';
 
 /**
@@ -25,24 +24,11 @@ export default function OAuthTokenHandler() {
           return;
         }
 
-        // 세션에서 토큰 교환 API 호출
-        const response = await fetch(`${baseUrl}/api/auth/oauth/token`, {
-          method: 'GET',
-          credentials: 'include', // 쿠키(세션) 포함 필수
-          headers: {
-            'Content-Type': 'application/json',
-          },
+        const response = await myAxios().get('/api/auth/oauth/token', {
+          withCredentials: true,  // 쿠키(세션) 포함
         });
 
-        if (!response.ok) {
-          if (response.status === 401) {
-            throw new Error('토큰이 만료되었거나 이미 사용되었습니다.');
-          }
-          throw new Error('토큰 교환에 실패했습니다.');
-        }
-
-        // 토큰 받기 (바디에서 JSON으로 받음)
-        const tokenData = await response.json();
+        const tokenData = response.data;
         
         // 토큰 저장 (Bearer 접두사 제거)
         if (tokenData.access_token) {

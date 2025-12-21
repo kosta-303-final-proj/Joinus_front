@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { myAxios } from '../../config';
 import './SignUp.css';
 
 export default function SignUp() {
@@ -49,22 +50,11 @@ export default function SignUp() {
 
     setIsCheckingUserId(true);
     try {
-      const url = 'http://localhost:8080';
-      const response = await fetch(`${url}/doubleUsername`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: formData.userId
-        }),
+      const response = await myAxios().post('/doubleUsername', {
+        username: formData.userId
       });
 
-      if (!response.ok) {
-        throw new Error('아이디 중복 확인에 실패했습니다.');
-      }
-
-      const exist = await response.json(); // true면 이미 존재, false면 사용 가능
+      const exist = response.data; // true면 이미 존재, false면 사용 가능
       setUserIdChecked(true);
       setUserIdAvailable(!exist); // exist가 false면 사용 가능
       setUserIdMessage(exist ? '이미 사용 중인 아이디입니다.' : '사용 가능한 아이디입니다.');
@@ -100,31 +90,19 @@ export default function SignUp() {
     }
 
     try {
-      const url = 'http://localhost:8080';
-      const response = await fetch(`${url}/join`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: formData.userId, // userId → username (아이디)
-          name: formData.name, // name (이름)
-          nickname: formData.nickname, // nickname (닉네임)
-          password: formData.password,
-          email: formData.email,
-          phone: formData.phone,
-          address: formData.address || null,
-          detailAddress: formData.detailAddress || null,
-          recommenderUsername: formData.referrer || null  // 추천인 ID
-          // agreeMarketing은 MemberDto에 없으므로 제외
-        }),
+      const response = await myAxios().post('/join', {
+        username: formData.userId, // userId → username (아이디)
+        name: formData.name, // name (이름)
+        nickname: formData.nickname, // nickname (닉네임)
+        password: formData.password,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address || null,
+        detailAddress: formData.detailAddress || null,
+        recommenderUsername: formData.referrer || null,
       });
 
-      if (!response.ok) {
-        throw new Error('회원가입에 실패했습니다.');
-      }
-
-      const data = await response.json();
+      const data = response.data;
       console.log('회원가입 성공:', data);
       alert('회원가입이 완료되었습니다.');
       navigate('/login');
