@@ -10,17 +10,26 @@ export default function InquiryModal({ onClose, gbProductId, onQnaAdded }) {
             return;
         }
 
+        // 로그인 유저 정보 가져오기
+        const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+        if(!userInfo || !userInfo.username){
+            alert("로그인 정보가 없습니다.");
+            return;
+        }
+        const memberUsername = userInfo.username;
+
+        // 서버에 보낼 payload
         const payload = {
-            username: "kakao_4436272679",
+            username: memberUsername, // 세션에서 가져온 username 사용
             gbProductId: gbProductId,
             question: question
         };
 
         myAxios().post("/qna", payload)
         .then(res=>{
-            console.log(res)
+            console.log(res);
             alert("문의가 정상적으로 등록되었습니다."); // 성공 시 alert
-            onQnaAdded && onQnaAdded(res.data); // 부모 컴포넌트에 새로운 Qna 전달
+            onQnaAdded && onQnaAdded(res.data); // 부모 컴포넌트에 새로운 QnA 전달
             onClose();
         })
         .catch(err=>{
@@ -28,6 +37,8 @@ export default function InquiryModal({ onClose, gbProductId, onQnaAdded }) {
             alert("문의 등록 중 오류가 발생했습니다.");
         })
     }
+
+    
     return (
         <>
             {/* ⭐ 모달 배경 */}
