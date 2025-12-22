@@ -19,7 +19,7 @@
   border: 1px solid var(--line-strong);
   padding: 25px;
   margin-bottom: 36px;
-  margin-top:30px;
+  margin-top: 30px;
 }
 
 .main-card-title {
@@ -40,25 +40,67 @@
 .main-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed; /* ⭐ 핵심: colgroup 기준 고정 */
 }
 
-.main-table th {
-  background: #f5f7fb;
-  padding: 14px;
-  color: var(--intel-blue);
-  font-weight: 700;
-  border-bottom: 1px solid var(--line-strong);
-}
-
+/* thead / tbody 공통 */
+.main-table th,
 .main-table td {
   padding: 14px;
-  text-align: center;
-  color: var(--gray-text);
+  vertical-align: middle;
   border-bottom: 1px solid #ececec;
 }
 
+/* 헤더 */
+.main-table th {
+  background: #f5f7fb;
+  color: var(--intel-blue);
+  font-weight: 700;
+  text-align: center; /* ⭐ 가상의 칸 중앙 */
+  border-bottom: 1px solid var(--line-strong);
+}
+
+/* 바디 기본 */
+.main-table td {
+  color: var(--gray-text);
+  text-align: center; /* ⭐ 기본은 중앙 */
+}
+
+/* hover */
 .main-table tbody tr:hover {
   background: #F8FAFF;
+}
+
+/* ===== 정렬 유틸 ===== */
+
+/* 상품명: 좌측 (하지만 colgroup 중앙 기준 안에서) */
+.main-table td:nth-child(2) {
+  text-align: left;
+}
+
+/* 결제금액: 우측 */
+.main-table td:nth-child(4),
+.main-table th:nth-child(4) {
+  text-align: right;
+}
+
+/* 줄바꿈 방지 */
+.nowrap {
+  white-space: nowrap;
+}
+
+/* 말줄임 (상품명) */
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 빈 상태 */
+.empty {
+  text-align: center;
+  padding: 24px;
+  color: #999;
 }
 
 /* =============== Lists ================== */

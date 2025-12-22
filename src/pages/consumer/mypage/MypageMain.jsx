@@ -35,6 +35,8 @@ export default function MypageMain() {
         params: { username, limit: 5 },
       })
       .then((res) => {
+        // 백엔드에서 데이터가 오는지 확인용 로그
+        console.log("최근 주문 데이터:", res.data);
         setRecentOrders(res.data || []);
       })
       .catch((err) => {
@@ -97,43 +99,48 @@ export default function MypageMain() {
           </Link>
         </h3>
 
-        <table className="main-table">
-          <thead>
-            <tr>
-              <th>주문번호</th>
-              <th>상품명</th>
-              <th>주문일자</th>
-              <th>결제금액</th>
-              <th>상태</th>
-            </tr>
-          </thead>
+        <table className="main-table fixed">
+  <colgroup>
+    <col style={{ width: "18%" }} />
+    <col style={{ width: "42%" }} />
+    <col style={{ width: "15%" }} />
+    <col style={{ width: "15%" }} />
+    <col style={{ width: "10%" }} />
+  </colgroup>
 
-          <tbody>
-            {recentOrders.length === 0 ? (
-              <tr>
-                <td colSpan="5" style={{ textAlign: "center", padding: "20px" }}>
-                  주문 내역이 없습니다.
-                </td>
-              </tr>
-            ) : (
-              recentOrders.map((order) => (
-                <tr
-                  key={order.orderItemId}
-                  style={{ cursor: "pointer" }}
-                  onClick={() =>
-                    navigate(`/mypage/orderList/orderDetail/${order.orderId}`)
-                  }
-                >
-                  <td>{order.orderId}</td>
-                  <td>{order.gbProductName}</td>
-                  <td>{formatDate(order.orderedAt)}</td>
-                  <td>₩{order.total?.toLocaleString()}</td>
-                  <td>{order.orderStatusDescription || order.orderStatus}</td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+  <thead>
+    <tr>
+      <th>주문번호</th>
+      <th>상품명</th>
+      <th>주문일자</th>
+      <th>결제금액</th>
+      <th>상태</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {recentOrders.length === 0 ? (
+      <tr>
+        <td colSpan="5" className="empty">
+          주문 내역이 없습니다.
+        </td>
+      </tr>
+    ) : (
+      recentOrders.map((order) => (
+        <tr key={order.id}>
+          <td className="center nowrap">{order.id}</td>
+          <td className="ellipsis">{order.productName}</td>
+          <td className="center nowrap">{formatDate(order.createdAt)}</td>
+          <td className="right nowrap">
+            ₩{order.totalAmount?.toLocaleString()}
+          </td>
+          <td className="center nowrap">{order.status}</td>
+        </tr>
+      ))
+    )}
+  </tbody>
+</table>
+
       </div>
 
       {/* ================= 관심상품 ================= */}
@@ -146,7 +153,7 @@ export default function MypageMain() {
         </h3>
 
         {wishlist.length === 0 ? (
-          <div className="main-product-item">
+          <div className="main-product-item" key="empty-wishlist">
             <div className="main-product-info">
               <p>관심상품이 없습니다.</p>
             </div>
@@ -154,7 +161,7 @@ export default function MypageMain() {
         ) : (
           wishlist.map((item) => (
             <div
-              key={item.id}
+              key={`wishlist-item-${item.id}`}
               className="main-product-item"
               style={{ cursor: "pointer" }}
               onClick={() => navigate(`/gbProductDetail/${item.gbProductId}`)}
@@ -162,16 +169,16 @@ export default function MypageMain() {
               <div
                 className="main-thumb"
                 style={{
-                  backgroundImage: item.file
-                    ? `url(/file/${item.file.id})`
+                  backgroundImage: item.product?.thumbnailFileName
+                    ? `url(http://localhost:8080/upload/${item.product.thumbnailFileName})`
                     : "none",
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                 }}
               />
               <div className="main-product-info">
-                <p>{item.product.name}</p>
-                <p>₩{item.product.price.toLocaleString()}</p>
+                <p>{item.product?.name || "상품명 없음"}</p>
+                <p>₩{item.product?.price?.toLocaleString() || 0}</p>
               </div>
             </div>
           ))
@@ -188,7 +195,7 @@ export default function MypageMain() {
         </h3>
 
         {suggestions.length === 0 ? (
-          <div className="main-product-item">
+          <div className="main-product-item" key="empty-suggestions">
             <div className="main-product-info">
               <p>참여 중인 공동구매가 없습니다.</p>
             </div>
@@ -196,15 +203,15 @@ export default function MypageMain() {
         ) : (
           suggestions.map((item) => (
             <div
-              key={item.id}
+              key={`suggestion-item-${item.id}`}
               className="main-product-item"
               style={{ cursor: "pointer" }}
               onClick={() => navigate(`/proposalDetail/${item.id}`)}
             >
               <div className="main-thumb"></div>
               <div className="main-product-info">
-                <p>{item.title}</p>
-                <p>참여자 {item.participantCount}명</p>
+                <p>{item.title || item.productName}</p>
+                <p>참여자 {item.participantCount || 0}명</p>
               </div>
             </div>
           ))
