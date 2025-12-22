@@ -8,10 +8,12 @@ export default function MypageProfileEdit() {
 
   const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
   const username = userInfo?.username;
+  const loginType = userInfo?.login_type;
+  const isKakao = loginType === "KAKAO" || (username && username.startsWith("kakao_"));
 
   const [form, setForm] = useState({
     username: "",
-    password: "",          // ✅ 비밀번호 수정
+    password: "",
     name: "",
     nickname: "",
     phone: "",
@@ -21,53 +23,53 @@ export default function MypageProfileEdit() {
     recommenderUsername: ""
   });
 
-  // ===============================
-  // 기존 프로필 불러오기
-  // ===============================
   useEffect(() => {
     if (!username) return;
-
     axios
       .get(`http://localhost:8080/mypage/profile?username=${username}`)
       .then((res) => {
         const d = res.data;
         setForm({
-          username: d.username,
-          password: "", // 🔥 수정 시에만 입력
-          name: d.name,
-          nickname: d.nickname,
-          phone: d.phone,
-          email: d.email,
-          birthDate: d.birthDate,
-          gender: d.gender,
-          recommenderUsername: d.recommenderUsername,
+          username: d.username || "",
+          password: "",
+          name: d.name || "",
+          nickname: d.nickname || "",
+          phone: d.phone || "",
+          email: d.email || "",
+          birthDate: d.birthDate || "",
+          gender: d.gender || "",
+          recommenderUsername: d.recommenderUsername || ""
         });
       })
       .catch((err) => console.error(err));
   }, [username]);
 
-  // ===============================
-  // input 공용 핸들러
-  // ===============================
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ===============================
-  // 저장
-  // ===============================
-const handleSave = () => {
+ const handleSave = () => {
   const payload = { ...form };
-
-  // 비밀번호 미입력 시 제외
-  if (!payload.password) {
+  
+  // 카카오 유저거나 비밀번호 입력이 없으면 페이로드에서 제외
+  if (isKakao || !payload.password?.trim()) {
     delete payload.password;
   }
 
   axios
     .put("http://localhost:8080/mypage/profile/update", payload)
     .then(() => {
+      // 수정 성공 시, 브라우저 세션 스토리지의 userInfo도 함께 업데이트합니다.
+        const updatedUserInfo = {
+        ...userInfo,          // 기존의 토큰 정보 등은 유지
+        name: form.name,      // 수정된 이름 반영
+        nickname: form.nickname // 수정된 닉네임 반영
+      };
+      
+      // 세션 스토리지에 덮어쓰기
+      sessionStorage.setItem("userInfo", JSON.stringify(updatedUserInfo));
+
       alert("개인정보가 수정되었습니다.");
       navigate("/mypage/profileDetail");
     })
@@ -77,7 +79,6 @@ const handleSave = () => {
     });
 };
 
-
   return (
     <>
       <div className="profileedit-title-row">
@@ -85,50 +86,46 @@ const handleSave = () => {
       </div>
 
       <div className="profileedit-info-box">
-
-        {/* 아이디 (수정 불가) */}
+        {/* 아이디 - 모든 유저 수정 불가 */}
         <div className="profileedit-form-group">
           <label>아이디</label>
           <input type="text" value={form.username} readOnly />
         </div>
 
-        {/* 비밀번호 (수정 가능) */}
-        <div className="profileedit-form-group">
-          <label>비밀번호</label>
-          <input
-            type="password"
-            name="password"
-            placeholder="********"
-            value={form.password}
-            onChange={handleChange}
-          />
-        </div>
+        {/* 비밀번호 - 카카오 유저가 아닐 때만 노출 */}
+        {!isKakao && (
+          <div className="profileedit-form-group">
+            <label>비밀번호</label>
+            <input
+              type="password"
+              name="password"
+              placeholder="변경할 비밀번호를 입력하세요 (미입력 시 유지)"
+              value={form.password}
+              onChange={handleChange}
+            />
+          </div>
+        )}
 
-        {/* 이름 */}
         <div className="profileedit-form-group">
           <label>이름</label>
           <input name="name" value={form.name} onChange={handleChange} />
         </div>
 
-        {/* 닉네임 */}
         <div className="profileedit-form-group">
           <label>닉네임</label>
           <input name="nickname" value={form.nickname} onChange={handleChange} />
         </div>
 
-        {/* 연락처 */}
         <div className="profileedit-form-group">
           <label>연락처</label>
           <input name="phone" value={form.phone} onChange={handleChange} />
         </div>
 
-        {/* 이메일 */}
         <div className="profileedit-form-group">
           <label>이메일</label>
           <input name="email" value={form.email} onChange={handleChange} />
         </div>
 
-        {/* 생년월일 */}
         <div className="profileedit-form-group">
           <label>생년월일</label>
           <input
@@ -139,7 +136,6 @@ const handleSave = () => {
           />
         </div>
 
-        {/* 성별 */}
         <div className="profileedit-form-group">
           <label>성별</label>
           <select name="gender" value={form.gender} onChange={handleChange}>
@@ -149,7 +145,7 @@ const handleSave = () => {
           </select>
         </div>
 
-        {/* 추천인 (수정 불가) */}
+        {/* 추천인 ID - 모든 유저 수정 불가 */}
         <div className="profileedit-form-group">
           <label>추천인 ID</label>
           <input type="text" value={form.recommenderUsername} readOnly />
