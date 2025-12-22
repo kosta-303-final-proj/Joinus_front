@@ -281,13 +281,13 @@ export default function ProductStatistics() {
             상품, 카테고리, 납품업체 조건을 추가로 지정해 세부 데이터를 확인하세요.
           </p>
         </div>
-        <div className="search-filter-row">
-          <div className="filter-group">
+        <div className="product-search-filter-row">
+          <div className="product-filter-group">
             <label>카테고리</label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="filter-select"
+              className="product-filter-select"
             >
               <option value="전체">전체</option>
               <option value="생활용품">생활용품</option>
@@ -296,12 +296,12 @@ export default function ProductStatistics() {
               <option value="디지털/가전">디지털/가전</option>
             </select>
           </div>
-          <div className="filter-group">
+          <div className="product-filter-group">
             <label>납품업체</label>
             <select
               value={vendor}
               onChange={(e) => setVendor(e.target.value)}
-              className="filter-select"
+              className="product-filter-select"
             >
               <option value="전체">전체</option>
               <option value="에코포장연구소">에코포장연구소</option>
@@ -311,22 +311,22 @@ export default function ProductStatistics() {
               <option value="키친웨어컴퍼니">키친웨어컴퍼니</option>
             </select>
           </div>
-          <div className="filter-group">
+          <div className="product-filter-group">
             <label>상품명 또는 SKU 검색</label>
             <input
               type="text"
               placeholder="상품명 또는 SKU 입력"
               value={searchKeyword}
               onChange={(e) => setSearchKeyword(e.target.value)}
-              className="search-input"
+              className="product-filter-input"
             />
           </div>
-          <div className="filter-group">
+          <div className="product-filter-group">
             <label>정렬</label>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="filter-select"
+              className="product-filter-select"
             >
               <option value="매출 높은 순">매출 높은 순</option>
               <option value="매출 낮은 순">매출 낮은 순</option>
@@ -334,7 +334,7 @@ export default function ProductStatistics() {
               <option value="건수 낮은 순">건수 낮은 순</option>
             </select>
           </div>
-          <button className="search-button" onClick={handleSearch} disabled={isLoading}>
+          <button className="product-filter-button" onClick={handleSearch} disabled={isLoading}>
             {isLoading ? '조회 중...' : '조회'}
           </button>
         </div>

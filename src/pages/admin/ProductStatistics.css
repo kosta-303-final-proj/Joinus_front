@@ -177,51 +177,66 @@
   margin-bottom: 24px;
 }
 
-.search-filter-row {
+.product-search-filter-row {
   display: flex;
   align-items: flex-end;
   gap: 16px;
   flex-wrap: wrap;
 }
 
-.filter-group {
+.product-filter-group {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.filter-group label {
+.product-filter-group label {
   font-size: 12px;
   font-weight: 500;
   color: #555555;
   line-height: 15px;
 }
 
-.filter-select {
-  padding: 5px 12px;
+.product-filter-select {
+  padding: 6px 30px 6px 12px;
   background: #efefef;
   border: 1px solid #cccccc;
   border-radius: 4px;
   font-size: 12px;
-  height: 26px;
-  min-width: 100px;
+  min-height: 28px;
+  height: auto;
+  line-height: 1.4;
+  min-width: 180px;
+  width: auto;
+  box-sizing: border-box;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px;
 }
 
-.search-input {
+.product-filter-input {
   padding: 5px 12px;
   background: white;
   border: 1px solid #cccccc;
   border-radius: 4px;
   font-size: 12px;
   height: 25px;
-  width: 161px;
+  width: 200px;
+  box-sizing: border-box;
 }
 
-.search-input::placeholder {
+.product-filter-input::placeholder {
   color: #757575;
 }
 
-.search-button {
+.product-filter-button {
   padding: 6px 12px;
   background: #739ff2;
   border: none;
@@ -234,7 +249,7 @@
   transition: background-color 0.2s;
 }
 
-.search-button:hover {
+.product-filter-button:hover {
   background: #5a8ae3;
 }
 
