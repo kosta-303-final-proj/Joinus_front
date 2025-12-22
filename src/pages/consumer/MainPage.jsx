@@ -44,11 +44,11 @@ export default function MainPage() {
   }, []);
   // 각 섹션별 클릭 핸들러 (더보기용)
   const handleDeadlineSoonClick = () => {
-    navigate('/gbProductList?type=deadline-soon');
+    navigate('/gbProductList?type=deadline-soon&sort=deadline');
   };
 
   const handlePopularClick = () => {
-    navigate('/gbProductList?type=popular');
+    navigate('/gbProductList?type=popular&sort=wish');
   };
 
   const handleOngoingClick = () => {

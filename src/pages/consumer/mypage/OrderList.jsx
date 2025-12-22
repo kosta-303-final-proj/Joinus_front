@@ -2,7 +2,8 @@ import { Button,FormGroup,Label,Input, PaginationItem ,PaginationLink,Pagination
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect} from "react";
-import { myAxios } from "../../../config";
+import { baseUrl, myAxios } from "../../../config";
+import "./PaginationCom.css";
 
 export default function OrderList({ id }) {
   const navigate = useNavigate();
@@ -103,23 +104,12 @@ export default function OrderList({ id }) {
     setCurrentPage(page);
   };
 
-  // 추가: 날짜 포맷팅 함수
-  // 수정
+  //날짜 포맷팅 함수
   const formatDate = (dateStr) => {
     if (!dateStr) return ""; // 기본값 제거
     return String(dateStr).substring(0, 10).replace(/-/g, ".");
   };
-
-  // 추가: 썸네일 이미지 URL 함수
-  const getThumbnailUrl = (order) => {
-    if (order.thumbnail?.id) {
-      return `/file/${order.thumbnail.id}`;
-    }
-    return "/computer.png"; // 기본 이미지
-  };
-
-  // 추가: 주문 상태별 버튼 렌더링 함수
-  // 수정된 주문 상태별 버튼 렌더링 함수
+  //주문 상태별 버튼 렌더링 함수
 const renderActionButtons = (order) => {
   // 서버에서 내려주는 실제 상태 필드를 확인
   const status = order.status; // 기존 order.orderStatus → order.status
@@ -168,15 +158,15 @@ const renderActionButtons = (order) => {
           >
             주문 상세
           </button>
-          <button style={styles.smallBtn}>배송 조회</button>
-          <button style={styles.smallBtn}>반품 신청</button>
-          <button 
+          {/* <button style={styles.smallBtn}>배송 조회</button>
+          <button style={styles.smallBtn}>반품 신청</button> */}
+          {/* <button 
             style={styles.smallBtn} 
             onClick={() => setReviewModalOpen(true)}
           >
             리뷰 작성
-          </button>
-          <button style={styles.smallBtn}>교환 신청</button>
+          </button> */}
+          {/* <button style={styles.smallBtn}>교환 신청</button> */}
         </>
       );
     case "CANCELLED":
@@ -199,6 +189,31 @@ const renderActionButtons = (order) => {
   useEffect(() => {
     fetchOrderList(currentPage);
   }, [currentPage, searchParams, username]);
+
+
+  const ORDER_STATUS_KR = {
+    PAID: "결제완료",
+    PREPARING: "상품준비중",
+    SHIPPING: "배송중",
+    DELIVERED: "배송완료",
+
+    CANCELLED: "취소완료",
+
+    COLLECTING: "상품 회수중",
+
+    EXCHANGE_REQUESTED: "교환신청",
+    EXCHANGE_PREPARATION: "교환준비",
+    EXCHANGE_RETRIEVAL: "교환 회수중",
+    EXCHANGE_SHIPPING: "교환 배송중",
+    EXCHANGE_REJECTED: "교환거절",
+    EXCHANGE_COMPLETED: "교환완료",
+
+    RETURN_REQUESTED: "반품신청",
+    RETURN_PREPARATION: "반품준비",
+    RETURNS_RETRIEVAL: "반품회수중",
+    RETURN_REJECTED: "반품거절",
+    RETURN_COMPLETED: "반품완료",
+  };
 
   return (
     <>
@@ -315,7 +330,7 @@ const renderActionButtons = (order) => {
                         {/* 상품 정보 */}
                         <div style={{ ...styles.col, width: "45%", display: "flex", alignItems: "center" }}>
                         <img 
-                          src={order.thumbnail?.id ? `/file/${order.thumbnail.id}` : "/computer.png"} 
+                          src={order.thumbnailFileName ? `${baseUrl}/file/order/${order.thumbnailFileName}` : "/computer.png"}
                           alt={order.gbProductName}
                           style={{ width: "80px", height: "80px", marginRight: "10px", objectFit: "cover" }} 
                         />
@@ -324,12 +339,12 @@ const renderActionButtons = (order) => {
                             <div style={{ color: "#777", fontSize: "12px" }}>주문 날짜: {formatDate(order.createdAt)}</div>
                         </div>
                         <div style={{padding: "4px 10px", borderRadius: "6px", fontSize: "12px", marginLeft: "10px", whiteSpace: "nowrap", backgroundColor:'#F2F9FC', color:'#7693FC', border:'1px solid #7693FC'}}>
-                          {order.status || "상태 없음"}
+                          {ORDER_STATUS_KR[order.status] || "상태 없음"}
                         </div>
                         </div>
 
-                        {/* 수량 */}
-                        <div style={{ ...styles.col, width: "10%" }}>{order.quantity || 0}</div>
+                        {/* 수량 : 기본값 1 */} 
+                        <div style={{ ...styles.col, width: "10%" }}>{1}</div>
 
                         {/* 가격 */}
                         <div style={{ ...styles.col, width: "15%" }}>
@@ -346,162 +361,36 @@ const renderActionButtons = (order) => {
         </div>
 
         {/* 페이징 */}
-        {totalPages > 1 && (
-          <div style={styles.pageWrapper}>
-            <div style={styles.container}>
-              <div style={{ display: "flex", justifyContent: "center", gap: "8px", padding: "20px 0" }}>
-                <button
-                  style={styles.pageBtn}
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 0}
-                >
-                  이전
-                </button>
-                
-                {Array.from({ length: totalPages }, (_, i) => i).map((page) => (
-                  <button
-                    key={page}
-                    style={currentPage === page ? styles.pageBtnActive : styles.pageBtn}
-                    onClick={() => handlePageChange(page)}
-                  >
-                    {page + 1}
-                  </button>
-                ))}
-                
-                <button
-                  style={styles.pageBtn}
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages - 1}
-                >
-                  다음
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        <Pagination className="paginationContainer">
+          {/* 이전 */}
+          <PaginationItem disabled={currentPage === 0}>
+            <PaginationLink onClick={() => handlePageChange(currentPage - 1)}>
+              이전
+            </PaginationLink>
+          </PaginationItem>
+
+          {/* 페이지 번호 */}
+          {[...Array(totalPages)].map((_, idx) => (
+            <PaginationItem key={idx} active={currentPage === idx}>
+              <PaginationLink onClick={() => handlePageChange(idx)}>
+                {idx + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+
+          {/* 다음 */}
+          <PaginationItem disabled={currentPage === totalPages - 1}>
+            <PaginationLink onClick={() => handlePageChange(currentPage + 1)}>
+              다음
+            </PaginationLink>
+          </PaginationItem>
+        </Pagination>
 
         {/* ⭐ 리뷰 작성 모달 */}
         {reviewModalOpen && <ReviewModal onClose={() => setReviewModalOpen(false)} />}
     </>
   );
 }
-
-
-
-/* ---------------- 리뷰 작성 모달 ---------------- */
-
-function ReviewModal({ onClose }) {
-  return (
-    <>
-      {/* 배경 */}
-      <div style={modalOverlay} onClick={onClose}></div>
-
-      {/* 모달 */}
-      <div style={modalBox}>
-        <div style={modalTop}>
-          <span style={{ fontWeight: "bold" }}>리뷰 작성</span>
-          <span style={closeBtn} onClick={onClose}>✕</span>
-        </div>
-
-        <div style={{ padding: "20px 30px" }}>
-          
-          {/* 별점 */}
-          <div style={{ marginBottom: "10px", fontWeight: "bold" }}>
-            상품은 어떠셨나요?
-          </div>
-
-          <div style={{ marginBottom: "15px" }}>
-            ⭐⭐⭐⭐☆
-          </div>
-
-          {/* 리뷰 내용 */}
-          <div style={{ fontWeight: "bold" }}>리뷰 내용</div>
-          <textarea
-            placeholder="내용을 입력해주세요."
-            style={{
-              width: "100%",
-              height: "140px",
-              border: "1px solid #aaa",
-              marginTop: "5px",
-              padding: "10px",
-              resize: "none"
-            }}
-          />
-
-          {/* 이미지 첨부 */}
-          <div style={{ marginTop: "20px", fontWeight: "bold" }}>
-            이미지 첨부
-          </div>
-
-          <div style={{ display: "flex", gap: "15px", marginTop: "10px" }}>
-            {[1,2,3].map(n => (
-              <div key={n} style={imgBox}>+</div>
-            ))}
-          </div>
-
-          <button style={submitBtn}>등록하기</button>
-        </div>
-      </div>
-    </>
-  );
-}
-
-
-/* ---------------- 스타일 ---------------- */
-
-const modalOverlay = {
-  position: "fixed",
-  top: 0, left: 0,
-  width: "100vw", height: "100vh",
-  background: "rgba(0,0,0,0.5)",
-  zIndex: 999
-};
-
-const modalBox = {
-  position: "fixed",
-  top: "50%", left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: "420px",
-  background: "#fff",
-  borderRadius: "6px",
-  zIndex: 1000
-};
-
-const modalTop = {
-  background: "#f2f2f2",
-  padding: "12px 15px",
-  display: "flex",
-  justifyContent: "space-between",
-  fontSize: "16px"
-};
-
-const closeBtn = {
-  cursor: "pointer",
-  fontSize: "18px"
-};
-
-const imgBox = {
-  width: "80px",
-  height: "80px",
-  border: "1px solid #aaa",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  fontSize: "30px",
-  cursor: "pointer"
-};
-
-const submitBtn = {
-  marginTop: "20px",
-  width: "100%",
-  background: "#5A83F7",
-  color: "#fff",
-  padding: "12px 0",
-  border: "none",
-  borderRadius: "6px",
-  cursor: "pointer"
-};
-
 
 /* 기존 스타일 그대로 유지 */
 const styles = {
@@ -577,3 +466,7 @@ const styles = {
     fontSize: "14px"
   }
 };
+
+const pageing = {
+
+}

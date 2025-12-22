@@ -3,12 +3,12 @@ import { Label,FormGroup, Input, Button, Pagination, PaginationItem, PaginationL
 import { useEffect, useState } from "react";
 import { myAxios, baseUrl } from "../../../config";
 import { useNavigate } from "react-router-dom";
+import "./PaginationCom.css";
 
 export default function InterestList() {
 //     // 로그인 유저 정보 (추가)
 const userInfo =
-  JSON.parse(sessionStorage.getItem("userInfo")) ||
-  JSON.parse(localStorage.getItem("userInfo"));
+  JSON.parse(sessionStorage.getItem("userInfo"))
 const username = userInfo?.username;
 
 const [timeLeftMap, setTimeLeftMap] = useState({});
@@ -192,9 +192,9 @@ useEffect(() => {
 
           {/* 헤더 */}
           <div style={{ display: "flex", gap: "15px", alignItems: "center" }}>
-            <Label style={{ color: "black", fontSize: "12px", margin: "0 500px 0 0 " }}>상품명</Label>
-            <Label style={{ color: "black", fontSize: "12px", margin: "0 35px 0 0" }}>마감날짜</Label>
-            <Label style={{ color: "black", fontSize: "12px", margin: "0 35px 0 0" }}>주문</Label>
+            <Label style={{ color: "black", fontSize: "12px", margin: "0 450px 0 0 " }}>상품명</Label>
+            <Label style={{ color: "black", fontSize: "12px", margin: "0 220px 0 0" }}>마감날짜</Label>
+            {/* <Label style={{ color: "black", fontSize: "12px", margin: "0 35px 0 0" }}>주문</Label> */}
           </div>
         </FormGroup>
         <hr style={{ margin: "5px auto 0 auto" }} />
@@ -239,15 +239,29 @@ useEffect(() => {
         {interestList.length > 0 && (
         <Button className="buttonPrimary" onClick={deleteSelected} style={{fontSize:'12px', width:'80px', height:'30px'}}>전체 삭제</Button>
         )}
-        <Pagination>
-            {totalPages > 0 &&
-            [...Array(totalPages)].map((_, idx) => (
-                <PaginationItem active={page === idx} key={idx}>
-                <PaginationLink onClick={() => setPage(idx)}>
-                    {idx + 1}
-                </PaginationLink>
-                </PaginationItem>
-            ))}
+        <Pagination className="paginationContainer">
+          {/* 이전 */}
+          <PaginationItem disabled={page === 0}>
+            <PaginationLink onClick={() => setPage(page - 1)}>
+              이전
+            </PaginationLink>
+          </PaginationItem>
+
+          {/* 페이지 번호 */}
+          {[...Array(totalPages)].map((_, idx) => (
+            <PaginationItem key={idx} active={page === idx}>
+              <PaginationLink onClick={() => setPage(idx)}>
+                {idx + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+
+          {/* 다음 */}
+          <PaginationItem disabled={page === totalPages - 1}>
+            <PaginationLink onClick={() => setPage(page + 1)}>
+              다음
+            </PaginationLink>
+          </PaginationItem>
         </Pagination>
     </>
   );
