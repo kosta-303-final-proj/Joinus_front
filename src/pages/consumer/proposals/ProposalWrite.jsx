@@ -33,8 +33,8 @@ export default function ProposalWrite() {
 
   const submit = () => {
 
-      const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-  const username = userInfo?.username;
+    const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+    const username = userInfo?.username;
 
     const formData = new FormData();
     formData.append('productName', productName);
