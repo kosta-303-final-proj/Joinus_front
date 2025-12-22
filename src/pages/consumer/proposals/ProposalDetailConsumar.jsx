@@ -112,7 +112,7 @@ const username = userInfo?.username;
         })
         .catch(err => console.log(err));
     }, [id,username]);
-    
+
     useEffect(() => {
       if (!username || !proposal.id) return;
 
@@ -201,11 +201,37 @@ const username = userInfo?.username;
                                 <Button style={{backgroundColor:'#739FF2', width:"70px", height:"25px", fontSize:"12px", padding:"0", border:'none'}}>바로가기</Button>
                                 </>
                               ) : (
-                                <div>
-                                  <div style={{ fontWeight: 'bold', marginBottom: '5px', fontSize:'12px' }}>반려 사유</div>
-                                  <div style={{ fontSize: '12px', color: '#F55F5F' }}>
-                                    {proposal.rejectReason}
-                                  </div>
+                                <div style={{display:'flex', gap:'10px',alignItems: "center"}}>
+                                  {proposal.status === 'APPROVED' ? (
+                                    <>
+                                      <div className="fw-bold" style={{fontSize:'14px'}}>공구 상세 URL</div>
+                                      <Button
+                                        style={{
+                                          backgroundColor:'#739FF2',
+                                          width:"70px",
+                                          height:"25px",
+                                          fontSize:"12px",
+                                          padding:"0",
+                                          border:'none'
+                                        }}
+                                        onClick={() => window.open(proposal.gbProductUrl, "_blank")} // 공구 URL
+                                      >
+                                        바로가기
+                                      </Button>
+                                    </>
+                                  ) : proposal.status === 'REJECTED' ? (
+                                    <div>
+                                      <div style={{ fontWeight: 'bold', marginBottom: '5px', fontSize:'12px' }}>반려 사유</div>
+                                      <div style={{ fontSize: '12px', color: '#F55F5F' }}>
+                                        {proposal.rejectReason}
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    // PENDING인 경우
+                                    <div>
+                                      {/* 검토대기 상태에서는 아무것도 안 보여줌 */}
+                                    </div>
+                                  )}
                                 </div>
                               )}
                             </div>

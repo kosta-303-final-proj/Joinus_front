@@ -18,6 +18,8 @@ const username = userInfo?.username;
     // 🔹 사용 포인트
     const [usingPoint, setUsingPoint] = useState(0);
 
+    // const [address, setAddress] = useState
+
     const [shipRecipient, setShipRecipient] = useState("");
     const [phone, setPhone] = useState("");
     const [postcode, setPostcode] = useState("");
@@ -48,8 +50,8 @@ const username = userInfo?.username;
 
     const getMemberPoint = () => {
         myAxios().get("/member/detail", { 
-  params: { username } 
-})
+            params: { username } 
+        })
 
         .then(res => {
             console.log(res.data);
@@ -59,6 +61,37 @@ const username = userInfo?.username;
         console.log("회원 포인트 조회 실패", err);
         });
     };
+
+    const getAddress = () => {
+        myAxios().get("/getAddress", {
+            params: { username }
+        })
+        .then(res => {
+            console.log("기존 배송지 데이터:", res.data);
+            // 예: 첫 번째 주소를 세팅
+            if(res.data.length > 0){
+                const addr = res.data[0];
+                setShipRecipient(addr.addressName);      // 배송지명
+                setName(addr.recipientName);             // 수령자 이름
+                setPhone(addr.phone);
+                setPostcode(addr.postcode);
+                setStreetAddress(addr.streetAddress);
+                setAddressDetail(addr.addressDetail);
+                setEmail(userInfo?.email || "");        // 이메일은 세션에서 가져올 수도 있음
+                setAccessInstructions(addr.accessInstructions);
+                setNote("");                             // 요청사항은 초기화
+            }
+        })
+        .catch(err => {
+            console.log("기존 배송지 조회 실패", err);
+        });
+    }
+
+    useEffect(() => {
+        if(addressType === "old"){
+            getAddress();
+        }
+    }, [addressType]);
     
     //상품 상세 조회
     const getProduct =()=>{
@@ -150,6 +183,7 @@ const username = userInfo?.username;
         }
         return true;
     };
+    
 
 
     return(
