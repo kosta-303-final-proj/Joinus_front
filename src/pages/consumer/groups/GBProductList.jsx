@@ -10,6 +10,8 @@ export default function GBProductList() {
   const [searchParams] = useSearchParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const sortParam = searchParams.get("sort");
+
   
   const categoryParam = searchParams.get("category");
 
@@ -22,6 +24,11 @@ export default function GBProductList() {
   const [selectedSort, setSelectedSort] = useState("최신순");
   const [selectStatus, setSelectStatus] = useState(["진행중"]);
 
+  const sortParamMap = {
+    deadline: "마감순",
+    wish: "찜순",
+  };
+  
   const handleCartegopryClick = (category) => {
     let newCategories = [...selectCategory];
 
@@ -64,20 +71,20 @@ export default function GBProductList() {
 
   // ✅ 정렬 적용 (마감순: 숫자 작은 것부터)
   const sortedProducts = [...filteredProducts].sort((a, b) => {
-  if (selectedSort === "최신순") {
-    return new Date(b.createdAt) - new Date(a.createdAt);
-  }
+    if (selectedSort === "최신순") {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    }
 
-  if (selectedSort === "투표순") {
-    return b.currentParticipants - a.currentParticipants;
-  }
+    if (selectedSort === "찜순") {
+      return b.currentParticipants - a.currentParticipants;
+    }
 
-  if (selectedSort === "마감순") {
-    return new Date(a.deadlineAt) - new Date(b.deadlineAt);
-  }
+    if (selectedSort === "마감순") {
+      return new Date(a.deadlineAt) - new Date(b.deadlineAt);
+    }
 
-  return 0;
-});
+    return 0;
+  });
 
 
   // URL에서 type 파라미터 추출
@@ -118,6 +125,12 @@ export default function GBProductList() {
       setSelectCategory([]);
     }
   }, [categoryParam]);
+
+  useEffect(() => {
+    if (sortParam && sortParamMap[sortParam]) {
+      setSelectedSort(sortParamMap[sortParam]);
+    }
+  }, [sortParam]);
 
   return (
     <>

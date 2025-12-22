@@ -1,0 +1,40 @@
+.paginationContainer {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+/* ⭐ Bootstrap pagination 기본 라인 제거 */
+.pagination {
+  border-top: none !important;
+}
+
+/* ⭐ 핵심 수정 부분 */
+.paginationContainer .page-item .page-link {
+  min-width: 36px;
+  height: 36px;
+
+  display: flex;               /* ⭐ 추가 */
+  align-items: center;         /* ⭐ 세로 중앙 정렬 */
+  justify-content: center;     /* ⭐ 가로 중앙 정렬 */
+
+  padding: 0;                  /* ⭐ Bootstrap 기본 padding 제거 */
+  margin: 0 4px;
+  border-radius: 6px;
+  color: #333;
+  font-size: 14px;
+
+  line-height: normal;         /* ⭐ 기존 34px 제거 */
+}
+
+.paginationContainer .page-item.active .page-link {
+  background-color: #7693FC;
+  border-color: #7693FC;
+  color: #fff;
+}
+
+.paginationContainer .page-item.disabled .page-link {
+  color: #ccc;
+  pointer-events: none;
+  background-color: #f8f9fa;
+}

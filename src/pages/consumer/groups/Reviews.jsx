@@ -30,16 +30,6 @@ export default function Reviews() {
         }
         return stars;
     };
-    // const renderStars = (rating) => {
-    //     return Array.from({ length: 5 }, (_, index) => (
-    //         <img
-    //             key={index}
-    //             src={index < rating ? "/star.png" : "/whStar.png"}
-    //             alt="star"
-    //             style={{ width: "20px" }}
-    //         />
-    //     ));
-    // };
 
     return (
         <>

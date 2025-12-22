@@ -12,6 +12,10 @@ export default function ReviewWrite() {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [rating, setRating] = useState(0); // 선택된 별점
+    const fileInputRef = useRef(null);
+    const [images, setImages] = useState([]);
+    
+    const [content, setContent] = useState("");
     const [hoverRating, setHoverRating] = useState(0); // 마우스 오버 별점 (선택 안 한 상태)
 
     const openModal = (item) => {
@@ -25,26 +29,23 @@ export default function ReviewWrite() {
         setIsModalOpen(false);
         setSelectedItem(null);
     };
-    const fileInputRef = useRef(null);
-    const [images, setImages] = useState([]);
-    
-    const [content, setContent] = useState("");
+ 
 
     const openFileDialog = () => {
-    fileInputRef.current.click();
-    };
+      fileInputRef.current.click();
+      };
 
-    const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
+      const handleFileChange = (e) => {
+      const files = Array.from(e.target.files);
 
-    
+      
 
-    if (images.length + files.length > 3) {
-        alert("이미지는 최대 3장까지 가능합니다.");
-        return;
-    }
+      if (images.length + files.length > 3) {
+          alert("이미지는 최대 3장까지 가능합니다.");
+          return;
+      }
 
-    setImages(prev => [...prev, ...files]);
+      setImages(prev => [...prev, ...files]);
     };
 
 
@@ -60,17 +61,19 @@ export default function ReviewWrite() {
                     { params: { username } }
                 );
 
-                setReviewList(res.data);
+                // setReviewList(res.data);
+                  const hiddenIds = JSON.parse(sessionStorage.getItem("hiddenReviewIds") || "[]");
+                  setReviewList(res.data.filter(item => !hiddenIds.includes(item.id)));
             } catch (error) {
                 console.error("주문 목록 조회 실패", error);
             }
         };
         
-
+        
         fetchReviewList();
     }, []);
 
-    const submit = async () => {
+    const submit = async (selectedRating) => {
         if (!content.trim()) {
         alert("리뷰 내용을 입력해주세요.");
         return;
@@ -83,7 +86,7 @@ export default function ReviewWrite() {
         formData.append("username", username);
         formData.append("orderItemId", selectedItem.id);
         formData.append("gbProductId", selectedItem.gbProductId);
-        formData.append("rating", rating);
+        formData.append("rating", selectedRating);
         formData.append("content", content);
 
         images.forEach(file => formData.append("images", file));
@@ -94,6 +97,11 @@ export default function ReviewWrite() {
         });
 
         alert("리뷰 등록 완료");
+
+        // 로컬에 숨김 ID 저장
+        const hiddenIds = JSON.parse(sessionStorage.getItem("hiddenReviewIds") || "[]");
+        sessionStorage.setItem("hiddenReviewIds", JSON.stringify([...hiddenIds, selectedItem.id]));
+
 
         // ✅ 화면에서 작성한 리뷰 항목 제거
         setReviewList(prevList => prevList.filter(item => item.id !== selectedItem.id));
@@ -155,6 +163,8 @@ export default function ReviewWrite() {
           setImages={setImages}
           content={content}
           setContent={setContent}
+          // rating={rating}
+          // setRating={setRating}
           onSubmit={submit}
           onClose={closeModal}
         />)}

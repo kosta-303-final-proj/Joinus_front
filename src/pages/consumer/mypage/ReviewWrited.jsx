@@ -1,5 +1,5 @@
 import { Label,FormGroup,Button } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate  } from "react-router-dom";
 import "../../../css/mypage/ReviewWrited.css";
 import { useState,useEffect } from "react";
 import { baseUrl, myAxios } from "../../../config";
@@ -7,6 +7,7 @@ import { baseUrl, myAxios } from "../../../config";
 
 export default function ReviewWrited() {
     const [ reviewList, setReviewList ] = useState([]);
+    const navigate = useNavigate();
 
      useEffect(() => {
         const fetchReviewList = async () => {
@@ -17,6 +18,7 @@ export default function ReviewWrited() {
             const response = await myAxios().get(`/mypage/getReviewList`, {
               params: { username }
             });
+            console.log(response.data);
             setReviewList(response.data);
           } catch (error) {
             console.error("리뷰 조회 실패", error);
@@ -34,7 +36,7 @@ export default function ReviewWrited() {
             id: reviewId,
             memberUsername: username
             });
-
+            
             // 🔥 화면 즉시 반영
             setReviewList(prev => prev.filter(review => review.id !== reviewId));
 
@@ -44,7 +46,14 @@ export default function ReviewWrited() {
         }
     };
 
-
+    // ⭐ 클릭 시 상품 리뷰 페이지로 이동
+    const goToProductReviews = (productId) => {
+        if (!productId) {
+            alert("상품 ID가 없습니다.");
+            return;
+        }
+        navigate(`/gbProductDetail/${productId}/reviews`);
+    };
 
 
     return (
@@ -74,7 +83,7 @@ export default function ReviewWrited() {
         {reviewList.map(review => (
             <div className="reviewWrite" key={review.id}>
                 <div className="reviewWrite">
-                <FormGroup check className="reviewItem">
+                <FormGroup check className="reviewItem" style={{ cursor: "pointer" }}  onClick={() => goToProductReviews(review.gbProductId)}>
                     <img src={`${baseUrl.replace(/\/$/, "")}${review.thumbnailUrl}`} alt="상품 이미지" className="reviewImg" />
                     <div>
                         <div className="reviewName" style={{fontSize:'12px'}}>{review.gbProductName}</div>

@@ -36,7 +36,7 @@ export default function ReviewManage({children}) {
             </div>
             {/* <div style={{ flex: 1, paddingTop:'10px', width:'860px'}}><ReviewWrite/>{children}</div> */}
             <div style={{ flex: 1, paddingTop:'10px', width:'860px'}}>
-                <Outlet /> {/* 여기서 ReviewWrite / ReviewWrited 렌더링 */}
+                <Outlet context={{ setReviewCount, setPointBalance }} /> {/* 여기서 ReviewWrite / ReviewWrited 렌더링 */}
             </div>
         </>
     )

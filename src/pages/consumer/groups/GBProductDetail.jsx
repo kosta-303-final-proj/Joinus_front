@@ -123,8 +123,7 @@ export default function GBProductDetail() {
         return;
     }
     const userInfo =
-      JSON.parse(sessionStorage.getItem("userInfo")) ||
-      JSON.parse(localStorage.getItem("userInfo"));
+      JSON.parse(sessionStorage.getItem("userInfo"))
     const memberUsername = userInfo.username;
 
     myAxios().post(`/addCart`, {

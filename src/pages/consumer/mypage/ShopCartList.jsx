@@ -4,6 +4,7 @@ import '../../../css/mypage/ShopCartList.css';
 import { useState, useEffect } from "react";
 import { myAxios, baseUrl } from "../../../config";
 import { useNavigate } from "react-router-dom";
+import "./PaginationCom.css";
 
 export default function ShopCartList() {
   const navigate = useNavigate();
@@ -18,8 +19,7 @@ export default function ShopCartList() {
     const fetchCartList = async () => {
       try {
         const userInfo =
-      JSON.parse(sessionStorage.getItem("userInfo")) ||
-      JSON.parse(localStorage.getItem("userInfo"));
+      JSON.parse(sessionStorage.getItem("userInfo"))
       const username = userInfo?.username;
 
         const response = await myAxios().get(`/cartList`, {
@@ -62,8 +62,7 @@ export default function ShopCartList() {
   const deleteCartList = async (cartId) => {
     try {
       const userInfo =
-      JSON.parse(sessionStorage.getItem("userInfo")) ||
-      JSON.parse(localStorage.getItem("userInfo"));
+      JSON.parse(sessionStorage.getItem("userInfo"))
       const username = userInfo?.username;
 
       await myAxios().post("/deleteCart", { id: cartId, memberUsername: username });
@@ -119,17 +118,32 @@ export default function ShopCartList() {
       
 
       {/* 페이지네이션 */}
-      {totalPages > 1 && (
-        <Pagination className="paginationContainer">
-          {[...Array(totalPages)].map((_, idx) => (
-            <PaginationItem key={idx} active={page === idx}>
-              <PaginationLink onClick={() => setPage(idx)}>
-                {idx + 1}
-              </PaginationLink>
-            </PaginationItem>
-          ))}
-        </Pagination>
-      )}
+      <Pagination className="paginationContainer">
+        {/* 이전 */}
+        <PaginationItem disabled={page === 0}>
+          <PaginationLink onClick={() => setPage(page - 1)}>
+            이전
+          </PaginationLink>
+        </PaginationItem>
+
+        {/* 페이지 번호 */}
+        {[...Array(totalPages)].map((_, idx) => (
+          <PaginationItem key={idx} active={page === idx}>
+            <PaginationLink onClick={() => setPage(idx)}>
+              {idx + 1}
+            </PaginationLink>
+          </PaginationItem>
+        ))}
+
+        {/* 다음 */}
+        <PaginationItem disabled={page === totalPages - 1}>
+          <PaginationLink onClick={() => setPage(page + 1)}>
+            다음
+          </PaginationLink>
+        </PaginationItem>
+      </Pagination>
     </div>
   );
 }
+
+
