@@ -18,19 +18,27 @@ const NoticeList = () => {
   });
   const [currentPage, setCurrentPage] = useState(0);
 
+  const [filters, setFilters] = useState({
+    searchKeyword: ''
+  });
+
   // 공지사항 데이터 가져오는 함수 (검색 및 페이징 파라미터 사용)
-  const fetchNotices = useCallback(async (page, filters = {}) => {
+  const fetchNotices = useCallback(async (page = 0) => {
     try {
       // 1. 요청 파라미터 설정
       // Spring Boot의 Pageable에 맞게 page는 0부터 시작, size는 10으로 고정
       const params = {
         page: page,
         size: 10,
-        // TODO: filters를 활용하여 title, content 검색어 추가 (예: title: filters.keyword)
+        searchKeyword: filters.searchKeyword || null
       };
+
+      console.log('📤 요청 params:', params);
 
       // 2. API 호출
       const response = await myAxios().get('/admin/noticeList', { params });
+
+      console.log('📥 응답:', response.data);
 
       // 3. 상태 업데이트
       setNoticePage(response.data);
@@ -40,18 +48,35 @@ const NoticeList = () => {
       console.error("공지사항 목록 조회 실패:", error);
       alert("공지사항 목록을 불러오는 데 실패했습니다.");
     }
-  }, []);
+  }, [filters]);
 
   //  컴포넌트 마운트 시 및 페이지 번호 변경 시 데이터 로드
   useEffect(() => {
     fetchNotices(currentPage);
-  }, [currentPage, fetchNotices]);
+  }, [currentPage, filters, fetchNotices]);
 
   // 검색 함수
-  const handleSearch = (filters) => {
-    console.log('검색:', filters);
-    // 검색 시 1페이지부터 다시 로드
-    fetchNotices(0, filters);
+ const handleSearch = (searchFilters) => {
+    console.log('검색:', searchFilters);
+    
+    // 검색 필터 업데이트
+    setFilters({
+      searchKeyword: searchFilters.searchKeyword || ''
+    });
+    
+    // 첫 페이지로 이동
+    setCurrentPage(0);
+  };
+
+    // 초기화 함수
+  const handleReset = () => {
+    console.log('초기화');
+    
+    setFilters({
+      searchKeyword: ''
+    });
+    
+    setCurrentPage(0);
   };
 
   // 페이지 변경
@@ -60,10 +85,6 @@ const NoticeList = () => {
     if (pageNumber >= 0 && pageNumber < noticePage.totalPages) {
       setCurrentPage(pageNumber);
     }
-  };
-
-  const handleReset = () => {
-    console.log('초기화');
   };
 
   const handleEdit = (id) => {

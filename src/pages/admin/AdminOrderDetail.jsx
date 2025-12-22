@@ -162,7 +162,7 @@ export default function AdminOrderDetail() {
         return (
             <div className="admin-layout">
                 <div className="main-content">
-                    <AdminHeader title="공구관리 > 주문 공구 상품" />
+                    <AdminHeader title="참여인원 조회 및 배송관리" />
                     <div className="content-area">
                         <div className="empty-state">
                             <p>로딩 중...</p>
@@ -301,15 +301,15 @@ export default function AdminOrderDetail() {
                             <table className="admin-table">
                                 <thead>
                                     <tr>
-                                        <th>주문번호</th>
-                                        <th>주문일</th>
-                                        <th>주문자명</th>
-                                        <th>옵션명</th>
-                                        <th>수량</th>
-                                        <th>결제수단</th>
-                                        <th>결제금액</th>
-                                        <th>택배사</th>
-                                        <th>송장번호</th>
+                                        <th style={{ width: '100px' }}>주문번호</th>
+                                        <th style={{ width: '100px' }}>주문일</th>
+                                        <th style={{ width: '50px' }}>주문자명</th>
+                                        <th style={{ width: '50px' }}>옵션명</th>
+                                        <th style={{ width: '50px' }}>수량</th>
+                                        <th style={{ width: '80px' }}>결제수단</th>
+                                        <th style={{ width: '100px' }}>결제금액</th>
+                                        <th style={{ width: '100px' }}>택배사</th>
+                                        <th style={{ width: '100px' }}>송장번호</th>
                                         <th></th>
                                     </tr>
                                 </thead>
