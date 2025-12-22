@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./MypageProfileIndex.css";
 import { useNavigate } from "react-router-dom";
 import { FaLock } from "react-icons/fa";
@@ -8,12 +8,22 @@ export default function MypageProfileIndex() {
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
 
-  // 로그인한 유저 정보
+  // 세션에서 정보 가져오기
   const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
   const username = userInfo?.username;
+  const loginType = userInfo?.login_type; 
+
+  // 카카오 유저 자동 통과 로직 (아이디 패턴 체크 추가)
+  useEffect(() => {
+    const isKakao = loginType === "KAKAO" || (username && username.startsWith("kakao_"));
+    
+    if (isKakao) {
+      console.log("카카오 로그인 유저 확인됨. 상세 페이지로 이동합니다.");
+      navigate("/mypage/profileDetail", { replace: true });
+    }
+  }, [loginType, username, navigate]);
 
   const handleCheck = () => {
-    // 🔒 로그인 안전장치
     if (!username) {
       alert("로그인이 필요합니다.");
       navigate("/login");
@@ -43,23 +53,24 @@ export default function MypageProfileIndex() {
       });
   };
 
+  // 카카오 유저라면 아래 JSX를 렌더링하지 않고 바로 리다이렉트 (깜빡임 방지)
+  if (loginType === "KAKAO" || (username && username.startsWith("kakao_"))) {
+    return null; 
+  }
+
   return (
     <>
       <div className="profileindex-title">개인정보 관리</div>
-
       <div className="profileindex-verify-box">
         <div className="profileindex-verify-icon">
           <FaLock size={40} color="#739FF2" />
         </div>
-
         <div className="profileindex-verify-title">
           개인정보를 수정하시려면 비밀번호를 입력해주세요.
         </div>
-
         <div className="profileindex-verify-subtext">
           회원님의 개인정보 보호를 위해 비밀번호 확인 절차가 필요합니다.
         </div>
-
         <div className="profileindex-input-box">
           <input
             type="password"
@@ -69,19 +80,11 @@ export default function MypageProfileIndex() {
             onKeyDown={(e) => e.key === "Enter" && handleCheck()}
           />
         </div>
-
         <div className="profileindex-btn-row">
-          <button
-            className="profileindex-btn profileindex-btn-blue"
-            onClick={handleCheck}
-          >
+          <button className="profileindex-btn profileindex-btn-blue" onClick={handleCheck}>
             확인
           </button>
-
-          <button
-            className="profileindex-btn profileindex-btn-cancel"
-            onClick={() => navigate("/mypage/main")}
-          >
+          <button className="profileindex-btn profileindex-btn-cancel" onClick={() => navigate("/mypage/main")}>
             취소
           </button>
         </div>
