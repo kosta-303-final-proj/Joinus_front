@@ -68,6 +68,7 @@ export default function Login() {
     // 그래서 아래와 같이 바꿔야 정상 동작합니다.
     // 응답 body에서 사용자 정보 가져오기
     const userInfo = response.data;
+    console.log("서버에서 받은 유저 정보:", userInfo);
     sessionStorage.setItem('userInfo', JSON.stringify(userInfo));
 
     // ROLE에 따라 리다이렉트 분기

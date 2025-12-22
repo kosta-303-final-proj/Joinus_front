@@ -50,9 +50,14 @@ export default function Header() {
     };
   }, []);
 
-  // 사용자 정보에서 닉네임과 등급 가져오기
+// 사용자 정보에서 닉네임과 등급 가져오기
   const nickname = userInfo?.nickname || userInfo?.name || "사용자";
-  const grade = userInfo?.grade || "Gold";
+  
+  // DB에서 온 대문자(SILVER)를 파일명(Silver) 형식으로 변환
+const rawGrade = userInfo?.grade; 
+  const grade = rawGrade 
+    ? rawGrade.charAt(0).toUpperCase() + rawGrade.slice(1).toLowerCase() 
+    : null;
 
   // ========== Menu css용 ==========
   const handleEnter = (menu) => {
@@ -117,11 +122,13 @@ export default function Header() {
               <>
                {/* 등급 아이콘 + 닉네임 */}
                 <li className="user-info">
-                  <img
-                      src={`/grade/${grade}.png`}
-                      alt={grade}
-                      className="grade-icon"
-                    />
+                  {grade && (
+  <img
+    src={`/grade/${grade}.png`}
+    alt={grade}
+    className="grade-icon"
+  />
+  )}
                   <Link to="/mypage/main">{nickname} 님</Link>
                 </li>
 
