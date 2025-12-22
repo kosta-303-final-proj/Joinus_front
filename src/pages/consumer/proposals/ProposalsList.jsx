@@ -88,6 +88,13 @@ export default function ProposalsList() {
     }
   }, [categoryParam]);
 
+    const handleVote = (id) => {
+    setProposals((prev) =>
+      prev.map((p) => (p.id === id ? { ...p, voteCount: p.voteCount + 1 } : p))
+    );
+  };
+
+
   return (
     <>
       {/* 제목 영역 (1020px 고정) */}
@@ -166,6 +173,7 @@ export default function ProposalsList() {
                     productId={p.id}
                     isProposal={true}
                     voteCount={p.voteCount}
+                    onVote={() => handleVote(p.id)}
                   />
                 ))}
               </div>

@@ -158,9 +158,18 @@ export default function ProposalWrite() {
                 <div style={styles.imageGrid}>
                   {/* 대표 이미지 */}
                   <div style={styles.imageBox}>
-                    <input type="file" accept="image/*" onChange={handleMainImageUpload} style={styles.fileInput}/>
+                    <input type="file" accept="image/*" onChange={handleMainImageUpload} style={styles.fileInput} />
                     {mainImage ? (
-                      <img src={mainImage} alt="대표 이미지" style={styles.preview} />
+                      <>
+                        <img src={mainImage} alt="대표 이미지" style={styles.preview} />
+                        <button
+                          type="button"
+                          style={styles.deleteBtn}
+                          onClick={() => { setMainImage(null); setMainFile(null); }}
+                        >
+                          ×
+                        </button>
+                      </>
                     ) : (
                       <p className="fw-bold text-center text-secondary small">
                         대표 이미지<br />Click to upload
@@ -169,23 +178,34 @@ export default function ProposalWrite() {
                   </div>
 
                   {/* 일반 이미지 4개 */}
-                  {mainImage &&
-                    subImages.map((img, idx) => (
-                      <div key={idx} style={styles.imageBox}>
-                        <input type="file" accept="image/*" onChange={(e) => handleSubImageUpload(e, idx)} style={styles.fileInput}/>
-                        {img ? (
-                          <img
-                            src={img}
-                            alt={`서브 이미지 ${idx + 1}`}
-                            style={styles.preview}
-                          />
-                        ) : (
-                          <p className="text-center text-secondary small">
-                            사진 {idx + 1}<br />Click to upload
-                          </p>
-                        )}
-                      </div>
-                    ))}
+                  {subImages.map((img, idx) => (
+                    <div key={idx} style={styles.imageBox}>
+                      <input type="file" accept="image/*" onChange={(e) => handleSubImageUpload(e, idx)} style={styles.fileInput} />
+                      {img ? (
+                        <>
+                          <img src={img} alt={`서브 이미지 ${idx + 1}`} style={styles.preview} />
+                          <button
+                            type="button"
+                            style={styles.deleteBtn}
+                            onClick={() => {
+                              const newImages = [...subImages];
+                              const newFiles = [...subFiles];
+                              newImages[idx] = null;
+                              newFiles[idx] = null;
+                              setSubImages(newImages);
+                              setSubFiles(newFiles);
+                            }}
+                          >
+                            ×
+                          </button>
+                        </>
+                      ) : (
+                        <p className="text-center text-secondary small">
+                          사진 {idx + 1}<br />Click to upload
+                        </p>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
             </FormGroup>
@@ -273,5 +293,22 @@ const styles = {
     height: "100%",
     objectFit: "contain",
     backgroundColor: "#fff",
+  },
+    deleteBtn: {
+    position: "absolute",
+    top: "4px",          // 이미지 상단에서 4px 아래
+    right: "4px",        // 이미지 오른쪽에서 4px 안쪽
+    background: "rgba(0,0,0,0.6)",
+    color: "#fff",
+    border: "none",
+    borderRadius: "50%",
+    width: "24px",
+    height: "24px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    fontSize: "16px",
+    lineHeight: "24px",
+    textAlign: "center",
+    zIndex: 10,          // 이미지 위로 표시
   },
 };

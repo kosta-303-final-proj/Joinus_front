@@ -107,15 +107,30 @@ const username = userInfo?.username;
           params: { proposalId:id,username}
         })
         .then(res => {
-          setIsDdabong(res.data.isDdabong); // true / false
+          setIsDdabong(res.data.isVote);// true / false
           setVoteCount(res.data.voteCount); // DB에 저장된 실제 투표 수
         })
         .catch(err => console.log(err));
     }, [id,username]);
-useEffect(() => {
-  console.log("로그인한 username:", username);
-  console.log("proposal.memberUsername:", proposal.memberUsername);
-}, [proposal]);
+    
+    useEffect(() => {
+      if (!username || !proposal.id) return;
+
+      myAxios()
+        .get("/proposalDdabong/status", { 
+          params: { proposalId: proposal.id, username }
+        })
+        .then(res => {
+          setIsDdabong(res.data.isVote); // true/false
+          setVoteCount(res.data.voteCount); // DB에 저장된 실제 투표 수
+        })
+        .catch(err => console.log(err));
+    }, [username, proposal.id]);
+
+    useEffect(() => {
+      console.log("로그인한 username:", username);
+      console.log("proposal.memberUsername:", proposal.memberUsername);
+    }, [proposal]);
 
     return(
         <>
@@ -242,6 +257,7 @@ useEffect(() => {
                           key={idx}
                           src={`${baseUrl}/imageView?filename=${img}`}
                           style={{ width: "220px" }}
+                          onError={(e) => e.currentTarget.style.display = 'none'}
                         />
                       ))
                   }
