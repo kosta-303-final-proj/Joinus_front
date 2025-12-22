@@ -135,7 +135,7 @@ export default function GBProductDetail() {
     .then(res => alert("장바구니에 추가되었습니다."))
     .catch(err => {
         console.error(err);
-        alert("장바구니 추가 중 오류 발생");
+        alert("해당 옵션과 상품은 장바구니에 있습니다");
     });
 }
 
