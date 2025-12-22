@@ -4,6 +4,34 @@ import { Link, useNavigate } from "react-router-dom";
 import { myAxios } from "../../../config";
 
 export default function MypageMain() {
+const ORDER_STATUS_MAP = {
+  READY: "결제대기",
+  PAID: "결제완료",
+  PREPARING: "상품준비중",
+  SHIPPING: "배송중",
+  DELIVERED: "배송완료",
+
+  CANCELLED: "취소완료",
+
+  COLLECTING: "상품회수중",
+
+  EXCHANGE_REQUESTED: "교환신청",
+  EXCHANGE_PREPARATION: "교환준비",
+  EXCHANGE_RETRIEVAL: "교환회수중",
+  EXCHANGE_SHIPPING: "교환배송중",
+  EXCHANGE_REJECTED: "교환거절",
+  EXCHANGE_COMPLETED: "교환완료",
+
+  RETURN_REQUESTED: "반품신청",
+  RETURN_PREPARATION: "반품준비",
+  RETURNS_RETRIEVAL: "반품회수중",
+  RETURN_REJECTED: "반품거절",
+  RETURN_COMPLETED: "반품완료",
+};
+const getOrderStatusLabel = (status) => {
+  return ORDER_STATUS_MAP[status] || status;
+};
+
   const navigate = useNavigate();
 
   // ===============================
@@ -101,11 +129,11 @@ export default function MypageMain() {
 
         <table className="main-table fixed">
   <colgroup>
-    <col style={{ width: "18%" }} />
-    <col style={{ width: "42%" }} />
-    <col style={{ width: "15%" }} />
-    <col style={{ width: "15%" }} />
-    <col style={{ width: "10%" }} />
+    <col style={{ width: "17%" }} />
+    <col style={{ width: "35%" }} />
+    <col style={{ width: "13%" }} />
+    <col style={{ width: "13%" }} />
+    <col style={{ width: "13%" }} />
   </colgroup>
 
   <thead>
@@ -134,7 +162,10 @@ export default function MypageMain() {
           <td className="right nowrap">
             ₩{order.totalAmount?.toLocaleString()}
           </td>
-          <td className="center nowrap">{order.status}</td>
+          <td className="center nowrap">
+  {getOrderStatusLabel(order.status)}
+</td>
+
         </tr>
       ))
     )}
