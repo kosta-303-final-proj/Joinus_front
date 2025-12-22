@@ -64,32 +64,88 @@ export function CheckoutPage() {
   }, [widgets, amount]);
 
   return (
-    <div className="wrapper">
-      <div className="box_section">
-        <div id="payment-method" />
-        <div id="agreement" />
-        <button
-          disabled={!ready}
-          onClick={async () => {
-            try {
-              await widgets.requestPayment({
-                orderId: orderId,
-                // productId : productId,
-                orderName: productName || "상품 결제",
-                successUrl: `${window.location.origin}/paycomplete?orderId=${orderId}&productId=${productId}&amount=${payAmount}&quantity=${quantity}&selectedOptions=${encodeURIComponent(JSON.stringify(selectedOptions))}`,
-                failUrl: window.location.origin + "/fail",
-                customerEmail: "customer123@gmail.com",
-                customerName: "김토스",
-                customerMobilePhone: "01012341234",
-              });
-            } catch (error) {
-              console.error(error);
-            }
-          }}
-        >
-          결제하기
-        </button>
+    <div style={styles.page}>
+      <div style={styles.container}>
+        <h2 style={styles.title}>결제하기</h2>
+
+        <div style={styles.card}>
+          <div id="payment-method" />
+          <div id="agreement" />
+
+          <button
+            disabled={!ready}
+            style={{
+              ...styles.payButton,
+              ...(ready ? {} : styles.disabledButton),
+            }}
+            onClick={async () => {
+              try {
+                await widgets.requestPayment({
+                  orderId: orderId,
+                  orderName: productName || "상품 결제",
+                  successUrl: `${window.location.origin}/paycomplete?orderId=${orderId}&productId=${productId}&amount=${payAmount}&quantity=${quantity}&selectedOptions=${encodeURIComponent(JSON.stringify(selectedOptions))}`,
+                  failUrl: window.location.origin + "/fail",
+                  customerEmail: "customer123@gmail.com",
+                  customerName: "김토스",
+                  customerMobilePhone: "01012341234",
+                });
+              } catch (error) {
+                console.error(error);
+              }
+            }}
+          >
+            {payAmount.toLocaleString()}원 결제하기
+          </button>
+        </div>
       </div>
     </div>
   );
 }
+
+/* ===========================
+   🎨 STYLE OBJECT
+=========================== */
+
+const styles = {
+  page: {
+    minHeight: "100vh",
+    backgroundColor: "#F5F7FA",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  container: {
+    width: "100%",
+    maxWidth: "420px",
+    padding: "20px",
+  },
+  title: {
+    textAlign: "center",
+    fontSize: "22px",
+    fontWeight: "700",
+    marginBottom: "20px",
+  },
+  card: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: "16px",
+    padding: "20px",
+    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.08)",
+  },
+  payButton: {
+    width: "100%",
+    marginTop: "24px",
+    padding: "14px",
+    fontSize: "16px",
+    fontWeight: "700",
+    color: "#FFFFFF",
+    backgroundColor: "#0064FF",
+    border: "none",
+    borderRadius: "12px",
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+  },
+  disabledButton: {
+    backgroundColor: "#AAB6FF",
+    cursor: "not-allowed",
+  },
+};

@@ -175,140 +175,178 @@ export default function ReviewWrite() {
 
 /* ---------------- 리뷰 작성 모달 ---------------- */
 
+
 function ReviewModal({ item, images, setImages, content, setContent, onSubmit, onClose }) {
-  const fileInputRef = useRef(null);
+    const fileInputRef = useRef(null);
+    const [rating, setRating] = useState(0);
 
-  // ⭐ 별점 상태를 모달 안에서 선언
-  const [rating, setRating] = useState(0);
-  const [hoverRating, setHoverRating] = useState(0);
+    const handleFileChange = (e) => {
+        const files = Array.from(e.target.files);
+        if (images.length + files.length > 3) {
+            alert("이미지는 최대 3장까지 가능합니다.");
+            return;
+        }
+        setImages(prev => [...prev, ...files]);
+    };
 
-  const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
-    if (images.length + files.length > 3) {
-      alert("이미지는 최대 3장까지 가능합니다.");
-      return;
-    }
-    setImages(prev => [...prev, ...files]);
-  };
+    return (
+        <>
+            <div style={modalOverlay} onClick={onClose} />
+            <div style={modalBox}>
+                <div style={modalTop}>
+                    <b>리뷰 작성</b>
+                    <span style={closeBtn} onClick={onClose}>✕</span>
+                </div>
 
-  return (
-    <>
-      <div style={modalOverlay} onClick={onClose} />
-      <div style={modalBox}>
-        <div style={modalTop}>
-          <b>리뷰 작성</b>
-          <span style={closeBtn} onClick={onClose}>✕</span>
-        </div>
+                <div style={modalContent}>
+                    <div style={starSection}>
+                        {[1,2,3,4,5].map(star => (
+                            <img
+                                key={star}
+                                src={star <= rating ? "/star.png" : "/writeStar.png"}
+                                style={starStyle}
+                                onClick={() => setRating(star)}
+                            />
+                        ))}
+                    </div>
 
-        {/* ⭐ 별점 */}
-        <div style={{ margin: "10px 0", fontWeight: "bold" }}>별점</div>
-        <div style={{ display: "flex", gap: "5px" }}>
-          {[1, 2, 3, 4, 5].map(star => (
-            <img
-              key={star}
-              src={star <= rating ? "/star.png" : "/writeStar.png"}
-              alt={`${star} 별`}
-              style={{ width: "30px", height: "30px", cursor: "pointer" }}
-              onClick={() => setRating(star)}
-              onMouseEnter={() => setHoverRating(star)}
-              onMouseLeave={() => setHoverRating(0)}
-            />
-          ))}
-        </div>
+                    <div style={productName}>{item?.productName}</div>
 
-        <div style={{ padding: "20px" }}>
-          <b>{item?.productName}</b>
+                    <textarea
+                        value={content}
+                        onChange={e => setContent(e.target.value)}
+                        placeholder="리뷰 내용을 입력해주세요."
+                        style={textArea}
+                    />
 
-          <textarea
-            value={content}
-            onChange={e => setContent(e.target.value)}
-            placeholder="리뷰 내용을 입력해주세요."
-            style={{ width: "100%", height: "120px", marginTop: "10px" }}
-          />
+                    <input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        ref={fileInputRef}
+                        hidden
+                        onChange={handleFileChange}
+                    />
 
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            ref={fileInputRef}
-            hidden
-            onChange={handleFileChange}
-          />
+                    <div style={imageRow}>
+                        {images.map((file, i) => (
+                            <img key={i} src={URL.createObjectURL(file)} style={previewImg} />
+                        ))}
+                        {images.length < 3 && (
+                            <div style={imgBox} onClick={() => fileInputRef.current.click()}>+</div>
+                        )}
+                    </div>
 
-          <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-            {images.map((file, i) => (
-              <img
-                key={i}
-                src={URL.createObjectURL(file)}
-                style={{ width: "80px", height: "80px" }}
-                alt=""
-              />
-            ))}
-            {images.length < 3 && (
-              <div style={imgBox} onClick={() => fileInputRef.current.click()}>+</div>
-            )}
-          </div>
-
-          {/* ⭐ submit 시 rating 전달 */}
-          <button style={submitBtn} onClick={() => onSubmit(rating)}>
-            등록하기
-          </button>
-        </div>
-      </div>
-    </>
-  );
+                    <button style={submitBtn} onClick={() => onSubmit(rating)}>
+                        등록하기
+                    </button>
+                </div>
+            </div>
+        </>
+    );
 }
 /* ---------------- 스타일 ---------------- */
 
 const modalOverlay = {
-  position: "fixed",
-  top: 0, left: 0,
-  width: "100vw", height: "100vh",
-  background: "rgba(0,0,0,0.5)",
-  zIndex: 999
+    position:'fixed',
+    top:0,left:0,
+    width:'100vw',height:'100vh',
+    background:'rgba(0,0,0,0.55)',
+    zIndex:999
 };
 
 const modalBox = {
-  position: "fixed",
-  top: "50%", left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: "420px",
-  background: "#fff",
-  borderRadius: "6px",
-  zIndex: 1000
+    position:'fixed',
+    top:'50%',left:'50%',
+    transform:'translate(-50%, -50%)',
+    width:'420px',
+    background:'#fff',
+    borderRadius:'14px',
+    boxShadow:'0 12px 40px rgba(0,0,0,0.25)',
+    zIndex:1000,
+    overflow:'hidden'
 };
 
 const modalTop = {
-  background: "#f2f2f2",
-  padding: "12px 15px",
-  display: "flex",
-  justifyContent: "space-between",
-  fontSize: "16px"
+    padding:'14px 18px',
+    background:'#5A83F7',
+    color:'#fff',
+    display:'flex',
+    justifyContent:'space-between',
+    alignItems:'center'
 };
 
 const closeBtn = {
-  cursor: "pointer",
-  fontSize: "18px"
+    cursor:'pointer',
+    fontSize:'18px'
+};
+
+const modalContent = {
+    padding:'20px'
+};
+
+const starSection = {
+    display:'flex',
+    justifyContent:'center',
+    gap:'6px',
+    marginBottom:'12px'
+};
+
+const starStyle = {
+    width:'32px',
+    height:'32px',
+    cursor:'pointer'
+};
+
+const productName = {
+    fontWeight:'bold',
+    textAlign:'center',
+    marginBottom:'10px'
+};
+
+const textArea = {
+    width:'100%',
+    height:'120px',
+    padding:'10px',
+    borderRadius:'8px',
+    border:'1px solid #ccc',
+    resize:'none'
+};
+
+const imageRow = {
+    display:'flex',
+    gap:'10px',
+    marginTop:'12px'
+};
+
+const previewImg = {
+    width:'80px',
+    height:'80px',
+    borderRadius:'8px',
+    objectFit:'cover'
 };
 
 const imgBox = {
-  width: "80px",
-  height: "80px",
-  border: "1px solid #aaa",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  fontSize: "30px",
-  cursor: "pointer"
+    width:'80px',
+    height:'80px',
+    border:'1px dashed #999',
+    borderRadius:'8px',
+    display:'flex',
+    justifyContent:'center',
+    alignItems:'center',
+    fontSize:'32px',
+    cursor:'pointer'
 };
 
 const submitBtn = {
-  marginTop: "20px",
-  width: "100%",
-  background: "#5A83F7",
-  color: "#fff",
-  padding: "12px 0",
-  border: "none",
-  borderRadius: "6px",
-  cursor: "pointer"
+    marginTop:'20px',
+    width:'100%',
+    background:'#5A83F7',
+    color:'#fff',
+    padding:'12px',
+    border:'none',
+    borderRadius:'10px',
+    fontSize:'15px',
+    fontWeight:'bold',
+    cursor:'pointer'
 };

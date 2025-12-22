@@ -110,20 +110,36 @@ export default function PayComplete(){
             <div style={styles.pageWrapper}>
                 <div style={styles.container}>
                     <hr style={{border:'2px solid black', marginBottom:'0'}}/>
-                    <div style={{height:'200px',paddingTop: '40px',textAlign:'center', justifyContent:'center'}}>
+                    <div style={{height:'200px',paddingTop: '30px',textAlign:'center', justifyContent:'center'}}>
                         <div className="fw-bold" style={{fontSize:'32px'}}>
                             주문이 완료되었습니다.
                         </div>
-                        <div style={{border:'1px solid black', backgroundColor:'#A09B9B', width:'300px', margin:'20px auto'}}>
+                        {/* <div style={{border:'1px solid black', backgroundColor:'#A09B9B', width:'300px', margin:'20px auto'}}>
                             주문번호 : {order.orderId}
+                        </div> */}
+                        <div style={orderNumberBox}>
+                            <span style={orderNumberLabel}>주문번호</span>
+                            <span style={orderNumberValue}>{order.orderId}</span>
                         </div>
-                        <Link to={`/mypage/orderList/orderDetail/${order.orderId}`}>
-                        <Button style={{backgroundColor:'#739FF2', color:'white', border:'none', fontSize:'12px'}}>
-                            주문 상세
-                        </Button>
-                        </Link>
+
+                        <div>
+                            <Link to={`/mypage/orderList/orderDetail/${order.orderId}`}>
+                                <Button
+                                    style={{
+                                        backgroundColor: "#739FF2",
+                                        color: "white",
+                                        border: "none",
+                                        fontSize: "12px",
+                                        padding: "8px 20px",
+                                        borderRadius: "8px",
+                                    }}
+                                >
+                                    주문 상세
+                                </Button>
+                            </Link>
+                        </div>
                     </div>
-                    <hr style={{border:'2px solid black', marginTop:'0'}}/>
+                    <hr style={{border:'2px solid black', marginTop:'20px'}}/>
 
                     <div style={{textAlign:'center', fontSize:'14px'}}>
                         <div>* 본 상품은 결제가 완료되었으며,  공구가 마감된 후에는 취소할 수 없습니다.</div>
@@ -224,4 +240,29 @@ const leftCol = {
 const rightCol = {
     flex: 1,
     padding: '20px',
+};
+
+const orderNumberBox = {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "12px",
+    padding: "12px 24px",
+    margin: "20px auto",
+    borderRadius: "12px",
+    backgroundColor: "#F4F7FF",
+    border: "1px solid #D6E2FF",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+};
+
+const orderNumberLabel = {
+    fontSize: "14px",
+    fontWeight: "600",
+    color: "#4A6CF7",
+};
+
+const orderNumberValue = {
+    fontSize: "16px",
+    fontWeight: "700",
+    color: "#222",
+    letterSpacing: "0.5px",
 };
