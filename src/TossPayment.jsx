@@ -1,4 +1,4 @@
-import { loadTossPayments, ANONYMOUS } from "@tosspayments/tosspayments-sdk";
+import { loadTossPayments } from "@tosspayments/tosspayments-sdk";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -6,41 +6,42 @@ const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
 const customerKey = "NWNmY8ZpgKTZUzoW8EKVJ";
 
 export function CheckoutPage() {
-  // ✅ Pay.jsx에서 전달한 값 받기
   const location = useLocation();
-  const { productId } = location.state || {};
+  const {
+    productId,
+    orderId,
+    amount: payAmount,
+    productName,
+    quantity,
+    selectedOptions,
+  } = location.state || {};
+
   if (!productId) {
     alert("상품 정보가 올바르게 전달되지 않았습니다.");
     return null;
   }
-  const { orderId, amount: payAmount, productName, quantity, selectedOptions } = location.state || {};
+
   const [amount, setAmount] = useState({
     currency: "KRW",
-    value: payAmount || 0,   // ✅ 하드코딩 제거
+    value: payAmount,
   });
   const [ready, setReady] = useState(false);
   const [widgets, setWidgets] = useState(null);
 
   useEffect(() => {
-    async function fetchPaymentWidgets() {
+    async function init() {
       const tossPayments = await loadTossPayments(clientKey);
-
-      const widgets = tossPayments.widgets({
-        customerKey,
-      });
-
+      const widgets = tossPayments.widgets({ customerKey });
       setWidgets(widgets);
     }
-
-    fetchPaymentWidgets();
+    init();
   }, []);
 
   useEffect(() => {
-    async function renderPaymentWidgets() {
-      if (widgets == null) return;
+    if (!widgets) return;
 
+    async function render() {
       await widgets.setAmount(amount);
-
       await Promise.all([
         widgets.renderPaymentMethods({
           selector: "#payment-method",
@@ -51,24 +52,49 @@ export function CheckoutPage() {
           variantKey: "AGREEMENT",
         }),
       ]);
-
       setReady(true);
     }
-
-    renderPaymentWidgets();
+    render();
   }, [widgets]);
-
-  useEffect(() => {
-    if (widgets == null) return;
-    widgets.setAmount(amount);
-  }, [widgets, amount]);
 
   return (
     <div style={styles.page}>
-      <div style={styles.container}>
-        <h2 style={styles.title}>결제하기</h2>
+      <div style={styles.wrapper}>
+        {/* 왼쪽: 주문 요약 */}
+        <div style={styles.summary}>
+          <h3 style={styles.sectionTitle}>주문 상품 정보</h3>
 
-        <div style={styles.card}>
+          <div style={styles.summaryRow}>
+            <span>상품명</span>
+            <strong>{productName}</strong>
+          </div>
+
+          <div style={styles.summaryRow}>
+            <span>수량</span>
+            <strong>{quantity}개</strong>
+          </div>
+
+          <div style={styles.summaryRow}>
+            <span>선택 옵션</span>
+            <strong>
+              {selectedOptions
+                ? Object.values(selectedOptions).join(", ")
+                : "없음"}
+            </strong>
+          </div>
+
+          <hr style={styles.divider} />
+
+          <div style={styles.totalRow}>
+            <span>총 결제 금액</span>
+            <strong>{payAmount.toLocaleString()}원</strong>
+          </div>
+        </div>
+
+        {/* 오른쪽: 결제 */}
+        <div style={styles.payment}>
+          <h3 style={styles.sectionTitle}>결제 수단 선택</h3>
+
           <div id="payment-method" />
           <div id="agreement" />
 
@@ -79,19 +105,14 @@ export function CheckoutPage() {
               ...(ready ? {} : styles.disabledButton),
             }}
             onClick={async () => {
-              try {
-                await widgets.requestPayment({
-                  orderId: orderId,
-                  orderName: productName || "상품 결제",
-                  successUrl: `${window.location.origin}/paycomplete?orderId=${orderId}&productId=${productId}&amount=${payAmount}&quantity=${quantity}&selectedOptions=${encodeURIComponent(JSON.stringify(selectedOptions))}`,
-                  failUrl: window.location.origin + "/fail",
-                  customerEmail: "customer123@gmail.com",
-                  customerName: "김토스",
-                  customerMobilePhone: "01012341234",
-                });
-              } catch (error) {
-                console.error(error);
-              }
+              await widgets.requestPayment({
+                orderId,
+                orderName: productName,
+                successUrl: `${window.location.origin}/paycomplete?orderId=${orderId}&productId=${productId}`,
+                failUrl: window.location.origin + "/fail",
+                customerName: "Global Buyer",
+                customerEmail: "buyer@email.com",
+              });
             }}
           >
             {payAmount.toLocaleString()}원 결제하기
@@ -102,50 +123,72 @@ export function CheckoutPage() {
   );
 }
 
-/* ===========================
-   🎨 STYLE OBJECT
-=========================== */
+/* =====================
+   🌍 GLOBAL PURCHASE STYLE
+===================== */
 
 const styles = {
   page: {
     minHeight: "100vh",
-    backgroundColor: "#F5F7FA",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: "#F2F4F7",
+    padding: "40px 0",
   },
-  container: {
-    width: "100%",
-    maxWidth: "420px",
-    padding: "20px",
+  wrapper: {
+    maxWidth: "1100px",
+    margin: "0 auto",
+    display: "grid",
+    gridTemplateColumns: "1fr 1.2fr",
+    gap: "40px",
+    padding: "0 20px",
   },
-  title: {
-    textAlign: "center",
-    fontSize: "22px",
+  summary: {
+    background: "#FFFFFF",
+    padding: "24px",
+    borderRadius: "8px",
+    border: "1px solid #E5E7EB",
+  },
+  payment: {
+    background: "#FFFFFF",
+    padding: "24px",
+    borderRadius: "8px",
+    border: "1px solid #E5E7EB",
+  },
+  sectionTitle: {
+    fontSize: "18px",
     fontWeight: "700",
-    marginBottom: "20px",
+    marginBottom: "16px",
   },
-  card: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: "16px",
-    padding: "20px",
-    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.08)",
+  summaryRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginBottom: "12px",
+    fontSize: "14px",
+    color: "#374151",
+  },
+  divider: {
+    margin: "16px 0",
+    border: "none",
+    borderTop: "1px solid #E5E7EB",
+  },
+  totalRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    fontSize: "16px",
+    fontWeight: "700",
   },
   payButton: {
-    width: "100%",
     marginTop: "24px",
+    width: "100%",
     padding: "14px",
     fontSize: "16px",
     fontWeight: "700",
     color: "#FFFFFF",
-    backgroundColor: "#0064FF",
+    backgroundColor: "#111827",
     border: "none",
-    borderRadius: "12px",
     cursor: "pointer",
-    transition: "all 0.2s ease",
   },
   disabledButton: {
-    backgroundColor: "#AAB6FF",
+    backgroundColor: "#9CA3AF",
     cursor: "not-allowed",
   },
 };
