@@ -27,9 +27,10 @@ export default function ShopCartList() {
         });
 
         const data = response.data;
+        const reversedData = data.slice().reverse();
 
-        setCartList(data);
-        setTotalPages(Math.ceil(data.length / size)); // ⭐ 전체 페이지 수
+        setCartList(reversedData);
+        setTotalPages(Math.ceil(reversedData.length / size)); // ⭐ 전체 페이지 수
       } catch (error) {
         console.error("장바구니 조회 실패", error);
       }
