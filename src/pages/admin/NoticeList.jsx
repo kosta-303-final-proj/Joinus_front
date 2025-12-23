@@ -92,9 +92,23 @@ const NoticeList = () => {
     navigate(`/admin/noticeForm/${id}`);
   };
 
-  const handleDelete = (id) => {
-    console.log('삭제:', id);
-  };
+  const handleDelete = async (id) => {
+  if (!window.confirm('이 공지사항을 삭제하시겠습니까?')) {
+    return;
+  }
+  
+  try {
+    await myAxios().delete(`/admin/noticeDelete/${id}`);
+    alert('삭제되었습니다.');
+    
+    // 현재 페이지 새로고침
+    fetchNotices(currentPage);
+    
+  } catch (error) {
+    console.error('삭제 실패:', error);
+    alert('삭제에 실패했습니다.');
+  }
+};
 
   return (
     <div className="admin-layout">

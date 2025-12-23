@@ -71,18 +71,18 @@ const NoticeForm = () => {
       data.append('images', file);
     });
 
-
-
     try {
       if (isEdit) {
-        // 수정 요청 (보통 PUT이나 PATCH를 쓰지만, 편의상 POST로 처리하거나 URL을 다르게 합니다)
-        await myAxios().post(`/admin/noticeUpdate/${id}`, data); 
-        alert("수정되었습니다.");
+        await myAxios().post(`/admin/noticeUpdate/${id}`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      alert("수정되었습니다.");
       } else {
-        // 등록 요청
-        await myAxios().post('/admin/noticeForm', data);
-        alert("등록되었습니다.");
-      }
+      await myAxios().post('/admin/noticeForm', data, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      alert("등록되었습니다.");
+    }
       navigate('/admin/noticeList');
     } catch (error) {
       console.error("공지사항 등록 실패:", error);

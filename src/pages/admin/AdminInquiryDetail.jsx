@@ -8,15 +8,12 @@ import './AdminInquiryDetail.css';
 
 const AdminInquiryDetail = () => {
   const navigate = useNavigate();
-  const { type, id } = useParams();  //  type, id 받기
-  
+  const { type, id } = useParams();
+
   const [inquiry, setInquiry] = useState(null);
   const [answer, setAnswer] = useState('');
   const [loading, setLoading] = useState(true);
 
-  // ========================================
-  // 상세 조회
-  // ========================================
   useEffect(() => {
     const fetchInquiry = async () => {
       try {
@@ -35,9 +32,6 @@ const AdminInquiryDetail = () => {
     fetchInquiry();
   }, [type, id]);
 
-  // ========================================
-  // 답변 등록
-  // ========================================
   const handleSubmit = async () => {
     if (!answer.trim()) {
       alert('답변을 입력해주세요.');
@@ -86,39 +80,35 @@ const AdminInquiryDetail = () => {
     <div className="admin-layout">
       <div className="main-content">
         <AdminHeader title={isAnswered ? "문의 상세" : "문의 답변하기"} />
-        
+
         <div className="content-area">
-          <div className="inquiry-detail-container">
-            
+          <div className="admin-inquiry-container">
+
             {/* 문의 정보 */}
-            <div className="inquiry-info-section">
-              
+            <div className="admin-inquiry-info-section">
+
               {/* 문의 유형 */}
-              <div className="info-row">
-                <div className="info-label">문의 유형</div>
-                <div className="info-value">
-                  {inquiry.type === 'QNA' 
-                    ? '상품문의' 
+              <div className="admin-inquiry-row">
+                <div className="admin-inquiry-label">문의 유형</div>
+                <div className="admin-inquiry-value">
+                  {inquiry.type === 'QNA'
+                    ? '상품문의'
                     : (inquiry.categoryDescription || '1:1문의')}
                 </div>
               </div>
 
-              {/* 공구 상품 (있을 때만) */}
+              {/* 공구 상품 */}
               {inquiry.gbProductId && (
-                <div className="info-row">
-                  <div className="info-label">공구 상품</div>
-                  <div className="info-value">
-                    <a 
+                <div className="admin-inquiry-row">
+                  <div className="admin-inquiry-label">공구 상품</div>
+                  <div className="admin-inquiry-value">
+                    <a
                       href={`/gbProduct/${inquiry.gbProductId}`}
                       onClick={(e) => {
                         e.preventDefault();
                         window.open(`/gbProduct/${inquiry.gbProductId}`, '_blank');
                       }}
-                      style={{ 
-                        color: '#3b82f6', 
-                        textDecoration: 'underline',
-                        cursor: 'pointer'
-                      }}
+                      className="admin-inquiry-link"
                     >
                       {inquiry.gbProductName}
                     </a>
@@ -126,49 +116,45 @@ const AdminInquiryDetail = () => {
                 </div>
               )}
 
-              {/* 주문번호 (INQUIRY + 주문 있을 때) */}
+              {/* 주문번호 */}
               {inquiry.type === 'INQUIRY' && inquiry.orderId && (
-                <div className="info-row">
-                  <div className="info-label">주문 번호</div>
-                  <div className="info-value">{inquiry.orderId}</div>
+                <div className="admin-inquiry-row">
+                  <div className="admin-inquiry-label">주문 번호</div>
+                  <div className="admin-inquiry-value">{inquiry.orderId}</div>
                 </div>
               )}
 
               {/* 작성자 */}
-              <div className="info-row">
-                <div className="info-label">작성자</div>
-                <div className="info-value">{inquiry.memberUsername}</div>
+              <div className="admin-inquiry-row">
+                <div className="admin-inquiry-label">작성자</div>
+                <div className="admin-inquiry-value">{inquiry.memberUsername}</div>
               </div>
 
               {/* 작성 날짜 */}
-              <div className="info-row">
-                <div className="info-label">작성 날짜</div>
-                <div className="info-value">
+              <div className="admin-inquiry-row">
+                <div className="admin-inquiry-label">작성 날짜</div>
+                <div className="admin-inquiry-value">
                   {new Date(inquiry.questionedAt).toLocaleString('ko-KR')}
                 </div>
               </div>
 
               {/* 문의 내용 */}
-              <div className="info-row column">
-                <div className="info-label">문의 내용</div>
-                <div className="info-value content">
+              <div className="admin-inquiry-row column">
+                <div className="admin-inquiry-label">문의 내용</div>
+                <div className="admin-inquiry-value content">
                   {inquiry.question}
                 </div>
               </div>
 
-              {/* 이미지 (INQUIRY + 이미지 있을 때) */}
+              {/* 첨부 이미지 */}
               {inquiry.type === 'INQUIRY' && inquiry.imageFileId && (
-                <div className="info-row">
-                  <div className="info-label">첨부 이미지</div>
-                  <div className="info-value">
-                    <img 
+                <div className="admin-inquiry-row">
+                  <div className="admin-inquiry-label">첨부 이미지</div>
+                  <div className="admin-inquiry-value">
+                    <img
                       src={`/api/file/${inquiry.imageFileId}`}
-                      alt="문의 이미지" 
-                      style={{ 
-                        maxWidth: '400px', 
-                        border: '1px solid #e5e7eb',
-                        borderRadius: '4px'
-                      }}
+                      alt="문의 이미지"
+                      className="admin-inquiry-image"
                     />
                   </div>
                 </div>
@@ -176,10 +162,10 @@ const AdminInquiryDetail = () => {
             </div>
 
             {/* 답변 섹션 */}
-            <div className="answer-section">
-              <h3 className="answer-title">답변 내용</h3>
+            <div className="admin-inquiry-answer-section">
+              <h3 className="admin-inquiry-answer-title">답변 내용</h3>
               <textarea
-                className="answer-textarea"
+                className="admin-inquiry-textarea"
                 placeholder={isAnswered ? '' : '답변을 입력하세요'}
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
@@ -189,19 +175,19 @@ const AdminInquiryDetail = () => {
             </div>
 
             {/* 버튼 */}
-            <div className="form-actions">
+            <div className="admin-inquiry-actions">
               {!isAnswered && (
                 <>
-                  <button className="btn-secondary" onClick={handleCancel}>
+                  <button className="admin-inquiry-button cancel" onClick={handleCancel}>
                     취소
                   </button>
-                  <button className="btn-primary" onClick={handleSubmit}>
+                  <button className="admin-inquiry-button submit" onClick={handleSubmit}>
                     답변 등록
                   </button>
                 </>
               )}
               {isAnswered && (
-                <button className="btn-secondary" onClick={handleCancel}>
+                <button className="admin-inquiry-button list" onClick={handleCancel}>
                   목록으로
                 </button>
               )}

@@ -150,7 +150,7 @@ const GBProductCreatePage = () => {
         endDate: data.endDate || '',      // String 그대로
         category: data.categoryId?.toString() || '',
         productName: data.name || '',
-        proposalId: data.proposalId?.toString() || '',  // ✅ proposalId로 통일!
+        proposalId: data.proposalId?.toString() || '',  // proposalId로 통일!
         siteUrl: data.originalSiteUrl || '',
         description: data.description || '',
         originalPrice: data.originalPrice || '',
