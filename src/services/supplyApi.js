@@ -173,3 +173,24 @@ export const getSupplyProductList = async (vendorId = null, status = '전체', k
   }
 };
 
+/**
+ * 납품 상품 상태 변경
+ * @param {number} id - 상품 ID
+ * @param {string} status - 변경할 상태 (입고 예정/검수 중/납품 완료)
+ * @returns {Promise<boolean>} 성공 여부
+ */
+export const updateSupplyProductStatus = async (id, status) => {
+  try {
+    const response = await apiFetch(`/api/admin/supply/products/${id}/status?status=${encodeURIComponent(status)}`, {
+      method: 'PUT',
+    });
+    if (!response.ok) {
+      throw new Error('상태 변경 실패');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('상태 변경 실패:', error);
+    throw error;
+  }
+};
+

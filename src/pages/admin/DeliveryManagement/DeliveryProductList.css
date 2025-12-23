@@ -74,6 +74,20 @@
     background: #e0f2fe;
     color: #075985;
   }
+  .status-select {
+    padding: 6px 10px;
+    border: 1px solid #cfd6e0;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    background: #fff;
+    min-width: 120px;
+  }
+  .status-select:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
   .no-data {
     text-align: center;
     padding: 40px 0;

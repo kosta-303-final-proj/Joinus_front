@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { getApprovedSupplierList, getSupplyProductList } from '../../../services/supplyApi';
+import { getApprovedSupplierList, getSupplyProductList, updateSupplyProductStatus } from '../../../services/supplyApi';
 import AdminHeader from '../../../components/layout/AdminHeader';
 import './DeliveryProductList.css';
 
@@ -21,6 +21,23 @@ export default function DeliveryProductList() {
   const [vendors, setVendors] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // 상태 변경 핸들러
+  const handleStatusChange = async (id, newStatus) => {
+    try {
+      await updateSupplyProductStatus(id, newStatus);
+      // 목록 새로고침
+      const selectedVendorId = vendorId === '전체' ? null : Number(vendorId);
+      const data = await getSupplyProductList(selectedVendorId, status, keyword);
+      setRecords(data || []);
+      alert('상태가 변경되었습니다.');
+    } catch (err) {
+      console.error('상태 변경 실패:', err);
+      alert('상태 변경에 실패했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // 승인된 업체 목록 로드 (드롭다운용)
   useEffect(() => {
@@ -166,9 +183,16 @@ export default function DeliveryProductList() {
                     <td>{(record.unitPrice || 0).toLocaleString()}원</td>
                     <td>{formatDate(record.deliveryDate)}</td>
                     <td>
-                      <span className={`status-chip status-${record.status?.replace(/\s/g, '') || ''}`}>
-                        {record.status || '-'}
-                      </span>
+                      <select 
+                        value={record.status || '입고 예정'}
+                        onChange={(e) => handleStatusChange(record.id, e.target.value)}
+                        disabled={record.status === '납품 완료'}
+                        className="status-select"
+                      >
+                        <option value="입고 예정">입고 예정</option>
+                        <option value="검수 중">검수 중</option>
+                        <option value="납품 완료">납품 완료</option>
+                      </select>
                     </td>
                     <td>{record.memo || '-'}</td>
                   </tr>
