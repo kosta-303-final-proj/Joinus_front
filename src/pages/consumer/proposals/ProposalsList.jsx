@@ -174,6 +174,7 @@ export default function ProposalsList() {
                     isProposal={true}
                     voteCount={p.voteCount}
                     onVote={() => handleVote(p.id)}
+                    showParticipants={false}
                   />
                 ))}
               </div>
