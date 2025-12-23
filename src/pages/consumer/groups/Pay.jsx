@@ -535,6 +535,7 @@ const username = userInfo?.username;
                                                         amount: totalAmount,
                                                         productId:id, // id fallback
                                                         productName,
+                                                        quantity, 
                                                         selectedOptions: selectedOptionsArray,
                                                         },
                                                     });
