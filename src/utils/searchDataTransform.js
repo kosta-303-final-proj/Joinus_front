@@ -33,7 +33,7 @@ export const transformGbProduct = (product) => {
     status: '진행중',  // ONGOING 상태
     description: product.description,
     price: formatPrice(product.price),  // price 포맷팅
-    rating: null,  // 평점은 추후 구현
+    rating: product.rating ?? 0,  // 평점은 추후 구현
     currentParticipants: product.participants || 0,  // participants → currentParticipants
     maxParticipants: product.minParticipants || 0,  // minParticipants → maxParticipants
     createdAt: product.createdAt,   // 최신순

@@ -181,13 +181,28 @@ export default function GBProductDetail() {
         .catch(err => console.log(err));
     }, [id]);
 
-const progress =
-  detail.product.minParticipants
-    ? Math.min(
-        (detail.product.participants / detail.product.minParticipants) * 100,
-        100
-      )
+    const progress =
+      detail.product.minParticipants
+        ? Math.min(
+            (detail.product.participants / detail.product.minParticipants) * 100,
+            100
+        )
     : 0;
+
+    // 서브 이미지 클릭 시
+    const handleSubImageClick = (index) => {
+        setDetail(prev => {
+            // 대표 이미지와 서브 이미지 위치 교체
+            const newImages = [...prev.images];
+            const temp = prev.thumbnailFile;
+            newImages[index] = temp;          // 클릭한 서브 이미지 자리에 대표 이미지 넣기
+            return {
+                ...prev,
+                thumbnailFile: prev.images[index], // 대표 이미지 변경
+                images: newImages,
+            };
+        });
+    };
 
     return(
         <>
@@ -305,7 +320,9 @@ const progress =
                 <div style={styles.container}>
                     <div style={{ display: "flex", gap: "45px", flexWrap: "wrap" }}>
                         {detail.images.map((img, idx) => (
-                          <img key={idx} src={`${baseUrl}/files/${img.fileName}`} style={{width:"220px"}} />
+                          <img key={idx} src={`${baseUrl}/files/${img.fileName}`} style={{width:"220px", cursor:"pointer"}} 
+                          onClick={() => handleSubImageClick(idx)}
+                          />
                         ))}
                     </div>
                 </div>

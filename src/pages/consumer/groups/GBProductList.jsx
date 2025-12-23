@@ -228,6 +228,7 @@ export default function GBProductList() {
                   deadlineTime={item.deadlineTime}
                   productId={item.id}
                   isProposal={false}
+                  showParticipants={true}
                 />
               ))}
             </div>

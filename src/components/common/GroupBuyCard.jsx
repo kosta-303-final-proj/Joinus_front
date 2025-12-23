@@ -22,6 +22,7 @@ export default function GroupBuyCard({
   productId,
   isProposal = false,
   voteCount,
+  showParticipants = true, // ← 새 prop 추가, 기본값 true
 }) {
   const navigate = useNavigate();
 
@@ -118,7 +119,7 @@ export default function GroupBuyCard({
           </CardSubtitle>
         )}
 
-        {rating && (
+        {rating !== undefined && rating !== null && (
           <CardSubtitle style={{ marginBottom: '12px' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <Star size={12} fill="#FFD700" color="#FFD700" style={{ marginRight: '5px' }} />
@@ -129,22 +130,16 @@ export default function GroupBuyCard({
 
         <CardSubtitle>
           <div style={{ justifyContent: 'space-between', display: 'flex', alignItems: 'center' }}>
-            {(current !== undefined && max !== undefined) && (
+            {/* ✅ showParticipants가 true일 때만 렌더링 */}
+            {showParticipants && (current !== undefined && max !== undefined) && (
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <Users size={15} style={{ marginRight: '5px' }} />
                 <span style={{ fontSize: '12px' }}>참여 인원 : {current}/{max}</span>
               </div>
             )}
-            {deadlineTime && (
-              <div>
-                <span style={{ color: 'red', fontSize: '10px' }}>{deadlineTime}</span>
-              </div>
-            )}
-            {!deadlineTime && deadline && (
-              <div>
-                <span style={{ color: 'red', fontSize: '10px' }}>{deadline}</span>
-              </div>
-            )}
+
+            {deadlineTime && <div><span style={{ color:'red', fontSize:'10px' }}>{deadlineTime}</span></div>}
+            {!deadlineTime && deadline && <div><span style={{ color:'red', fontSize:'10px' }}>{deadline}</span></div>}
           </div>
         </CardSubtitle>
       </CardBody>
