@@ -6,6 +6,8 @@ export default function DetailInfo(){
     const { id } = useParams();
     const [detail, setDetail] = useState({ product: {}, category: {}, thumbnailFile: {}, images: [], options: []});
 
+    const [expanded, setExpanded] = useState(false);
+
     const getProduct =()=>{
           myAxios().get(`/gbProductDetail/${id}`)
           .then(res=>{
@@ -24,6 +26,11 @@ export default function DetailInfo(){
     const getProposalUrl = () => {
       myAxios().get(`getProductUrl/${id}`)
     }
+
+    const description = detail.product.description || "";
+    const limit = 200; // 200글자 이상이면 접기/펼치기 적용
+    const isLong = description.length > limit;
+    const displayedText = expanded || !isLong ? description : description.substring(0, limit) + "...";
 
     return(
         <>
@@ -51,7 +58,22 @@ export default function DetailInfo(){
                 <div style={styles.container}>
                     <div style={{padding:'0 20px'}}>
                         <Label style={{fontSize:'24px'}}>상품 설명</Label>
-                      <div>{detail.product.description}</div> <br/>
+                      <div style={{
+                            whiteSpace: "pre-wrap",
+                            wordBreak: "break-word",
+                            fontSize: "16px",
+                            lineHeight: "1.5",
+                        }}>
+                            {displayedText}
+                            {isLong && (
+                                <span
+                                    onClick={() => setExpanded(!expanded)}
+                                    style={{ color: "#739FF2", cursor: "pointer", marginLeft: "5px" }}
+                                >
+                                    {expanded ? "접기" : "더보기"}
+                                </span>
+                            )}
+                        </div> <br/>
                       <div style={{display:'flex', justifyItems:'center', alignItems:'center'}}>
                         <div className="fw-bold" style={{fontSize:'16px', margin:'10px'}}>제안 링크</div>
                         <Button onClick={()=> window.open(detail.product.originalSiteUrl, "_black")} style={{backgroundColor:'#739FF2', width:"70px", height:"25px", fontSize:"12px", padding:"0", border:'none'}}>바로가기</Button>

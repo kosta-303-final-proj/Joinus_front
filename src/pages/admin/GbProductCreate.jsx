@@ -730,10 +730,12 @@ const GBProductCreatePage = () => {
           {/* 상품 설명 */}
           <section className="form-section">
             <h3 className="section-title">상품 설명</h3>
-            <div className="form-field">
+            <div className="form-field description-view"
+              style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
               <textarea
                 rows={6}
                 placeholder="상품에 대한 상세 설명을 입력하세요"
+                
                 value={formData.description}
                 onChange={(e) => updateField('description', e.target.value)}
               />
