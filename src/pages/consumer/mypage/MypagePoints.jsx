@@ -19,20 +19,6 @@ export default function MypagePoints() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // 포인트 사유 텍스트
-  const reasonText = {
-    SIGNUP: "회원가입 축하 포인트 적립",
-    SIGNUP_WITH_RECOMMENDER: "추천인 입력 포인트 적립",
-    RECOMMEND_REWARD: "추천인 보상 포인트 적립",
-    REVIEW: "텍스트 리뷰 포인트 적립",
-    PHOTO_REVIEW: "포토 리뷰 포인트 적립",
-    PROPOSAL_APPROVED: "공동구매 제안 승인 포인트 적립",
-    SHARE_PURCHASE: "공동구매 공유 포인트 적립",
-    PURCHASE: "구매 포인트 적립",
-    USE: "포인트 사용",
-    CANCEL_REFUND: "주문취소/반품 포인트 회수",
-  };
-
   // 날짜 포맷
   const formatDate = (dateString) => {
     if (!dateString) return "";
@@ -120,10 +106,14 @@ export default function MypagePoints() {
         {currentItems.map((p) => (
           <div className="points-item" key={p.id}>
             <div className="points-info">
-              {reasonText[p.reason_type] || p.reason_type}
-              <div className="points-date">
-                {formatDate(p.created_at)} | 주문번호 {p.order_id ? p.order_id : "-"}
-              </div>
+         {p.reasonText}
+<div className="points-date">
+  {formatDate(p.createdAt)}
+  {p.orderId && (
+    <> | 주문번호 {p.orderId}</>
+  )}
+</div>
+
             </div>
 
             {/* 금액 표시 */}
