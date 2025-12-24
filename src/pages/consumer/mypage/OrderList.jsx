@@ -466,7 +466,3 @@ const styles = {
     fontSize: "14px"
   }
 };
-
-const pageing = {
-
-}

@@ -17,6 +17,9 @@ const username = userInfo?.username;
     const [comments, setComments] = useState([]); // 댓글 리스트 (있으면)
     const canVote = !proposal.gbProductId && !proposal.rejectReason;
 
+    // 상태 추가
+    const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
+
     const PRIMARY_BLUE = "#7693FC";
     const PRIMARY_BLUE_DISABLED = "#C7D2FE";
     
@@ -209,9 +212,28 @@ const username = userInfo?.username;
                     <hr style={{border:'1px solid #000', margin:'15px 0'}}/>
 
                     <div className="fw-bold" style={{fontSize:'14px'}}>상품 상세 설명</div>
-                    <div style={{fontSize:'14px', whiteSpace:'pre-wrap'}}>
+                    <div
+                      style={{
+                        fontSize: "14px",
+                        whiteSpace: "pre-wrap",
+                        maxHeight: isDescriptionOpen ? "none" : "100px", // 기본 최대 높이
+                        overflow: "hidden",
+                        position: "relative",
+                        transition: "max-height 0.3s ease"
+                      }}
+                    >
                       {proposal.description}
                     </div>
+                    {/* 더보기/접기 버튼 */}
+                    {proposal.description && proposal.description.length > 200 && ( // 글자가 많을 경우만 표시
+                      <Button
+                        color="link"
+                        style={{ padding: 0, fontSize: "12px" }}
+                        onClick={() => setIsDescriptionOpen(!isDescriptionOpen)}
+                      >
+                        {isDescriptionOpen ? "접기" : "더보기"}
+                      </Button>
+                    )}
 
                     <hr style={{border:'1px solid #000', margin:'15px 0'}}/>
 

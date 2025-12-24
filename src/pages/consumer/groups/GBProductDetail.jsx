@@ -9,6 +9,9 @@ export default function GBProductDetail() {
     
     const [timeLeft, setTimeLeft] = useState("");
     const [selectedOptions, setSelectedOptions] = useState({});
+
+    // 기존 코드 안에 넣기
+    const [showAllDetails, setShowAllDetails] = useState(false);
     
     const navigate = useNavigate();
     
@@ -392,6 +395,100 @@ export default function GBProductDetail() {
                 </div>
             </div>
         </div>
+        <div style={styles.pageWrapper}>
+            <div style={styles.container}>
+              <hr/>
+           </div>
+        </div>
+
+        
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              width: "100%",
+              backgroundColor: "#fff",
+              gap: "20px",
+              padding: "20px 0",
+            }}
+          >
+            {/* 이미지 리스트 */}
+            {detail.details && detail.details.length > 0 && (
+              <>
+                {/* 첫 번째 이미지 */}
+                <div
+                  style={{
+                    width: "100%",
+                    maxWidth: "800px",
+                    height: "auto",
+                    maxHeight: "800px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <img
+                    src={`${baseUrl}/files/${detail.details[0].fileName}`}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                      cursor: "default",
+                      pointerEvents: "none",
+                    }}
+                  />
+                </div>
+
+                {/* 나머지 이미지 */}
+                {showAllDetails &&
+                  detail.details.slice(1).map((img, idx) => (
+                    <div
+                      key={idx}
+                      style={{
+                        width: "100%",
+                        maxWidth: "800px",
+                        height: "auto",
+                        maxHeight: "800px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <img
+                        src={`${baseUrl}/files/${img.fileName}`}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "contain",
+                          cursor: "default",
+                          pointerEvents: "none",
+                        }}
+                      />
+                    </div>
+                  ))}
+              </>
+            )}
+
+            {/* 더보기 / 접기 버튼을 이미지 영역과 분리 */}
+            {detail.details && detail.details.length > 1 && (
+              <div style={{ marginTop: "10px" }}> {/* 이미지와 버튼 사이 공백 */}
+                <button
+                  onClick={() => setShowAllDetails(!showAllDetails)}
+                  style={{
+                    padding: "8px 16px",
+                    fontSize: "14px",
+                    cursor: "pointer",
+                    border: "1px solid #000",
+                    backgroundColor: "#fff",
+                  }}
+                >
+                  {showAllDetails ? "접기" : "더보기"}
+                </button>
+              </div>
+            )}
+          </div>
+
 
         <div style={styles.pageWrapper}>
             <div style={styles.container}>
