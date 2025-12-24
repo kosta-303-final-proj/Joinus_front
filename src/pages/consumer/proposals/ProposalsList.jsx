@@ -165,9 +165,31 @@ export default function ProposalsList() {
           >
             <h3 className="mb-0 fw-bold text-start">제안 목록</h3>
 
-            <Link className="fw-bold d-flex align-items-center"style={{textDecoration: "none", color: "black",cursor: "pointer",}}to="/proposalsList/proposalWrite">
+            <Link
+              className="fw-bold d-flex align-items-center"
+              style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
+              to="#"
+              onClick={(e) => {
+                e.preventDefault(); // 링크 기본 동작 막기
+
+                const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+                const username = userInfo?.username;
+
+                if (!username) {
+                  alert("로그인이 필요합니다.");
+                  return;
+                }
+
+                navigate("/proposalsList/proposalWrite");
+              }}
+            >
               제안하기
-              <img  src="/right.png"alt="뒤로가기"className="back"style={{ width: "20px", height: "20px",marginLeft: "5px",}}/>
+              <img
+                src="/right.png"
+                alt="뒤로가기"
+                className="back"
+                style={{ width: "20px", height: "20px", marginLeft: "5px" }}
+              />
             </Link>
           </div>
         </div>

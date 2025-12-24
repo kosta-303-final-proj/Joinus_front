@@ -206,7 +206,7 @@ const rawGrade = userInfo?.grade;
               <li><Link to="/gbProductList?category=뷰티">뷰티</Link></li>
               <li><Link to="/gbProductList?category=패션">패션</Link></li>
               <li><Link to="/gbProductList?category=전자기기">전자기기</Link></li>
-              <li><Link to="/gbProductList?category=홈&리빙">홈앤리빙</Link></li>
+              <li><Link to={`/gbProductList?category=${encodeURIComponent('홈&리빙')}`}>홈&리빙</Link></li>
               <li><Link to="/gbProductList?category=식품">식품</Link></li>
               <li><Link to="/gbProductList?category=스포츠">스포츠</Link></li>
             </ul>
@@ -218,7 +218,7 @@ const rawGrade = userInfo?.grade;
               <li><Link to="/proposalsList?category=뷰티">뷰티</Link></li>
               <li><Link to="/proposalsList?category=패션">패션</Link></li>
               <li><Link to="/proposalsList?category=전자기기">전자기기</Link></li>
-              <li><Link to="/proposalsList?category=홈&리빙">홈앤리빙</Link></li>
+              <li><Link to={`/proposalsList?category=${encodeURIComponent('홈&리빙')}`}>홈&리빙</Link></li>
               <li><Link to="/proposalsList?category=식품">식품</Link></li>
               <li><Link to="/proposalsList?category=스포츠">스포츠</Link></li>
             </ul>
