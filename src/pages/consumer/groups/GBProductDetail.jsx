@@ -358,7 +358,7 @@ export default function GBProductDetail() {
                         </Button>
 
                         <Button
-                          onClick={handleWishList}
+                          onClick={handleParticipate}
                           disabled={isClosed}
                           style={{
                             backgroundColor: isClosed ? PRIMARY_BLUE_DISABLED : PRIMARY_BLUE,
@@ -369,10 +369,10 @@ export default function GBProductDetail() {
                             padding: "0",
                             border: "none",
                             cursor: isClosed ? "not-allowed" : "pointer",
-                            marginLeft:'10px'
+                            marginLeft: "10px",
                           }}
                         >
-                          {isClosed ? "마감" : isHeart ? "취소하기" : "찜하기"}
+                          {isClosed ? "마감" : "참여하기"}
                         </Button>
 
                     </div>
