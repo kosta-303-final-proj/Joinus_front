@@ -28,7 +28,7 @@ export default function Policy(){
                             <Label style={{ fontWeight: 'bold', margin: '0', width:'255px', textAlign:'center'}}>Q & A</Label></Link>
                         </div>
                         <div style={{background: '#E5EEFF', padding: '5px 0' }}><Link to={`/gbProductDetail/${id}/policy`} style={{color:'black'}}>
-                            <Label style={{ fontWeight: 'bold', margin: '0',width:'255px', textAlign:'center' }}>배송/환뷸 규칙</Label></Link>
+                            <Label style={{ fontWeight: 'bold', margin: '0',width:'255px', textAlign:'center' }}>배송/환불 규칙</Label></Link>
                         </div>
                     </div>
                     <hr style={{marginTop:'0'}}/>

@@ -189,18 +189,35 @@ export default function GBProductList() {
 
   return (
     <>
-      {/* 제목 영역 (1020px 고정) */}
-      <div style={styles.pageWrapper}>
-        <div style={styles.container}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "20px",
-            }}
-          >
-            <h3 className="mb-0 fw-bold text-start">{getTitleByType()}</h3>
+       {/* 제목 영역 - 배너 스타일 */}
+      <div style={{
+        width: "100%",
+        backgroundColor: "#ecf3fcff",
+        padding: "20px 0",
+      }}>
+        <div style={{
+          width: "1020px",
+          margin: "0 auto",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}>
+          <div>
+            <h3 style={{
+              margin: "0 0 8px 0",
+              fontSize: "32px",
+              fontWeight: "700",
+              color: "#222",
+            }}>
+              {getTitleByType()}
+            </h3>
+            <p style={{
+              margin: "0",
+              fontSize: "16px",
+              color: "#555",
+            }}>
+              같이 사면 이득, 해외 공동 구매 상품
+            </p>
           </div>
         </div>
       </div>

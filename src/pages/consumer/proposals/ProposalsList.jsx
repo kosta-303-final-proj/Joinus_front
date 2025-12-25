@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { baseUrl, myAxios } from "../../../config";
 import GroupBuyCard from '../../../components/common/GroupBuyCard';
+import ProposalCard from '../../../components/common/ProposalCard';
 import { transformProposal } from '../../../utils/searchDataTransform';
 import '../MainPage.css';
 
@@ -153,45 +154,93 @@ export default function ProposalsList() {
   return (
     <>
       {/* 제목 영역 (1020px 고정) */}
-      <div style={styles.pageWrapper}>
-        <div style={styles.container}>
-          <div
+      <div style={{
+        width: "100%",
+        backgroundColor: "#ecf3fcff",
+        padding: "20px 0",
+      }}>
+        <div style={{
+          width: "1020px",
+          margin: "0 auto",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}>
+          <div>
+            <h3 style={{
+              margin: "0 0 8px 0",
+              fontSize: "32px",
+              fontWeight: "700",
+              color: "#222",
+            }}>
+              제안 목록
+            </h3>
+            <p style={{
+              margin: "0",
+              fontSize: "16px",
+              color: "#555",
+            }}>
+              원하는 해외 공구 상품 제안
+            </p>
+          </div>
+
+          <Link
             style={{
               display: "flex",
-              justifyContent: "space-between",
               alignItems: "center",
-              marginBottom: "20px",
+              gap: "8px",
+              textDecoration: "none",
+              color: "#fff",
+              backgroundColor: "#4A90E2",
+              padding: "12px 20px",
+              borderRadius: "6px",
+              fontSize: "15px",
+              fontWeight: "600",
+              border: "none",
+              cursor: "pointer",
+              transition: "all 0.2s",
+            }}
+            to="#"
+            onClick={(e) => {
+              e.preventDefault();
+
+              const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+              const username = userInfo?.username;
+
+              if (!username) {
+                alert("로그인이 필요합니다.");
+                return;
+              }
+
+              navigate("/proposalsList/proposalWrite");
+            }}
+           onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#357ABD";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "#4A90E2";
             }}
           >
-            <h3 className="mb-0 fw-bold text-start">제안 목록</h3>
-
-            <Link
-              className="fw-bold d-flex align-items-center"
-              style={{ textDecoration: "none", color: "black", cursor: "pointer" }}
-              to="#"
-              onClick={(e) => {
-                e.preventDefault(); // 링크 기본 동작 막기
-
-                const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-                const username = userInfo?.username;
-
-                if (!username) {
-                  alert("로그인이 필요합니다.");
-                  return;
-                }
-
-                navigate("/proposalsList/proposalWrite");
-              }}
+            <svg 
+              width="18" 
+              height="18" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
             >
-              제안하기
-              <img
-                src="/right.png"
-                alt="뒤로가기"
-                className="back"
-                style={{ width: "20px", height: "20px", marginLeft: "5px" }}
-              />
-            </Link>
-          </div>
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            제안하기
+            <img
+              src="/right.png"
+              alt="화살표"
+              style={{ width: "20px", height: "20px", marginLeft: "8px", filter: "brightness(0) invert(1)"}}
+            />
+          </Link>
         </div>
       </div>
 
@@ -241,26 +290,21 @@ export default function ProposalsList() {
               <div style={{ textAlign: 'center', padding: '20px' }}>데이터가 없습니다.</div>
             ) : (
               <>
-                <div className="card-grid" style={{ gap: "20px" }}>
+                <div className="card-grid" style={{ gap: "20px", marginBottom: "20px" }}>
                   {proposals.map((p) => (
-                    <GroupBuyCard
-                      key={p.id}
-                      image={p.image}
-                      title={p.title}
-                      category={p.category}
-                      status={p.status}
-                      price={p.price}
-                      rating={p.rating}
-                      currentParticipants={p.currentParticipants}
-                      maxParticipants={p.maxParticipants}
-                      productId={p.id}
-                      isProposal={true}
-                      voteCount={p.voteCount}
-                      onVote={() => handleVote(p.id)}
-                      showParticipants={false}
-                    />
-                  ))}
-                </div>
+                  <ProposalCard
+                    key={p.id}
+                    image={p.image}
+                    title={p.title}
+                    category={p.category}
+                    status={p.status}
+                    price={p.price}
+                    rating={p.rating}
+                    voteCount={p.voteCount}
+                    productId={p.id}
+                  />
+                ))}
+              </div>
                 
                 {/* 페이지네이션 */}
                 {totalPages > 1 && (
