@@ -75,7 +75,7 @@
 
 /* 상품명: 좌측 (하지만 colgroup 중앙 기준 안에서) */
 .main-table td:nth-child(2) {
-  text-align: left;
+  text-align: center;
 }
 
 /* 결제금액: 우측 */
@@ -112,15 +112,16 @@
 }
 
 .main-thumb {
-  width: 60px;
-  height: 60px;
-  background: #e5ecf3;
-  border-radius: 0px;
+  width: 72px;          /* ⬅️ 사이즈 키움 (기존 60px) */
+  height: 72px;
+  background: transparent; /* ⬅️ 배경 제거 */
+  border-radius: 0;
 }
 
 .main-thumb > img {
-  width: 60px;
-  height: 60px;
+  width: 72px;      /* ⬅️ 부모랑 동일 */
+  height: 72px;
+  object-fit: contain; /* ⭐ 이미지 안 잘리게 */
 }
 
 .main-product-info p:first-child {
@@ -160,3 +161,37 @@
   color: #dc2626;
   font-weight: 600;
 }
+
+/* ===== 대시보드 주문 상품 셀 ===== */
+.order-product-cell {
+  display: inline-flex;      /* ⭐ block → inline-flex */
+  align-items: center;
+  gap: 10px;
+}
+
+.order-thumb {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  background: #f1f5f9;
+}
+
+.order-product-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #111;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+/* 행 hover + 클릭 느낌 */
+.order-row {
+  cursor: pointer;
+}
+
+.order-row:hover {
+  background: #f8faff;
+}
+

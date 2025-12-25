@@ -189,48 +189,81 @@ export default function MypageMain() {
 
         <table className="main-table fixed">
           <colgroup>
-            <col style={{ width: "17%" }} />
-            <col style={{ width: "35%" }} />
-            <col style={{ width: "13%" }} />
-            <col style={{ width: "13%" }} />
-            <col style={{ width: "13%" }} />
-          </colgroup>
+  <col style={{ width: "16%" }} />   {/* 주문번호 */}
+  <col style={{ width: "36%" }} />   {/* 상품정보 */}
+  <col style={{ width: "14%" }} />   {/* 주문일자 */}
+  <col style={{ width: "14%" }} />   {/* 결제금액 */}
+  <col style={{ width: "20%" }} />   {/* 상태 */}
+</colgroup>
+
 
           <thead>
-            <tr>
-              <th>주문번호</th>
-              <th>상품명</th>
-              <th>주문일자</th>
-              <th>결제금액</th>
-              <th>상태</th>
-            </tr>
-          </thead>
+  <tr>
+    <th>주문번호</th>
+    <th>상품정보</th>
+    <th>주문일자</th>
+    <th>결제금액</th>
+    <th>상태</th>
+  </tr>
+</thead>
+
 
           <tbody>
-            {recentOrders.length === 0 ? (
-              <tr>
-                <td colSpan="5" className="empty">
-                  주문 내역이 없습니다.
-                </td>
-              </tr>
-            ) : (
-              recentOrders.map((order) => (
-                <tr key={order.id}>
-                  <td className="center nowrap">{order.id}</td>
-                  <td className="ellipsis">{order.productName}</td>
-                  <td className="center nowrap">
-                    {formatDate(order.createdAt)}
-                  </td>
-                  <td className="right nowrap">
-                    ₩{order.totalAmount?.toLocaleString()}
-                  </td>
-                  <td className="center nowrap">
-                    {getOrderStatusLabel(order.status)}
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
+  {recentOrders.length === 0 ? (
+    <tr>
+      <td colSpan="5" className="empty">
+        주문 내역이 없습니다.
+      </td>
+    </tr>
+  ) : (
+    recentOrders.map((order) => (
+      <tr
+        key={order.orderId}
+        className="order-row"
+        onClick={() =>
+          navigate(`/mypage/orderList/orderDetail/${order.orderId}`)
+        }
+      >
+        {/* 주문번호 */}
+        <td className="center nowrap">{order.orderId}</td>
+
+        {/* 상품정보 */}
+        <td>
+          <div className="order-product-cell">
+            <img
+              className="order-thumb"
+              src={
+                order.thumbnailFileName
+                  ? `${baseUrl}/file/order/${order.thumbnailFileName}`
+                  : "/default.png"
+              }
+              alt=""
+            />
+            <span className="order-product-name">
+              {order.productName}
+            </span>
+          </div>
+        </td>
+
+        {/* 주문일자 */}
+        <td className="center nowrap">
+          {formatDate(order.orderedAt)}
+        </td>
+
+        {/* 결제금액 */}
+        <td className="right nowrap">
+          ₩{order.totalAmount?.toLocaleString()}
+        </td>
+
+        {/* 상태 */}
+        <td className="center nowrap">
+          {getOrderStatusLabel(order.status)}
+        </td>
+      </tr>
+    ))
+  )}
+</tbody>
+
         </table>
       </div> {/* ❗ 누락돼 있던 main-card 닫기 div (필수 수정) */}
 
