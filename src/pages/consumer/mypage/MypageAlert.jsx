@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import "./MypageAlert.css";
 import axios from "axios";
 import { Pagination, PaginationItem, PaginationLink } from "reactstrap";
+import { useNavigate } from "react-router-dom";
 
 export default function MypageAlert() {
+  const navigate = useNavigate();
 
 const formatDate = (dateStr) => {
   if (!dateStr) return "";
@@ -157,17 +159,39 @@ const formatDate = (dateStr) => {
                 </div>
 
                 {isOpen && (
-                  <div className="alert-accordion-body">
-                    <div className="alert-text">{alert.content}</div>
+  <div className="alert-accordion-body">
+    <div className="alert-text">{alert.content}</div>
 
-                    <button
-                      className="alert-btn-delete alert-delete-bottom"
-                      onClick={() => deleteAlert(alert.id)}
-                    >
-                      삭제
-                    </button>
-                  </div>
-                )}
+    {/* ✅ 이동 가능한 알림일 때만 */}
+    {(alert.proposalId || alert.gbProductId) && (
+     <div
+  className="alert-link"
+  onClick={() => {
+    // 🔥 제안 승인/반려/수정 관련 알림은 무조건 제안 상세
+    if (alert.proposalId && alert.title.includes("제안")) {
+      navigate(`/proposalDetail/${alert.proposalId}`);
+      return;
+    }
+
+    // 🔥 공구 관련 알림만 공구 상세
+    if (alert.gbProductId) {
+      navigate(`/gbProductDetail/${alert.gbProductId}`);
+      return;
+    }
+  }}
+>
+  바로가기 &gt;
+</div>
+    )}
+
+    <button
+      className="alert-btn-delete alert-delete-bottom"
+      onClick={() => deleteAlert(alert.id)}
+    >
+      삭제
+    </button>
+  </div>
+)}
               </div>
             );
           })

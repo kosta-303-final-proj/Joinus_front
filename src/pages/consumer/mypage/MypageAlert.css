@@ -225,5 +225,37 @@
   cursor: not-allowed;
 }
 
+/* =========================
+   알림 바로가기 링크
+========================= */
+.alert-link {
+  margin-top: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--intel-blue);
+
+  cursor: pointer;
+  user-select: none;
+
+  transition: all 0.15s ease;
+}
+
+/* 마우스 올렸을 때 */
+.alert-link:hover {
+  color: #5f89e0;
+  text-decoration: underline;
+}
+
+/* 눌렀을 때 */
+.alert-link:active {
+  transform: translateX(2px);
+  opacity: 0.8;
+}
+
+
 
 
