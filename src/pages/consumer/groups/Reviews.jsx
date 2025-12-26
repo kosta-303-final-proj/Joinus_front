@@ -7,6 +7,21 @@ export default function Reviews() {
     const { id } = useParams();
     const [reviews, setReviews] = useState([]);
 
+    const [sortType, setSortType] = useState("latest");
+
+    const sortedReviews = [...reviews].sort((a, b) => {
+        if (sortType === "latest") {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+        }
+        if (sortType === "high") {
+            return b.rating - a.rating;
+        }
+        if (sortType === "low") {
+            return a.rating - b.rating;
+        }
+        return 0;
+    });
+
     const getReview = () => {
         myAxios().get(`/getReviewList/${id}`) // GET 파라미터로 id 전달
             .then(res => {
@@ -64,16 +79,32 @@ export default function Reviews() {
 
                 <div style={styles.pageWrapper}>
                     <div style={styles.container}>
-                        <div style={{ padding: "0 20px", display: 'flex', gap: '10px' }}>
-                            <div>최신순</div>
-                            <div>평점 높은 순</div>
-                            <div>평점 낮음 순</div>
+                        <div style={{ padding: "0 20px", display: 'flex', gap: '15px' }}>
+                            <div
+                                style={sortType === "latest" ? styles.tag : styles.tagWhite}
+                                onClick={() => setSortType("latest")}
+                            >
+                                최신순
+                            </div>
+                            <div
+                                style={sortType === "high" ? styles.tag : styles.tagWhite}
+                                onClick={() => setSortType("high")}
+                            >
+                                평점 높은 순
+                            </div>
+                            <div
+                                style={sortType === "low" ? styles.tag : styles.tagWhite}
+                                onClick={() => setSortType("low")}
+                            >
+                                평점 낮은 순
+                            </div>
                         </div>
+
                         <hr />
 
                         {reviews.length === 0 && <div style={{ padding: "20px" }}>리뷰가 없습니다.</div>}
 
-                        {reviews.map((review) => (
+                        {sortedReviews.map((review) => (
                             <div key={review.id}>
                                 <div style={{ padding: "0 20px" }}>
                                     <div className="fw-bold" style={{ fontSize: '16px' }}>{review.memberUsername}</div>

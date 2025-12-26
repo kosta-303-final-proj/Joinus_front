@@ -158,15 +158,6 @@ const renderActionButtons = (order) => {
           >
             주문 상세
           </button>
-          {/* <button style={styles.smallBtn}>배송 조회</button>
-          <button style={styles.smallBtn}>반품 신청</button> */}
-          {/* <button 
-            style={styles.smallBtn} 
-            onClick={() => setReviewModalOpen(true)}
-          >
-            리뷰 작성
-          </button> */}
-          {/* <button style={styles.smallBtn}>교환 신청</button> */}
         </>
       );
     case "CANCELLED":
@@ -190,8 +181,14 @@ const renderActionButtons = (order) => {
     fetchOrderList(currentPage);
   }, [currentPage, searchParams, username]);
 
+  // READY(결제대기) 상태 제외한 주문 목록
+  const visibleOrderList = orderList.filter(
+    (order) => order.status !== "READY"
+  );
+
 
   const ORDER_STATUS_KR = {
+    READY: "결제대기",
     PAID: "결제완료",
     PREPARING: "상품준비중",
     SHIPPING: "배송중",
@@ -316,7 +313,7 @@ const renderActionButtons = (order) => {
                 )}
 
                 {/* 주문 목록 */}
-                {!loading && orderList.map((order, index) => (
+                {!loading && visibleOrderList.map((order, index) => (
                     <div key={order.orderItemId || index} style={{ ...styles.row, borderBottom: "1px solid #eee" }}>
 
                         {/* 주문일자 */}

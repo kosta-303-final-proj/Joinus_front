@@ -56,8 +56,13 @@ export default function PayComplete(){
                         method: "CARD",
                         status: "PAID",
                         approvedAt: new Date().toISOString(),
-                        amount,
+                        amount, 
                     });
+
+                    await myAxios().post("/mypage/point/purchase", {
+                    orderId: orderId
+                    });
+
                     sessionStorage.setItem(confirmedKey, "true");
                     setPaymentConfirmed(true);
                 } else {
