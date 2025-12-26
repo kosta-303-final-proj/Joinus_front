@@ -525,6 +525,7 @@ const username = userInfo?.username;
                                                         return {
                                                         groupName: opt.groupName,
                                                         optionId: Number(opt.optionId),
+                                                        optionName: opt.optionName,
                                                         };
                                                     });
 

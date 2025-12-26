@@ -19,11 +19,11 @@ export default function ProposalsList() {
   const [totalElements, setTotalElements] = useState(0);
   
   const categoryParam = searchParams.get("category");
-  const type = searchParams.get("type") || "popular";
+  const type = searchParams.get("type") || "latest";
 
   // 필터 state (단일 선택)
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectedSort, setSelectedSort] = useState("투표순");
+  const [selectedSort, setSelectedSort] = useState("최신순");
   const allCategories = ["뷰티", "패션", "전자기기", "홈&리빙", "식품", "스포츠"];
   const sortOptions = ["최신순", "투표순"];
   

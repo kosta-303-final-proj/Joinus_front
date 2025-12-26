@@ -51,7 +51,7 @@ export default function UserInfo() {
               }}>
                 회원 등급 : {member.grade}
                 <img
-                  src={`/grade/${grade}.png`}
+                  src={`/grade/${member.grade}.png`}
                   alt={grade}
                   style={{
                     width: '16px',

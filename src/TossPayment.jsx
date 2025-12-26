@@ -77,9 +77,7 @@ export function CheckoutPage() {
           <div style={styles.summaryRow}>
             <span>선택 옵션</span>
             <strong>
-              {selectedOptions
-                ? Object.values(selectedOptions).join(", ")
-                : "없음"}
+              {selectedOptions.map(opt => `${opt.groupName}: ${opt.optionName}`).join(", ")}
             </strong>
           </div>
 

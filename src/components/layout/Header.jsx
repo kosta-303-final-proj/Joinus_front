@@ -54,10 +54,10 @@ export default function Header() {
   const nickname = userInfo?.nickname || userInfo?.name || "사용자";
   
   // DB에서 온 대문자(SILVER)를 파일명(Silver) 형식으로 변환
-const rawGrade = userInfo?.grade; 
-  const grade = rawGrade 
-    ? rawGrade.charAt(0).toUpperCase() + rawGrade.slice(1).toLowerCase() 
-    : null;
+const grade = userInfo?.grade; 
+  // const grade = rawGrade 
+  //   ? rawGrade.charAt(0).toUpperCase() + rawGrade.slice(1).toLowerCase() 
+  //   : null;
 
   // ========== Menu css용 ==========
   const handleEnter = (menu) => {
@@ -123,12 +123,12 @@ const rawGrade = userInfo?.grade;
                {/* 등급 아이콘 + 닉네임 */}
                 <li className="user-info">
                   {grade && (
-  <img
-    src={`/grade/${grade}.png`}
-    alt={grade}
-    className="grade-icon"
-  />
-  )}
+                    <img
+                      src={`/grade/${grade}.png`}
+                      alt={grade}
+                      className="grade-icon"
+                    />
+                  )}
                   <Link to="/mypage/main">{nickname} 님</Link>
                 </li>
 
