@@ -17,7 +17,7 @@ const GBProductCreatePage = () => {
     endDate: '',
     category: '',
     productName: '',
-    proposalId: '', 
+    proposalId: '',
     siteUrl: '',
     description: '',
     originalPrice: '',
@@ -335,8 +335,8 @@ const GBProductCreatePage = () => {
 
       productFormData.append('name', formData.productName);
       productFormData.append('categoryId', formData.category);
-      productFormData.append('startDate', formData.startDate);  
-      productFormData.append('endDate', formData.endDate);      
+      productFormData.append('startDate', formData.startDate);
+      productFormData.append('endDate', formData.endDate);
       productFormData.append('originalSiteUrl', formData.siteUrl || '');
       productFormData.append('description', formData.description || '');
       productFormData.append('originalPrice', formData.originalPrice || 0);
@@ -471,18 +471,23 @@ const GBProductCreatePage = () => {
   // useEffect - Calculate Price
   // ========================================
 
+  // ========================================
+  // useEffect - Calculate Price
+  // ========================================
   useEffect(() => {
-    const price = parseFloat(formData.originalPrice) || 0;
-    const shipping = parseFloat(formData.shippingCost) || 0;
-    const rate = parseFloat(formData.exchangeRate) || 0;
-    const people = parseInt(formData.participants) || 1;
-    const fee = parseFloat(formData.feeRate) || 0;
-    const domestic = parseFloat(formData.domesticShipping) || 0;
+    const price = parseFloat(formData.originalPrice) || 0;      // 원가 ($)
+    const shipping = parseFloat(formData.shippingCost) || 0;    // 해외배송비 ($)
+    const rate = parseFloat(formData.exchangeRate) || 0;        // 환율 (₩/$)
+    const people = parseInt(formData.participants) || 1;        // 인원
+    const fee = parseFloat(formData.feeRate) || 0;              // 수수료 (%)
+    const domestic = parseFloat(formData.domesticShipping) || 0; // 국내배송비 (₩)
 
-    const totalDollar = price + shipping;
-    const totalWon = totalDollar * rate;
-    const perPerson = totalWon / people;
-    const final = perPerson * (1 + fee / 100) + domestic;
+    // 올바른 계산 공식!
+    const priceInWon = price * rate;                  // 원가를 원화로
+    const shippingPerPerson = (shipping * rate) / people;  // 해외배송비를 인원수로 나눔
+    const subtotal = priceInWon + shippingPerPerson;       // 소계
+    const withFee = subtotal * (1 + fee / 100);            // 수수료 포함
+    const final = withFee + domestic;                      // 국내배송비 추가
 
     updateField('groupBuyPrice', Math.round(final));
   }, [
@@ -492,7 +497,6 @@ const GBProductCreatePage = () => {
     formData.participants,
     formData.domesticShipping
   ]);
-
 
   // ========================================
   // useEffect - Fetch Exchange Rate
@@ -735,7 +739,7 @@ const GBProductCreatePage = () => {
               <textarea
                 rows={6}
                 placeholder="상품에 대한 상세 설명을 입력하세요"
-                
+
                 value={formData.description}
                 onChange={(e) => updateField('description', e.target.value)}
               />
@@ -942,36 +946,55 @@ const GBProductCreatePage = () => {
             {/* 계산 결과 */}
             <div className="calc-result-inline">
               <div className="calc-result-row">
-                <span>달러 총액:</span>
-                <strong>${((parseFloat(formData.originalPrice) || 0) + (parseFloat(formData.shippingCost) || 0)).toFixed(2)}</strong>
-              </div>
-              <div className="calc-result-row">
-                <span>원화 총액:</span>
+                <span>원가 (원화):</span>
                 <strong>
                   {Math.round(
-                    ((parseFloat(formData.originalPrice) || 0) + (parseFloat(formData.shippingCost) || 0)) *
+                    (parseFloat(formData.originalPrice) || 0) *
                     (parseFloat(formData.exchangeRate) || 0)
                   ).toLocaleString()}원
                 </strong>
               </div>
+
               <div className="calc-result-row">
-                <span>1인당 가격:</span>
+                <span>해외 배송비 (원화):</span>
                 <strong>
                   {Math.round(
-                    ((parseFloat(formData.originalPrice) || 0) + (parseFloat(formData.shippingCost) || 0)) *
-                    (parseFloat(formData.exchangeRate) || 0) /
+                    (parseFloat(formData.shippingCost) || 0) *
+                    (parseFloat(formData.exchangeRate) || 0)
+                  ).toLocaleString()}원
+                </strong>
+              </div>
+
+              {/* ✅ 1인당 해외배송비 */}
+              <div className="calc-result-row">
+                <span>1인당 해외배송비:</span>
+                <strong>
+                  {Math.round(
+                    ((parseFloat(formData.shippingCost) || 0) *
+                      (parseFloat(formData.exchangeRate) || 0)) /
                     (parseInt(formData.participants) || 1)
                   ).toLocaleString()}원
                 </strong>
               </div>
+
+              {/* 국내배송비 (그대로 표시) */}
+              <div className="calc-result-row">
+                <span>국내 배송비:</span>
+                <strong>
+                  {(parseInt(formData.domesticShipping) || 0).toLocaleString()}원
+                </strong>
+              </div>
+
+              {/* 최종 판매가 */}
               <div className="calc-result-row highlight">
-                <span>최종 판매가:</span>
+                <span>최종 판매가 (1인):</span>
                 <strong className="final-price">
                   {formData.groupBuyPrice.toLocaleString()}원
                 </strong>
               </div>
+
               <small className="calc-formula">
-                = (원가 + 해외배송비) × 환율 ÷ 인원 × (1 + 수수료) + 국내배송비
+                = (원가 × 환율) + (해외배송비 × 환율 ÷ 인원) × (1 + 수수료) + 국내배송비
               </small>
             </div>
 

@@ -53,7 +53,7 @@ export default function GroupBuyCard({
     <Card 
       className="groupbuy-card" 
       style={{
-        width: '240px', 
+        width: '250px', 
         boxShadow: '0 5px 20px rgba(88, 88, 88, 0.2)', 
         border: 'none',
         cursor: 'pointer'
@@ -79,16 +79,17 @@ export default function GroupBuyCard({
       <CardBody>
         <CardTitle tag="h5" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
           {category && (
-            <div style={{ border: '1px solid black', fontSize: '10px', padding: '5px' }}>
+            <div style={{ fontSize: '10px', padding: '5px 0', color:'#555' }}>
               {category}
             </div>
           )}
           {status && (
             <div style={{ 
               backgroundColor: status === '진행중' ? '#BBFFAC' : '#f0f0f0', 
-              color: status === '진행중' ? '#0A8F30' : '#666', 
+              color: status === '진행중' ? '#0A8F30' : '#555', 
               fontSize: '10px', 
-              padding: '5px' 
+              padding: '5px' ,
+              borderRadius: '16px'
             }}>
               {status}
             </div>
@@ -119,14 +120,14 @@ export default function GroupBuyCard({
           </CardSubtitle>
         )}
 
-        {rating !== undefined && rating !== null && (
+        {/* {rating !== undefined && rating !== null && (
           <CardSubtitle style={{ marginBottom: '12px' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <Star size={12} fill="#FFD700" color="#FFD700" style={{ marginRight: '5px' }} />
               <span style={{ fontSize: '12px' }}>{rating}</span>
             </div>
           </CardSubtitle>
-        )}
+        )} */}
 
         <CardSubtitle>
           <div style={{ justifyContent: 'space-between', display: 'flex', alignItems: 'center' }}>

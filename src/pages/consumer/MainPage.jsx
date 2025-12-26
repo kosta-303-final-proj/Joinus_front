@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import GroupBuyCard from '../../components/common/GroupBuyCard';
+import ProposalCard from '../../components/common/ProposalCard';
 import './MainPage.css';
 import TopBannerCarousel from './TopBannerCarousel';
 import { useNavigate } from 'react-router-dom';
@@ -82,7 +83,7 @@ export default function MainPage() {
                     handleDeadlineSoonClick();
                   }}
                 >
-                  더보기 &gt;
+                  더보기
                 </a>
               </div>
               <div className="card-grid">
@@ -109,7 +110,7 @@ export default function MainPage() {
             {/* 인기공구 */}
             <section className="section">
               <div className="mainpage-section-header">
-                <h2>인기공구</h2>
+                <h2>인기 공구</h2>
                 <a 
                   href="#" 
                   className="more-link"
@@ -118,7 +119,7 @@ export default function MainPage() {
                     handlePopularClick();
                   }}
                 >
-                  더보기 &gt;
+                  더보기
                 </a>
               </div>
               <div className="card-grid">
@@ -153,7 +154,7 @@ export default function MainPage() {
                     handleOngoingClick();
                   }}
                 >
-                  더보기 &gt;
+                  더보기
                 </a>
               </div>
               <div className="card-grid">
@@ -190,7 +191,7 @@ export default function MainPage() {
                     handleProposalClick();
                   }}
                 >
-                  더보기 &gt;
+                  더보기
                 </a>
               </div>
               <div className="card-grid">

@@ -149,7 +149,7 @@ const Sidebar = () => {
         </div>
 
         {/* 교환 및 반품 관리 */}
-        <div className="menu-item-container">
+        {/* <div className="menu-item-container">
           <div 
             className={`menu-item ${isActive('/admin/ExchRtrnWaitingList') ? 'active' : ''}`}
             onClick={() => navigate('/admin/ExchRtrnWaitingList')}
@@ -160,7 +160,7 @@ const Sidebar = () => {
               {!isCollapsed && <span className="menu-label">교환 및 반품 관리</span>}
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* 회원 관리 (서브메뉴 있음)  */}
         <div className="menu-item-container">

@@ -1,12 +1,12 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { React, useState,useRef } from "react";
+import { React, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Form, FormGroup, Label, Input, Button } from "reactstrap";
 import { myAxios } from "../../../config";
 
 
 export default function ProposalWrite() {
-  
+
   const [productName, setProductName] = useState('');
   // const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
@@ -44,7 +44,7 @@ export default function ProposalWrite() {
     formData.append('originalPrice', parseInt(originalPrice.replace(/,/g, '') || 0, 10));
     formData.append('abroadShippingCost', parseInt(abroadShippingCost.replace(/,/g, '') || 0, 10));
     formData.append('minPart', parseInt(minPart || 0, 10));
-    
+
     formData.append('memberUsername', username);
     // 대표 이미지
     if (mainFile) formData.append('mainImage', mainFile);
@@ -114,13 +114,31 @@ export default function ProposalWrite() {
 
   return (
     <>
-      {/* 제목 영역 (1020px 고정) */}
-      <div style={styles.pageWrapper}>
-        <div style={styles.container}>
-          <h3 className="mb-4 fw-bold text-start">제안 작성하기</h3>
-          <h6 className="text-start">
+      {/* 제목 영역 - 배너 스타일 */}
+      <div style={{
+        width: "100%",
+        backgroundColor: "#ecf3fcff",
+        padding: "20px 0",
+      }}>
+        <div style={{
+          width: "1020px",
+          margin: "0 auto",
+        }}>
+          <h3 style={{
+            margin: "0 0 8px 0",
+            fontSize: "32px",
+            fontWeight: "700",
+            color: "#222",
+          }}>
+            제안 작성하기
+          </h3>
+          <p style={{
+            margin: "0",
+            fontSize: "16px",
+            color: "#555",
+          }}>
             공동 구매를 원하는 상품을 제안해주세요. 많은 분들이 동의하면 실제 공구가 진행됩니다.
-          </h6>
+          </p>
         </div>
       </div>
 
@@ -131,19 +149,19 @@ export default function ProposalWrite() {
       <div style={styles.pageWrapper}>
         <div style={styles.container}>
           <Form>
-            <FormGroup><Link to="/proposalsList" style={{textDecoration: 'none', color: 'black'}}>
-              <Label className="fw-bold text-end d-block"><img src="/left.png" alt="뒤로가기" className="back" style={{width:'20px', height:'20px',  marginRight:"5px"}}/>뒤로가기</Label></Link>
+            <FormGroup><Link to="/proposalsList" style={{ textDecoration: 'none', color: 'black' }}>
+              <Label className="fw-bold text-end d-block"><img src="/left.png" alt="뒤로가기" className="back" style={{ width: '20px', height: '20px', marginRight: "5px" }} />뒤로가기</Label></Link>
             </FormGroup>
             {/* 이름 */}
             <FormGroup className="mb-3">
               <Label className="fw-bold text-start d-block" >상품명</Label>
-              <Input type="text" name="productName" onChange={(e)=> setProductName(e.target.value)} placeholder="상품명을 입력하세요." />
+              <Input type="text" name="productName" onChange={(e) => setProductName(e.target.value)} placeholder="상품명을 입력하세요." />
             </FormGroup>
 
             {/* 카테고리 */}
             <FormGroup className="mb-3">
               <Label className="fw-bold text-start d-block">카테고리 *</Label>
-              <Input type="select" name="category" onChange={(e)=> setCategory(e.target.value)}>
+              <Input type="select" name="category" onChange={(e) => setCategory(e.target.value)}>
                 <option>선택하세요.</option>
                 <option>뷰티</option>
                 <option>패션</option>
@@ -157,7 +175,7 @@ export default function ProposalWrite() {
             {/* 상세 설명 */}
             <FormGroup className="mb-3">
               <Label className="fw-bold text-start d-block">상세 설명 *</Label>
-              <Input type="textarea" name="description" onChange={(e)=>setDescription(e.target.value)} placeholder="상세한 내용을 입력해주세요." rows={5} style={{ resize: "none" }}/>
+              <Input type="textarea" name="description" onChange={(e) => setDescription(e.target.value)} placeholder="상세한 내용을 입력해주세요." rows={5} style={{ resize: "none" }} />
             </FormGroup>
 
             {/* 상품 이미지 업로드 */}
@@ -223,7 +241,7 @@ export default function ProposalWrite() {
             {/* 원 상품 링크 */}
             <FormGroup className="mb-4">
               <Label className="fw-bold text-start d-block">원 상품 링크 *</Label>
-              <Input type="text" name="originalSiteUrl" onChange={(e)=>setOriginalSiteUrl(e.target.value)} placeholder="상품 링크를 입력해주세요." />
+              <Input type="text" name="originalSiteUrl" onChange={(e) => setOriginalSiteUrl(e.target.value)} placeholder="상품 링크를 입력해주세요." />
             </FormGroup>
 
             {/* 원가 */}
@@ -275,9 +293,9 @@ const styles = {
 
   // 전체 폭 hr
   fullWidthHr: {
-  width: "100%",
-  margin: "0",
-},
+    width: "100%",
+    margin: "0",
+  },
 
   imageGrid: {
     display: "grid",
@@ -310,7 +328,7 @@ const styles = {
     objectFit: "contain",
     backgroundColor: "#fff",
   },
-    deleteBtn: {
+  deleteBtn: {
     position: "absolute",
     top: "4px",          // 이미지 상단에서 4px 아래
     right: "4px",        // 이미지 오른쪽에서 4px 안쪽
