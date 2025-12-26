@@ -117,11 +117,17 @@ export default function MypagePoints() {
             </div>
 
             {/* 금액 표시 */}
-            {p.amount < 0 ? (
-              <div className="points-minus">{p.amount}P</div>
-            ) : (
-              <div className="points-plus">+{p.amount}P</div>
-            )}
+{p.amount < 0 ? (
+  <div className="points-minus">
+    {Number(p.amount || 0).toLocaleString()}P
+  </div>
+) : (
+  <div className="points-plus">
+    +{Number(p.amount || 0).toLocaleString()}P
+  </div>
+)}
+
+
           </div>
         ))}
       </div>

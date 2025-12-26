@@ -52,9 +52,10 @@ export default function UserInfo() {
 
           {/* 오른쪽 영역 : 보유 포인트 */}
           <div style={{ textAlign: "right", minWidth: "150px" }}>
-            <div style={{ fontSize:"12px" }}>
-              보유 포인트 : {member.pointBalance}P
-            </div>
+           <div style={{ fontSize:"12px" }}>
+  보유 포인트 : {Number(member.pointBalance || 0).toLocaleString()}P
+</div>
+
           </div>
         </CardBody>
       </Card>

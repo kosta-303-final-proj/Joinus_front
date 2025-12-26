@@ -251,9 +251,9 @@ export default function MypageMain() {
         </td>
 
         {/* 결제금액 */}
-        <td className="right nowrap">
-          ₩{order.totalAmount?.toLocaleString()}
-        </td>
+    <td className="right nowrap">
+  {order.totalAmount?.toLocaleString()}원
+</td>
 
         {/* 상태 */}
         <td className="center nowrap">
