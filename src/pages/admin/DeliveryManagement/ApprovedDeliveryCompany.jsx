@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { getApprovedSupplierList } from '../../../services/supplyApi';
+import { myAxios } from '../../../config';
 import AdminHeader from '../../../components/layout/AdminHeader';
 import './ApprovedDeliveryCompany.css';
 
@@ -20,6 +21,20 @@ export default function ApprovedDeliveryCompany() {
   const [vendors, setVendors] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [categories, setCategories] = useState([]);
+
+  // 카테고리 목록 조회
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await myAxios().get('/admin/categories');
+        setCategories(response.data);
+      } catch (error) {
+        console.error('카테고리 조회 실패:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   // API 호출
   useEffect(() => {
@@ -79,9 +94,11 @@ export default function ApprovedDeliveryCompany() {
               onChange={(e) => setCategory(e.target.value)}
             >
               <option value="전체">전체</option>
-              <option value="생활용품">생활용품</option>
-              <option value="주방/식기">주방/식기</option>
-              <option value="가전/기타">가전/기타</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.name}>
+                  {cat.name}
+                </option>
+              ))}
             </select>
           </div>
           <div className="filter-field">

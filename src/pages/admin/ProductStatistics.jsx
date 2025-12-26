@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { apiFetch } from '../../config';
+import { apiFetch, myAxios } from '../../config';
 import AdminHeader from '../../components/layout/AdminHeader';
 import './ProductStatistics.css';
 
@@ -23,11 +23,25 @@ export default function ProductStatistics() {
   const [vendor, setVendor] = useState('전체');
   const [searchKeyword, setSearchKeyword] = useState('');
   const [sortBy, setSortBy] = useState('매출 높은 순');
+  const [categories, setCategories] = useState([]);
 
   // API 데이터 상태
   const [productStatisticsData, setProductStatisticsData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // 카테고리 목록 조회
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await myAxios().get('/admin/categories');
+        setCategories(response.data);
+      } catch (error) {
+        console.error('카테고리 조회 실패:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   // API 호출 함수
   const fetchProductStatistics = async () => {
@@ -290,10 +304,11 @@ export default function ProductStatistics() {
               className="product-filter-select"
             >
               <option value="전체">전체</option>
-              <option value="생활용품">생활용품</option>
-              <option value="식품">식품</option>
-              <option value="주방/식기">주방/식기</option>
-              <option value="디지털/가전">디지털/가전</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.name}>
+                  {cat.name}
+                </option>
+              ))}
             </select>
           </div>
           <div className="product-filter-group">

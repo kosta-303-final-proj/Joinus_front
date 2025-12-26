@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { myAxios } from '../../config';
 import AdminHeader from '../../components/layout/AdminHeader';
 import './DeliveryManagement.css';
 
@@ -14,6 +15,20 @@ export default function DeliveryManagement() {
   });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [categories, setCategories] = useState([]);
+
+  // 카테고리 목록 조회
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await myAxios().get('/admin/categories');
+        setCategories(response.data);
+      } catch (error) {
+        console.error('카테고리 조회 실패:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   // 더미 데이터 (12개로 확장)
   const allDeliveryList = [
@@ -294,11 +309,11 @@ export default function DeliveryManagement() {
               onChange={handleFilterChange}
             >
               <option value="전체">전체</option>
-              <option value="생활">생활</option>
-              <option value="생활용품">생활용품</option>
-              <option value="주방/식기">주방/식기</option>
-              <option value="식품">식품</option>
-              <option value="가전/기타">가전/기타</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.name}>
+                  {category.name}
+                </option>
+              ))}
             </select>
           </div>
           <button className="search-button" onClick={handleSearch}>
