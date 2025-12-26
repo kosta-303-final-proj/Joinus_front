@@ -31,6 +31,7 @@ const formatDate = (dateStr) => {
       .get(`http://localhost:8080/mypage/alert?username=${username}`)
 .then((res) => {
       // 최신순(createdAt 내림차순) 정렬 추가
+      console.log(res.data)
      const sortedData = (res.data || []).sort((a, b) => {
   const aUnread = !a.readedAt;
   const bUnread = !b.readedAt;
@@ -167,17 +168,18 @@ const formatDate = (dateStr) => {
      <div
   className="alert-link"
   onClick={() => {
-    // 🔥 제안 승인/반려/수정 관련 알림은 무조건 제안 상세
-    if (alert.proposalId && alert.title.includes("제안")) {
-      navigate(`/proposalDetail/${alert.proposalId}`);
-      return;
-    }
-
     // 🔥 공구 관련 알림만 공구 상세
     if (alert.gbProductId) {
       navigate(`/gbProductDetail/${alert.gbProductId}`);
       return;
     }
+
+      // 🔥 제안 승인/반려/수정 관련 알림은 무조건 제안 상세
+    else if (alert.proposalId) {
+      navigate(`/proposalDetail/${alert.proposalId}`);
+      return;
+    }
+
   }}
 >
   바로가기 &gt;
