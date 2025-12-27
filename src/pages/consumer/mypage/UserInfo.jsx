@@ -15,7 +15,6 @@ export default function UserInfo() {
     : null;
 
   const getUserInfo = () => {
-
     myAxios().get(`/consumerInfo?username=${username}`)
       .then(res => {
         console.log(res)
@@ -25,51 +24,70 @@ export default function UserInfo() {
         console.log(err)
       })
   }
+  
   useEffect(() => {
     getUserInfo();
   }, [])
+
   return (
     <>
-      <Card style={{ width: "860px" }}>
-        <CardHeader className="CardHeaderCss">
-          <div style={{ marginTop: "5px", color: "#2D81EF", fontSize: "16px" }}>
+      <Card style={{ 
+        width: "860px", 
+        border: '1px solid #e0e0e0',
+        borderRadius: '8px',
+        boxShadow: 'none'
+      }}>
+        <CardHeader style={{
+          backgroundColor: '#fafafa',
+          borderBottom: '1px solid #eaeaea',
+          padding: '16px 24px'
+        }}>
+          <div style={{ 
+            color: "#2D81EF", 
+            fontSize: "16px",
+            fontWeight: '600'
+          }}>
             {member.name}님 환영합니다.
           </div>
         </CardHeader>
 
-        <CardBody className="CardBodyCss" style={{ display: "flex", alignItems: "center" }}>
-
-          {/* 왼쪽 영역 : 아이디 + 회원 등급 */}
+        <CardBody style={{ 
+          display: "flex", 
+          alignItems: "center",
+          padding: '20px 24px',
+          backgroundColor: '#fff'
+        }}>
+          {/* 왼쪽 영역 : 회원 등급 */}
           <div style={{ flex: 1 }}>
-
-            {/* 회원 등급 */}
-            <CardText style={{ fontSize: "12px", margin: 0 }}>
+            <CardText style={{ fontSize: "14px", margin: 0, color: '#555' }}>
               <div style={{
                 display: 'flex',          
                 alignItems: 'center',    
-                gap: '6px'               
+                gap: '8px'               
               }}>
-                회원 등급 : {member.grade}
+                <span style={{ fontWeight: '500' }}>회원 등급</span>
+                <span style={{ fontWeight: '600', color: '#222' }}>{member.grade}</span>
                 <img
                   src={`/grade/${member.grade}.png`}
                   alt={grade}
                   style={{
-                    width: '16px',
-                    height: '16px',
+                    width: '18px',
+                    height: '18px',
                     objectFit: 'contain'
                   }}
-                  className="grade-icon"
                 />
               </div>
             </CardText>
-
           </div>
 
           {/* 오른쪽 영역 : 보유 포인트 */}
           <div style={{ textAlign: "right", minWidth: "150px" }}>
-           <div style={{ fontSize:"12px" }}>
-  보유 포인트 : {Number(member.pointBalance || 0).toLocaleString()}P
-</div>
+            <div style={{ fontSize:"14px", color: '#555' }}>
+              <span style={{ fontWeight: '500' }}>보유 포인트</span>
+              <span style={{ fontWeight: '700', color: '#222', marginLeft: '8px' }}>
+                {Number(member.pointBalance || 0).toLocaleString()}P
+              </span>
+            </div>
           </div>
         </CardBody>
       </Card>

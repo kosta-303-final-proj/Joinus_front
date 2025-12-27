@@ -9,7 +9,7 @@
   margin: 0 auto;
 }
 
-.detail-header {
+.notice-detail-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -17,26 +17,21 @@
   margin-bottom: 24px;
 }
 
-.page-title {
+.notice-detail-page-title {
   margin: 0;
   font-size: 28px;
   font-weight: 800;
   color: #1f2430;
 }
 
-.meta {
+.notice-detail-meta {
   display: inline-block;
   margin-top: 8px;
   font-size: 13px;
   color: #9aa0ae;
 }
 
-.header-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.card {
+.notice-detail-card {
   background: white;
   border-radius: 12px;
   border: 1px solid #e8ebf3;
@@ -44,38 +39,39 @@
   box-shadow: 0 12px 30px rgba(20, 40, 90, 0.06);
 }
 
-.skeleton-card {
+/* Skeleton */
+.notice-detail-skeleton-card {
   display: grid;
   gap: 14px;
 }
 
-.skeleton {
+.notice-detail-skeleton {
   background: linear-gradient(90deg, #f3f5f9 25%, #e8ebf3 37%, #f3f5f9 63%);
   background-size: 400% 100%;
-  animation: shimmer 1.4s ease infinite;
+  animation: notice-detail-shimmer 1.4s ease infinite;
   border-radius: 6px;
 }
 
-.skeleton.title { height: 28px; width: 60%; }
-.skeleton.meta { height: 16px; width: 30%; }
-.skeleton.body { height: 160px; width: 100%; }
+.notice-detail-skeleton-title { height: 28px; width: 60%; }
+.notice-detail-skeleton-meta { height: 16px; width: 30%; }
+.notice-detail-skeleton-body { height: 160px; width: 100%; }
 
-@keyframes shimmer {
+@keyframes notice-detail-shimmer {
   0% { background-position: 100% 0; }
   100% { background-position: -100% 0; }
 }
 
-.error-card {
+.notice-detail-error-card {
   color: #d12c2c;
   border: 1px solid #f1c4c4;
   background: #fff7f7;
 }
 
-.notice-content {
+.notice-detail-content {
   margin-bottom: 28px;
 }
 
-.content-text {
+.notice-detail-content-text {
   margin: 0;
   font-size: 15px;
   line-height: 1.9;
@@ -83,31 +79,31 @@
   white-space: pre-line;
 }
 
-.image-section {
+.notice-detail-image-section {
   margin-top: 12px;
 }
 
-.section-title-row {
+.notice-detail-section-title-row {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: 14px;
 }
 
-.section-title {
+.notice-detail-section-title {
   margin: 0;
   font-size: 16px;
   font-weight: 700;
   color: #1f2430;
 }
 
-.image-grid {
+.notice-detail-image-grid {
   display: grid;
   gap: 12px;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }
 
-.image-card {
+.notice-detail-image-card {
   overflow: hidden;
   border-radius: 10px;
   border: 1px solid #e8ebf3;
@@ -118,26 +114,26 @@
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.image-card:hover {
+.notice-detail-image-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 24px rgba(20, 40, 90, 0.12);
 }
 
-.image-card img {
+.notice-detail-image-card img {
   display: block;
   width: 100%;
-  height: 260px;
+  height: 160px;
   object-fit: contain;
   background: white;
 }
 
-.detail-footer {
+.notice-detail-footer {
   display: flex;
   justify-content: center;
   padding: 24px 0 8px;
 }
 
-.image-modal-backdrop {
+.notice-detail-image-modal-backdrop {
   position: fixed;
   inset: 0;
   background: rgba(15, 23, 42, 0.65);
@@ -149,7 +145,7 @@
   backdrop-filter: blur(2px);
 }
 
-.image-modal {
+.notice-detail-image-modal {
   position: relative;
   max-width: 1080px;
   width: min(90vw, 1080px);
@@ -160,7 +156,7 @@
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
 }
 
-.image-modal img {
+.notice-detail-image-modal img {
   display: block;
   width: 100%;
   max-height: 72vh;
@@ -169,7 +165,7 @@
   background: #0b1324;
 }
 
-.close-button {
+.notice-detail-close-button {
   position: absolute;
   top: 12px;
   right: 12px;
@@ -184,11 +180,11 @@
   transition: background 0.2s ease;
 }
 
-.close-button:hover {
+.notice-detail-close-button:hover {
   background: rgba(255, 255, 255, 0.22);
 }
 
-.list-button {
+.notice-detail-list-button {
   padding: 12px 28px;
   border: 1px solid #dfe3ed;
   background: white;
@@ -200,7 +196,7 @@
   transition: all 0.2s ease;
 }
 
-.list-button:hover {
+.notice-detail-list-button:hover {
   background: #f7f9fc;
   transform: translateY(-1px);
 }
@@ -210,17 +206,12 @@
     padding: 32px 16px;
   }
 
-  .detail-header {
+  .notice-detail-header {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .header-actions {
-    width: 100%;
-  }
-
-  .card {
+  .notice-detail-card {
     padding: 24px;
   }
 }
-

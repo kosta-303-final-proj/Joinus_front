@@ -1,17 +1,17 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Label,FormGroup, Input, Button, Pagination, PaginationItem, PaginationLink } from "reactstrap";
+import { Label, FormGroup, Input, Button, Pagination, PaginationItem, PaginationLink } from "reactstrap";
 import { useEffect, useState } from "react";
 import { myAxios, baseUrl } from "../../../config";
 import { useNavigate } from "react-router-dom";
 import "./PaginationCom.css";
 
 export default function InterestList() {
-//     // 로그인 유저 정보 (추가)
-const userInfo =
-  JSON.parse(sessionStorage.getItem("userInfo"))
-const username = userInfo?.username;
+  //     // 로그인 유저 정보 (추가)
+  const userInfo =
+    JSON.parse(sessionStorage.getItem("userInfo"))
+  const username = userInfo?.username;
 
-const [timeLeftMap, setTimeLeftMap] = useState({});
+  const [timeLeftMap, setTimeLeftMap] = useState({});
 
   // 로그인 유저 정보
   // const userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -121,148 +121,142 @@ const [timeLeftMap, setTimeLeftMap] = useState({});
       console.error("선택 삭제 실패", error);
     }
   };
-  
-const parseEndDate = (endDate) => {
-  if (!endDate) return null;
 
-  // ✅ Timestamp 객체 대응
-  if (typeof endDate === "object" && endDate.time) {
-    return endDate.time;
-  }
+  const parseEndDate = (endDate) => {
+    if (!endDate) return null;
 
-  // 문자열일 경우도 대비
-  if (typeof endDate === "string") {
-    return new Date(endDate.replace(" ", "T")).getTime();
-  }
+    // ✅ Timestamp 객체 대응
+    if (typeof endDate === "object" && endDate.time) {
+      return endDate.time;
+    }
 
-  return null;
-};
+    // 문자열일 경우도 대비
+    if (typeof endDate === "string") {
+      return new Date(endDate.replace(" ", "T")).getTime();
+    }
 
-useEffect(() => {
-  if (interestList.length === 0) return;
+    return null;
+  };
 
-  const interval = setInterval(() => {
-    const now = Date.now();
-    const updated = {};
+  useEffect(() => {
+    if (interestList.length === 0) return;
 
-    interestList.forEach(item => {
-      const endTime = parseEndDate(item.product?.endDate);
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const updated = {};
 
-      if (!endTime) {
-        updated[item.id] = "날짜 없음";
-        return;
-      }
+      interestList.forEach(item => {
+        const endTime = parseEndDate(item.product?.endDate);
 
-      const distance = endTime - now;
+        if (!endTime) {
+          updated[item.id] = "날짜 없음";
+          return;
+        }
 
-      if (distance <= 0) {
-        updated[item.id] = "종료";
-        return;
-      }
+        const distance = endTime - now;
 
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((distance / (1000 * 60)) % 60);
-      const seconds = Math.floor((distance / 1000) % 60);
+        if (distance <= 0) {
+          updated[item.id] = "종료";
+          return;
+        }
 
-      updated[item.id] =
-        `${days}일 ${hours}시간 ${minutes}분 ${seconds}초`;
-    });
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((distance / (1000 * 60)) % 60);
+        const seconds = Math.floor((distance / 1000) % 60);
 
-    setTimeLeftMap(updated);
-  }, 1000);
+        updated[item.id] =
+          `${days}일 ${hours}시간 ${minutes}분 ${seconds}초`;
+      });
 
-  return () => clearInterval(interval);
-}, [interestList]);
+      setTimeLeftMap(updated);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [interestList]);
 
 
   return (
     <>
-        <div className="fw-bold d-block" style={{ fontSize: "20px", margin: "20px auto" }}>관심상품</div>
-        <div style={{width:'860px',}}>
-        <hr style={{ margin: "5px auto" }} />
-        <FormGroup check style={{display: "flex",justifyContent: "space-between",alignItems: "center"}}>
-          {/* 전체선택 */}
-          <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-            <Input type="checkbox" checked={allChecked} onChange={handleAllCheck}  />
-            <Label check style={{ margin: 0, fontSize: "12px" }}>
-              전체 선택
-            </Label>
-          </div>
+      <div className="fw-bold d-block" style={{ fontSize: "20px", margin: "20px auto" }}>관심상품</div>
+      <div style={{ width: '860px', }}>
 
-          {/* 헤더 */}
-          <div style={{ display: "flex", gap: "15px", alignItems: "center" }}>
-            <Label style={{ color: "black", fontSize: "12px", margin: "0 450px 0 0 " }}>상품명</Label>
-            <Label style={{ color: "black", fontSize: "12px", margin: "0 220px 0 0" }}>마감날짜</Label>
-            {/* <Label style={{ color: "black", fontSize: "12px", margin: "0 35px 0 0" }}>주문</Label> */}
-          </div>
-        </FormGroup>
+        {/* 헤더 */}
         <hr style={{ margin: "5px auto 0 auto" }} />
-
+        <FormGroup check className="header" style={{ backgroundColor: '#F2F9FC', marginBottom: '0px', height: '35px' }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginLeft: '5px' }}>
+            <Input type="checkbox" checked={allChecked} onChange={handleAllCheck} />
+            <Label check style={{ margin: 0, fontSize: "12px" }}>전체 선택</Label>
+          </div>
+          <Label className="headerLabel" style={{ margin: "0 280px 0 20px" }}>상품정보</Label>
+          <Label className="headerLabel" style={{ margin: "0 60px 0 0" }}>마감날짜</Label>
+          <Label className="headerLabel" style={{ margin: "0 35px 0 0" }}>선택</Label>
+        </FormGroup>
+        <hr style={{ margin: "0 auto 5px auto" }} />
         {/* 상품 리스트 */}
         {interestList.map(item => (
-            <div key={item.id}>
+          <div key={item.id}>
             <FormGroup check style={{ display: "flex", height: "120px", alignItems: "center" }}>
-                <Input type="checkbox" style={{ marginRight: "30px" }}
+              <Input type="checkbox" style={{ marginRight: "30px" }}
                 checked={checkedItems[item.id] || false}
                 onChange={() => handleItemCheck(item.id)}
-                 />
-                {/* 상품 이미지 */}
-                <div onClick={()=> navigate(`/gbProductDetail/${item.product?.id}`)} style={{display:'flex', justifyContent:'center', alignItems:'center',cursor: 'pointer'}}>
+              />
+              {/* 상품 이미지 */}
+              <div onClick={() => navigate(`/gbProductDetail/${item.product?.id}`)} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', cursor: 'pointer' }}>
                 <img
-                     src={`${baseUrl}/file/gbProduct/${item.product?.thumbnail?.fileName}`}
-                    style={{ width: "70px", height: "70px", marginRight: "20px" }}
+                  src={`${baseUrl}/file/gbProduct/${item.product?.thumbnail?.fileName}`}
+                  style={{ width: "70px", height: "70px", marginRight: "20px" }}
                 />
 
                 {/* 상품명 */}
                 <div style={{ fontSize: "12px", width: "400px", marginRight: "20px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    {item.product?.name}
+                  {item.product?.name}
                 </div>
-                </div>
-                <div style={{ fontSize: "12px", color: "red", minWidth: "100px", marginRight: "20px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    {timeLeftMap[item.id] ?? "계산 중"}
-                </div>
-                
+              </div>
+              <div style={{ fontSize: "12px", color: "red", minWidth: "100px", marginRight: "20px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                {timeLeftMap[item.id] ?? "계산 중"}
+              </div>
 
-                {/* 삭제 버튼 */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "5px", marginLeft: "auto",padding:'10px' }}>
-                    <Button  size="sm"  style={{backgroundColor:'#f7f7f7', color:'black', border:'none'}}
-                        onClick={() => deleteInterest(item.id)}>
-                        삭제
-                    </Button>
-                </div>
+
+              {/* 삭제 버튼 */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "5px", marginLeft: "auto", padding: '10px' }}>
+                <Button size="sm" style={{ backgroundColor: '#f7f7f7', color: 'black', border: 'none' }}
+                  onClick={() => deleteInterest(item.id)}>
+                  삭제
+                </Button>
+              </div>
             </FormGroup>
             <hr style={{ margin: "0 auto 5px auto" }} />
-            </div>
-            ))}
-        </div>
-        {interestList.length > 0 && (
-        <Button className="buttonPrimary" onClick={deleteSelected} style={{fontSize:'12px', width:'80px', height:'30px'}}>전체 삭제</Button>
-        )}
-        <Pagination className="paginationContainer">
-          {/* 이전 */}
-          <PaginationItem disabled={page === 0}>
-            <PaginationLink onClick={() => setPage(page - 1)}>
-              이전
+          </div>
+        ))}
+      </div>
+      {interestList.length > 0 && (
+        <Button className="buttonPrimary" onClick={deleteSelected} style={{ fontSize: '12px', width: '80px', height: '30px' }}>전체 삭제</Button>
+      )}
+      <Pagination className="paginationContainer">
+        {/* 이전 */}
+        <PaginationItem disabled={page === 0}>
+          <PaginationLink onClick={() => setPage(page - 1)}>
+            이전
+          </PaginationLink>
+        </PaginationItem>
+
+        {/* 페이지 번호 */}
+        {[...Array(totalPages)].map((_, idx) => (
+          <PaginationItem key={idx} active={page === idx}>
+            <PaginationLink onClick={() => setPage(idx)}>
+              {idx + 1}
             </PaginationLink>
           </PaginationItem>
+        ))}
 
-          {/* 페이지 번호 */}
-          {[...Array(totalPages)].map((_, idx) => (
-            <PaginationItem key={idx} active={page === idx}>
-              <PaginationLink onClick={() => setPage(idx)}>
-                {idx + 1}
-              </PaginationLink>
-            </PaginationItem>
-          ))}
-
-          {/* 다음 */}
-          <PaginationItem disabled={page === totalPages - 1}>
-            <PaginationLink onClick={() => setPage(page + 1)}>
-              다음
-            </PaginationLink>
-          </PaginationItem>
-        </Pagination>
+        {/* 다음 */}
+        <PaginationItem disabled={page === totalPages - 1}>
+          <PaginationLink onClick={() => setPage(page + 1)}>
+            다음
+          </PaginationLink>
+        </PaginationItem>
+      </Pagination>
     </>
   );
 }

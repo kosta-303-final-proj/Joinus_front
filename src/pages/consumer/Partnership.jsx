@@ -66,13 +66,10 @@ export default function Partnership() {
     } catch (error) {
       console.error('납품 제안 제출 실패:', error);
       if (error.response) {
-        // 서버에서 에러 응답이 온 경우
         alert('납품 제안 제출에 실패했습니다. 입력한 정보를 확인해주세요.');
       } else if (error.request) {
-        // 요청은 보냈지만 응답을 받지 못한 경우
         alert('서버에 연결할 수 없습니다. 네트워크를 확인해주세요.');
       } else {
-        // 요청 설정 중 에러가 발생한 경우
         alert('납품 제안 제출 중 오류가 발생했습니다. 다시 시도해주세요.');
       }
     } finally {
@@ -82,19 +79,64 @@ export default function Partnership() {
 
   return (
     <div className="partnership-page">
-      <div className="partnership-container">
-        {/* 헤더 */}
-        <div className="partnership-header">
-          <h1 className="page-title">납품문의</h1>
-          <p className="page-description">
+      {/* 헤더 배너 */}
+      <div style={{
+        width: "100%",
+        backgroundColor: "#ecf3fcff",
+        padding: "20px 0",
+        marginBottom: "40px",
+      }}>
+        <div style={{
+          width: "1020px",
+          margin: "0 auto",
+        }}>
+          <h3 style={{
+            margin: "0 0 8px 0",
+            fontSize: "32px",
+            fontWeight: "700",
+            color: "#222",
+          }}>
+            납품문의
+          </h3>
+          <p style={{
+            margin: "0",
+            fontSize: "16px",
+            color: "#555",
+          }}>
             수요를 확인한 뒤, 상품을 보유한 판매자가 공동구매 플랫폼에 선(先) 납품 제안을 남기는 공간입니다.
           </p>
         </div>
+      </div>
 
+      {/* 메인 컨텐츠 */}
+      <div style={{
+        width: "1020px",
+        margin: "0 auto",
+        padding: "0 20px"
+      }}>
         {/* 안내 섹션 */}
-        <div className="info-section">
-          <h2 className="info-title">이런 경우에 납품문의를 남겨주세요</h2>
-          <ul className="info-list">
+        <div className="info-section" style={{
+          backgroundColor: '#f8f9fa',
+          padding: '24px',
+          borderRadius: '8px',
+          marginBottom: '30px',
+          border: '1px solid #e0e0e0'
+        }}>
+          <h2 style={{
+            fontSize: '18px',
+            fontWeight: '700',
+            color: '#222',
+            marginBottom: '16px'
+          }}>
+            이런 경우에 납품문의를 남겨주세요
+          </h2>
+          <ul style={{
+            fontSize: '14px',
+            color: '#555',
+            lineHeight: '1.8',
+            paddingLeft: '20px',
+            margin: 0
+          }}>
             <li>이미 보유하고 있는 재고 상품을 공동구매 형태로 판매하고 싶은 경우</li>
             <li>오프라인/자체몰에서 판매 중인 인기 상품을 이 플랫폼에 추가로 공급하고 싶은 경우</li>
             <li>대량 공급이 가능하지만, 수요를 확인한 뒤 공구 형태로 진행하고 싶은 경우</li>
@@ -102,9 +144,26 @@ export default function Partnership() {
         </div>
 
         {/* 폼 섹션 */}
-        <div className="form-section">
-          <h2 className="form-title">납품 제안 등록</h2>
-          <p className="form-description">
+        <div className="form-section" style={{
+          backgroundColor: '#fff',
+          padding: '32px',
+          borderRadius: '8px',
+          border: '1px solid #e0e0e0',
+          marginBottom: '40px'
+        }}>
+          <h2 style={{
+            fontSize: '20px',
+            fontWeight: '700',
+            color: '#222',
+            marginBottom: '8px'
+          }}>
+            납품 제안 등록
+          </h2>
+          <p style={{
+            fontSize: '14px',
+            color: '#666',
+            marginBottom: '24px'
+          }}>
             아래 정보를 가능한 정확하게 기입해 주시면, 관리자 검토 후 개별적으로 연락드립니다.
           </p>
 
@@ -150,7 +209,7 @@ export default function Partnership() {
                   name="managerName"
                   value={formData.managerName}
                   onChange={handleChange}
-                  placeholder="담당자 성향"
+                  placeholder="담당자 성명"
                   required
                 />
               </div>
@@ -318,4 +377,3 @@ export default function Partnership() {
     </div>
   );
 }
-
