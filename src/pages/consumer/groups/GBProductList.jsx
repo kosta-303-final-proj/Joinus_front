@@ -192,7 +192,7 @@ export default function GBProductList() {
        {/* 제목 영역 - 배너 스타일 */}
       <div style={{
         width: "100%",
-        backgroundColor: "#ecf3fcff",
+        backgroundColor: "#f3f8ffff",
         padding: "20px 0",
       }}>
         <div style={{

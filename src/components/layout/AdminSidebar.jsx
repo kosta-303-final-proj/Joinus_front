@@ -142,7 +142,7 @@ const Sidebar = () => {
                 onClick={() => navigate('/admin/adminOrderList')}
                 style={{ cursor: 'pointer' }}
               >
-                <span className="submenu-label">공구 상품 주문/배송 관리</span>
+                <span className="submenu-label">공구 상품 구매/배송 관리</span>
               </div>
             </div>
           )}
@@ -241,7 +241,7 @@ const Sidebar = () => {
                 onClick={() => navigate('/admin/suppliy/applications')}
                 style={{ cursor: 'pointer' }}
               >
-                <span className="submenu-label">납품신청업체</span>
+                <span className="submenu-label">납품 신청 업체</span>
               </div>
 
               {/* 납품회사조회 */}
@@ -250,7 +250,7 @@ const Sidebar = () => {
                 onClick={() => navigate('/admin/suppliy/approved')}
                 style={{ cursor: 'pointer' }}
               >
-                <span className="submenu-label">납품회사조회</span>
+                <span className="submenu-label">납품 회사 조회</span>
               </div>
 
               {/* 납품상품 등록 */}
@@ -259,7 +259,7 @@ const Sidebar = () => {
                 onClick={() => navigate('/admin/suppliy/products/new')}
                 style={{ cursor: 'pointer' }}
               >
-                <span className="submenu-label">납품상품 등록</span>
+                <span className="submenu-label">납품 상품 등록</span>
               </div>
 
               {/* 납품상품 조회 */}
@@ -268,7 +268,7 @@ const Sidebar = () => {
                 onClick={() => navigate('/admin/suppliy/products')}
                 style={{ cursor: 'pointer' }}
               >
-                <span className="submenu-label">납품상품 조회</span>
+                <span className="submenu-label">납품 상품 조회</span>
               </div>
             </div>
           )}

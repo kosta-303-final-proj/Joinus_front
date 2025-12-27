@@ -94,9 +94,8 @@ export default function InquiryHistoryList() {
           ).map((page) => (
             <button
               key={page}
-              className={`pagination-number ${
-                currentPage === page ? 'active' : ''
-              }`}
+              className={`pagination-number ${currentPage === page ? 'active' : ''
+                }`}
               onClick={() => onPageChange(page)}
             >
               {page}
@@ -115,8 +114,16 @@ export default function InquiryHistoryList() {
   };
 
   return (
-    <div className="notice-page">
-      <div className="notice-container">
+    <div className="inquiry-page"
+    style={{padding:"40px 0"}}>
+      <div className="inquiry-container"
+        style={{
+          maxWidth: "1220px",
+          margin: "0 auto",
+          background: "var(--color-white)",
+          borderRadius: "var(--border-radius-md)",
+          boxShadow: "var(--shadow-md)"
+        }}>
         {/* 탭 없이 바로 리스트만 */}
         <div className="tab-content">
           {isLoading ? (
@@ -165,11 +172,10 @@ export default function InquiryHistoryList() {
                             </td>
                             <td>
                               <span
-                                className={`status ${
-                                  status === '답변 완료'
-                                    ? 'completed'
-                                    : 'pending'
-                                }`}
+                                className={`status ${status === '답변 완료'
+                                  ? 'completed'
+                                  : 'pending'
+                                  }`}
                               >
                                 {status}
                               </span>
@@ -183,7 +189,8 @@ export default function InquiryHistoryList() {
                 </table>
               </div>
 
-              <div className="inquiry-footer-section">
+              <div className="inquiry-footer-section"
+              style={{marginTop:"20px"}}>
                 <button
                   className="btn btn-primary"
                   onClick={() => navigate('/cs/inquiryWrite')}
@@ -203,6 +210,6 @@ export default function InquiryHistoryList() {
           )}
         </div>
       </div>
-    </div>
+    </div >
   );
 }

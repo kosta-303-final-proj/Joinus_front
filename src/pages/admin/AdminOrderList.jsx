@@ -102,7 +102,7 @@ export default function AdminOrderList() {
     return (
         <div className="admin-layout">
             <div className="main-content">
-                <AdminHeader title="구매 대기 상품" />
+                <AdminHeader title="공구 상품 구매 및 배송 관리" />
                 
                 <div className="content-area">
                     {/* 검색 필터 */}

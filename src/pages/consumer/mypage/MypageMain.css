@@ -40,15 +40,16 @@
 .main-table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed; /* ⭐ 핵심: colgroup 기준 고정 */
+  table-layout: fixed;
 }
 
 /* thead / tbody 공통 */
 .main-table th,
 .main-table td {
-  padding: 14px;
+  padding: 12px 10px;
   vertical-align: middle;
   border-bottom: 1px solid #ececec;
+   font-size: 13px;
 }
 
 /* 헤더 */
@@ -56,14 +57,14 @@
   background: #f5f7fb;
   color: var(--intel-blue);
   font-weight: 700;
-  text-align: center; /* ⭐ 가상의 칸 중앙 */
+  text-align: center;
   border-bottom: 1px solid var(--line-strong);
 }
 
 /* 바디 기본 */
 .main-table td {
   color: var(--gray-text);
-  text-align: center; /* ⭐ 기본은 중앙 */
+  text-align: center;
 }
 
 /* hover */
@@ -73,15 +74,17 @@
 
 /* ===== 정렬 유틸 ===== */
 
-/* 상품명: 좌측 (하지만 colgroup 중앙 기준 안에서) */
+/* 상품정보: 좌측 정렬 */
 .main-table td:nth-child(2) {
-  text-align: center;
+  text-align: left;
+  padding-left: 15px;
 }
 
 /* 결제금액: 우측 */
 .main-table td:nth-child(4),
 .main-table th:nth-child(4) {
   text-align: right;
+  padding-right: 20px;
 }
 
 /* 줄바꿈 방지 */
@@ -112,16 +115,16 @@
 }
 
 .main-thumb {
-  width: 72px;          /* ⬅️ 사이즈 키움 (기존 60px) */
+  width: 72px;
   height: 72px;
-  background: transparent; /* ⬅️ 배경 제거 */
+  background: transparent;
   border-radius: 0;
 }
 
 .main-thumb > img {
-  width: 72px;      /* ⬅️ 부모랑 동일 */
+  width: 72px;
   height: 72px;
-  object-fit: contain; /* ⭐ 이미지 안 잘리게 */
+  object-fit: contain;
 }
 
 .main-product-info p:first-child {
@@ -142,7 +145,7 @@
 }
 
 .wishlist-right {
-  margin-left: auto;        /* ⭐ 오른쪽으로 밀기 */
+  margin-left: auto;
   text-align: right;
   display: flex;
   flex-direction: column;
@@ -164,16 +167,20 @@
 
 /* ===== 대시보드 주문 상품 셀 ===== */
 .order-product-cell {
-  display: inline-flex;      /* ⭐ block → inline-flex */
+  display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .order-thumb {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
   object-fit: cover;
   background: #f1f5f9;
+  border-radius: 4px;
 }
 
 .order-product-name {
@@ -183,7 +190,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 200px;
+  flex: 1;
+  min-width: 0;
 }
 
 /* 행 hover + 클릭 느낌 */
@@ -215,5 +223,3 @@
 .main-product-item:hover {
   box-shadow: inset 0 0 0 9999px rgba(115, 159, 242, 0.04);
 }
-
-

@@ -44,7 +44,7 @@ export default function Sidebar({ children }) {
       <div
         style={{
           width: "1020px",
-          margin: "0 auto",
+          margin: "8px auto",
           display: "flex",
           flexDirection: "row",
           minHeight: "100vh",

@@ -41,10 +41,10 @@ export default function NoticeDetail() {
   if (isLoading) {
     return (
       <div className="notice-detail-page">
-        <div className="card skeleton-card">
-          <div className="skeleton title" />
-          <div className="skeleton meta" />
-          <div className="skeleton body" />
+        <div className="notice-detail-card notice-detail-skeleton-card">
+          <div className="notice-detail-skeleton notice-detail-skeleton-title" />
+          <div className="notice-detail-skeleton notice-detail-skeleton-meta" />
+          <div className="notice-detail-skeleton notice-detail-skeleton-body" />
         </div>
       </div>
     );
@@ -53,7 +53,7 @@ export default function NoticeDetail() {
   if (error || !notice) {
     return (
       <div className="notice-detail-page">
-        <div className="card error-card">
+        <div className="notice-detail-card notice-detail-error-card">
           {error || '공지사항을 찾을 수 없습니다.'}
         </div>
       </div>
@@ -65,29 +65,29 @@ export default function NoticeDetail() {
   return (
     <div className="notice-detail-page">
       <div className="notice-detail-container">
-        <div className="detail-header">
+        <div className="notice-detail-header">
           <div>
-            <h1 className="page-title">{notice.title}</h1>
-            {formattedDate && <span className="meta">{formattedDate}</span>}
+            <h1 className="notice-detail-page-title">{notice.title}</h1>
+            {formattedDate && <span className="notice-detail-meta">{formattedDate}</span>}
           </div>
         </div>
 
-        <div className="card">
-          <div className="notice-content">
-            <p className="content-text">{notice.content}</p>
+        <div className="notice-detail-card">
+          <div className="notice-detail-content">
+            <p className="notice-detail-content-text">{notice.content}</p>
           </div>
 
           {imageIds.length > 0 && (
-            <div className="image-section">
-              <div className="section-title-row">
-                <h3 className="section-title">첨부 이미지</h3>
+            <div className="notice-detail-image-section">
+              <div className="notice-detail-section-title-row">
+                <h3 className="notice-detail-section-title">첨부 이미지</h3>
               </div>
-              <div className="image-grid">
+              <div className="notice-detail-image-grid">
                 {imageIds.map((fileId) => (
                   <button
                     key={fileId}
                     type="button"
-                    className="image-card"
+                    className="notice-detail-image-card"
                     onClick={() => setSelectedImageId(fileId)}
                   >
                     <img src={getNoticeImageUrl(fileId)} alt={`공지 이미지 ${fileId}`} />
@@ -98,8 +98,8 @@ export default function NoticeDetail() {
           )}
         </div>
 
-        <div className="detail-footer">
-          <button className="list-button" onClick={() => navigate('/cs/notice')}>
+        <div className="notice-detail-footer">
+          <button className="notice-detail-list-button" onClick={() => navigate('/cs/notice')}>
             공지 목록 보기
           </button>
         </div>
@@ -107,17 +107,17 @@ export default function NoticeDetail() {
 
       {selectedImageId && (
         <div
-          className="image-modal-backdrop"
+          className="notice-detail-image-modal-backdrop"
           onClick={() => setSelectedImageId(null)}
           role="presentation"
         >
           <div
-            className="image-modal"
+            className="notice-detail-image-modal"
             role="presentation"
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              className="close-button"
+              className="notice-detail-close-button"
               type="button"
               onClick={() => setSelectedImageId(null)}
             >

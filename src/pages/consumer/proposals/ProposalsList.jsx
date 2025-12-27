@@ -156,7 +156,7 @@ export default function ProposalsList() {
       {/* 제목 영역 (1020px 고정) */}
       <div style={{
         width: "100%",
-        backgroundColor: "#ecf3fcff",
+        backgroundColor: "#f3f8ffff",
         padding: "20px 0",
       }}>
         <div style={{

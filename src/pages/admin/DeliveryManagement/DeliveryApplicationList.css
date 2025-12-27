@@ -1,123 +1,203 @@
-.delivery-application-list-page {
+/* =============== 페이지 레이아웃 =============== */
+.applying-supplier-page {
   display: flex;
   flex-direction: column;
   gap: 24px;
   padding: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
-.page-header {
+
+/* =============== 헤더 =============== */
+.applying-supplier-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0;
 }
-.page-title {
+
+.applying-supplier-header-content {
+  flex: 1;
+}
+
+.applying-supplier-title {
   font-size: 28px;
-  margin-bottom: 4px;
+  font-weight: 700;
+  color: #222;
+  margin: 0 0 8px 0;
 }
-.page-description {
-  color: #5f6368;
-}
-.summary-chip-wrapper {
-  display: flex;
-  gap: 8px;
-}
-.summary-chip {
-  padding: 6px 12px;
-  border-radius: 16px;
-  background: #f4f6f8;
+
+.applying-supplier-description {
   font-size: 14px;
+  color: #666;
+  margin: 0;
 }
-.filter-section {
+
+.applying-supplier-summary {
+  display: flex;
+  gap: 10px;
+}
+
+.applying-supplier-chip {
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: #f5f5f5;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  border: 1px solid #e0e0e0;
+}
+
+/* =============== 필터 섹션 =============== */
+.applying-supplier-filter {
   background: #fff;
-  border: 1px solid #e3e6eb;
-  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
   padding: 16px 20px;
 }
-.filter-buttons {
+
+.applying-supplier-filter-buttons {
   display: flex;
   gap: 12px;
 }
-.filter-btn {
+
+.applying-supplier-filter-btn {
   min-width: 80px;
-  padding: 8px 14px;
-  border-radius: 999px;
-  border: 1px solid #d1d5db;
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: 1px solid #d0d0d0;
   background: #fff;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 14px;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s;
 }
-.filter-btn.active {
-  border-color: #2563eb;
+
+.applying-supplier-filter-btn:hover {
+  background: #f8f8f8;
+  border-color: #739FF2;
+}
+
+.applying-supplier-filter-btn.active {
+  border-color: #739FF2;
   color: #fff;
-  background: #2563eb;
+  background: #739FF2;
 }
-.list-section .table-container {
-  overflow-x: auto;
-  border-radius: 12px;
-  border: 1px solid #e3e6eb;
+
+/* =============== 테이블 =============== */
+.applying-supplier-list {
   background: #fff;
 }
-.application-table {
+
+.applying-supplier-table-container {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  background: #fff;
+}
+
+.applying-supplier-table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 13px;
 }
-.application-table th,
-.application-table td {
-  padding: 14px;
-  border-bottom: 1px solid #edf1f5;
+
+.applying-supplier-table thead {
+  background: #f8f8f8;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.applying-supplier-table th {
+  padding: 14px 16px;
   text-align: left;
+  font-weight: 700;
+  color: #444;
+  font-size: 13px;
 }
-.company-name .link-button {
-  color: #2563eb;
-  text-decoration: underline;
+
+.applying-supplier-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #eaeaea;
+  color: #333;
+}
+
+.applying-supplier-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.applying-supplier-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* =============== 업체명 링크 =============== */
+.applying-supplier-company-name {
+  font-weight: 600;
+}
+
+.applying-supplier-link-button {
+  color: #739FF2;
+  text-decoration: none;
   background: none;
   border: none;
   cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 0;
+  transition: color 0.2s;
 }
-.status-badge {
+
+.applying-supplier-link-button:hover {
+  color: #5a7cd6;
+  text-decoration: underline;
+}
+
+/* =============== 상태 배지 =============== */
+.applying-supplier-status-badge {
   display: inline-flex;
   align-items: center;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
 }
-.status-badge.pending {
-  background: #fef3c7;
-  color: #92400e;
+
+.applying-supplier-status-badge.pending {
+  background: #FFF9C4;
+  color: #F57F17;
 }
-.status-badge.approved {
-  background: #dcfce7;
-  color: #166534;
+
+.applying-supplier-status-badge.approved {
+  background: #E8F5E9;
+  color: #2E7D32;
 }
-.status-badge.rejected {
-  background: #fee2e2;
-  color: #991b1b;
+
+.applying-supplier-status-badge.rejected {
+  background: #FFEBEE;
+  color: #C62828;
 }
-.action-buttons {
-  display: flex;
-  gap: 8px;
-}
-.btn-approve,
-.btn-reject {
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-}
-.btn-approve {
-  background: #2563eb;
-  color: #fff;
-}
-.btn-reject {
-  background: #fda4af;
-  color: #7f1d1d;
-}
-.rejection-reason {
-  font-size: 13px;
-  color: #6b7280;
-}
-.no-data {
+
+/* =============== 빈 데이터 =============== */
+.applying-supplier-no-data {
   text-align: center;
-  padding: 40px 0;
-  color: #9ca3af;
+  padding: 60px 20px;
+  color: #999;
+  font-size: 14px;
+}
+
+/* =============== 로딩/에러 =============== */
+.applying-supplier-loading,
+.applying-supplier-error {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 14px;
+}
+
+.applying-supplier-loading {
+  color: #666;
+}
+
+.applying-supplier-error {
+  color: #C62828;
 }

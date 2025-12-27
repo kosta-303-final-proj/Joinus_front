@@ -98,7 +98,7 @@ export default function Dashboard() {
           <div className="stat-note">마감 임박: {stats?.deadlineSoonCount || 0}건</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label">주문 대기 건수</div>
+          <div className="stat-label">구매 대기 건수</div>
           <div className="stat-value">{stats?.pendingOrderCount || 0}건</div>
           <div className="stat-note">처리 필요</div>
         </div>
@@ -127,17 +127,17 @@ export default function Dashboard() {
         <div className="content-card">
           <div className="card-header">
             <div className="d-flex flex-row justify-content-between">
-              <h2 className="card-title">주문 대기 공구상품 건</h2>
+              <h2 className="card-title">구매 대기 공구상품 건</h2>
               <div className="payment-list">
                 <a
                   href="/admin/pendingPayment"
                   className="card-more-link"
                   onClick={(e) => {
                     e.preventDefault();
-                    navigate('/admin/pendingPayment');
+                    navigate('/admin/adminOrderList');
                   }}
                 >
-                  더 보기 &gt;
+                  더보기 &gt;
                 </a>
               </div>
             </div>

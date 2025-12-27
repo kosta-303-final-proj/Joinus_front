@@ -64,7 +64,7 @@ export default function MainPage() {
     <div className="mainpage-container">
       <div className="banner-wrapper">
         {/* <TopBannerCarousel /> */}
-        <img src="/main-top-banner.png" alt="Top Banner" />
+        <img src="/main_image.png" alt="Top Banner" />
       </div>
       <main className="main-content">
         {isLoading ? (

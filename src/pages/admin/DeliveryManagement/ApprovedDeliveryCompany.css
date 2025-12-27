@@ -1,59 +1,162 @@
-.approved-company-page {
-    padding: 32px;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
-  .page-header .page-title {
-    font-size: 28px;
-    margin-bottom: 6px;
-  }
-  .page-header .page-description {
-    color: #6b7280;
-  }
-  .filter-box {
-    background: #fff;
-    border: 1px solid #e3e6eb;
-    border-radius: 12px;
-    padding: 20px;
-  }
-  .filter-row {
-    display: flex;
-    gap: 20px;
-  }
-  .filter-field {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .filter-field input,
-  .filter-field select {
-    padding: 10px 12px;
-    border: 1px solid #cfd6e0;
-    border-radius: 8px;
-  }
-  .table-card {
-    border: 1px solid #e3e6eb;
-    border-radius: 12px;
-    background: #fff;
-  }
-  .table-header {
-    padding: 20px;
-    border-bottom: 1px solid #edf1f5;
-  }
-  .approved-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  .approved-table th,
-  .approved-table td {
-    padding: 14px;
-    border-bottom: 1px solid #edf1f5;
-    text-align: left;
-  }
-  .no-data {
-    text-align: center;
-    padding: 40px 0;
-    color: #9ca3af;
-  }
+/* =============== 페이지 레이아웃 =============== */
+.approved-supplier-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* =============== 헤더 =============== */
+.approved-supplier-header {
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.approved-supplier-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #222;
+  margin: 0 0 8px 0;
+}
+
+.approved-supplier-description {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+/* =============== 필터 섹션 =============== */
+.approved-supplier-filter {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.approved-supplier-filter-row {
+  display: flex;
+  gap: 20px;
+}
+
+.approved-supplier-filter-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.approved-supplier-filter-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #444;
+}
+
+.approved-supplier-filter-field input,
+.approved-supplier-filter-field select {
+  padding: 10px 12px;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.approved-supplier-filter-field input:focus,
+.approved-supplier-filter-field select:focus {
+  border-color: #739FF2;
+}
+
+.approved-supplier-filter-field input::placeholder {
+  color: #999;
+}
+
+/* =============== 테이블 카드 =============== */
+.approved-supplier-table-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.approved-supplier-table-header {
+  padding: 20px;
+  border-bottom: 2px solid #e0e0e0;
+  background: #f8f8f8;
+}
+
+.approved-supplier-table-header h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #222;
+  margin: 0;
+}
+
+/* =============== 테이블 =============== */
+.approved-supplier-table-container {
+  overflow-x: auto;
+}
+
+.approved-supplier-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.approved-supplier-table thead {
+  background: #f8f8f8;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.approved-supplier-table th {
+  padding: 14px 16px;
+  text-align: left;
+  font-weight: 700;
+  color: #444;
+  font-size: 13px;
+}
+
+.approved-supplier-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #eaeaea;
+  color: #333;
+}
+
+.approved-supplier-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.approved-supplier-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* =============== 업체명 강조 =============== */
+.approved-supplier-company-name {
+  font-weight: 600;
+  color: #222;
+}
+
+/* =============== 빈 데이터 =============== */
+.approved-supplier-no-data {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+  font-size: 14px;
+}
+
+/* =============== 로딩/에러 =============== */
+.approved-supplier-loading,
+.approved-supplier-error {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 14px;
+}
+
+.approved-supplier-loading {
+  color: #666;
+}
+
+.approved-supplier-error {
+  color: #C62828;
+}

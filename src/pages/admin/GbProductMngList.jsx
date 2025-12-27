@@ -183,7 +183,7 @@ export default function GbProductMngList() {
   return (
     <div className="admin-layout">
       <div className="main-content">
-        <AdminHeader title="공동 구매 상품 관리" />
+        <AdminHeader title="공구 목록 조회" />
 
         <div className="content-area">
           {/* 검색 필터 */}
