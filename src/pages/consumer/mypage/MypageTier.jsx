@@ -27,10 +27,10 @@ export default function MypageTier() {
   }, [username]);
 
   const levels = [
-    { name: "BRONZE", file: "Bronze.png", min: 0, max: 400000, rate: 1 },
-    { name: "SILVER", file: "Silver.png", min: 400000, max: 700000, rate: 1.3 },
-    { name: "GOLD", file: "Gold.png", min: 700000, max: 1000000, rate: 1.6 },
-    { name: "DIAMOND", file: "Diamond.png", min: 1000000, max: Infinity, rate: 2 },
+    { name: "BRONZE", file: "BRONZE.png", min: 0, max: 400000, rate: 1 },
+    { name: "SILVER", file: "SILVER.png", min: 400000, max: 700000, rate: 1.3 },
+    { name: "GOLD", file: "GOLD.png", min: 700000, max: 1000000, rate: 1.6 },
+    { name: "DIAMOND", file: "DIAMOND.png", min: 1000000, max: Infinity, rate: 2 },
   ];
 
   const currentLevel =
