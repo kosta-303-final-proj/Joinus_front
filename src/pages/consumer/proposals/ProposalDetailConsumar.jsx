@@ -457,7 +457,7 @@ export default function ProposalDetailConsumar() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ fontWeight: '600', fontSize: '14px', color: '#222' }}>{c.memberNickname}</span>
                     <img
-                      src={`/grade/${c.grade.charAt(0) + c.grade.slice(1).toLowerCase()}.png`}
+                      src={`/grade/${c.grade}.png`}
                       alt="등급"
                       style={{ width: '22px', height: '22px' }}
                     />
