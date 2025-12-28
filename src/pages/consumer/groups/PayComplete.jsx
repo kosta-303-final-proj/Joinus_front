@@ -153,57 +153,104 @@ export default function PayComplete(){
                     <hr />
                 </div>
             </div>
-            <div style={styles.pageWrapper}>
-                <div style={{width:'1020px'}}>
-                    <div>
-                        <h3 className="mb-0 fw-bold text-start" style={{fontSize:'20px'}}>주문 정보</h3>
-                    </div>
-                </div>
-            </div>
             {/* 주문 정보 영역 */}
             <div style={styles.pageWrapper}>
                 <div style={styles.container}>
-                    <div style={{border: '1px solid black',borderRadius: '5px',overflow: 'hidden'}}>
-                        <div style={row}>
-                            <div style={leftCol}>주문 일자</div>
-                            <div style={rightCol}>{new Date(order.createdAt).toLocaleDateString()}</div>
-                        </div>
-
-                        {/* 상품 정보 */}
-                        <div style={row}>
-                            <div style={leftCol }>상품 정보</div>
-                            <div style={{ ...rightCol, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                
-                                <img  src={`${baseUrl}/files/${order.thumbnailFileName}`} style={{width: '80px',height: '80px',borderRadius: '8px', objectFit: 'cover'}}/>
-                                <div>{order.productName}</div>
+                    <div style={styles.sectionTitle}>주문 정보</div>
+                    <div style={styles.card}>
+                        <div style={styles.formRow}>
+                            <div style={styles.formLabel}>주문 일자</div>
+                            <div style={styles.formValue}>
+                                {new Date(order.createdAt).toLocaleDateString()}
                             </div>
                         </div>
 
-                        {/* 수량 */}
-                        <div style={row}>
-                            <div style={leftCol}>수량</div>
-                            <div style={rightCol}>{order.quantity}</div>
+                        <div style={styles.formRow}>
+                            <div style={styles.formLabel}>상품 정보</div>
+                            <div style={{ ...styles.formValue, display: 'flex', alignItems: 'center', gap: '16px' }}>
+                                <img 
+                                    src={`${baseUrl}/files/${order.thumbnailFileName}`} 
+                                    style={{
+                                        width: '80px',
+                                        height: '80px',
+                                        borderRadius: '8px',
+                                        objectFit: 'cover',
+                                        border: '1px solid #eaeaea'
+                                    }}
+                                    alt="상품"
+                                />
+                                <div style={{ fontSize: '14px', color: '#222' }}>{order.productName}</div>
+                            </div>
                         </div>
 
-                        {/* 가격 */}
-                        <div style={row}>
-                            <div style={leftCol}>결제 가격</div>
-                            <div style={rightCol}>{order.total.toLocaleString()}원</div>
+                        <div style={styles.formRow}>
+                            <div style={styles.formLabel}>수량</div>
+                            <div style={styles.formValue}>{order.quantity}개</div>
                         </div>
 
-                        {/* 요청사항 */}
-                        <div style={row}>
-                            <div style={leftCol}>요청사항</div>
-                            <div style={rightCol}>{order.orderNote || "요청사항 없음"}</div>
+                        <div style={styles.formRow}>
+                            <div style={styles.formLabel}>결제 가격</div>
+                            <div style={styles.formValue}>{order.total.toLocaleString()}원</div>
+                        </div>
+
+                        <div style={{ ...styles.formRow, border: 'none' }}>
+                            <div style={styles.formLabel}>요청사항</div>
+                            <div style={styles.formValue}>{order.orderNote || "요청사항 없음"}</div>
                         </div>
                     </div>
-                    <br/><br/>
-                    <div style={{display:'flex',justifyContent:'center', gap: '40px', margin: '10px 0'}}>
+                </div>
+            </div>
+
+            {/* 버튼 영역 */}
+            <div style={styles.pageWrapper}>
+                <div style={styles.container}>
+                    <div style={{ 
+                        display: 'flex', 
+                        justifyContent: 'center', 
+                        gap: '16px', 
+                        margin: '30px 0 60px 0' 
+                    }}>
                         <Link to="/myPage/orderList">
-                            <Button style={{backgroundColor:'#739FF2', color:'white', border:'none',fontSize:'12px'}}>주문 배송 조회</Button>
+                            <button style={{
+                                backgroundColor: '#739FF2',
+                                color: 'white',
+                                border: 'none',
+                                fontSize: '15px',
+                                fontWeight: '600',
+                                padding: '12px 28px',
+                                borderRadius: '8px',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s'
+                            }}
+                            onMouseEnter={(e) => e.target.style.backgroundColor = '#5a7cd6'}
+                            onMouseLeave={(e) => e.target.style.backgroundColor = '#739FF2'}
+                            >
+                                주문 배송 조회
+                            </button>
                         </Link>
                         <Link to="/gbProductList">
-                            <Button style={{backgroundColor:'#F7F7F7', color:'black', border:'none',fontSize:'12px'}}>공구 목록</Button>
+                            <button style={{
+                                backgroundColor: '#f5f5f5',
+                                color: '#555',
+                                border: '1px solid #d0d0d0',
+                                fontSize: '15px',
+                                fontWeight: '600',
+                                padding: '12px 28px',
+                                borderRadius: '8px',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.target.style.backgroundColor = '#e8e8e8';
+                                e.target.style.borderColor = '#999';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.target.style.backgroundColor = '#f5f5f5';
+                                e.target.style.borderColor = '#d0d0d0';
+                            }}
+                            >
+                                공구 목록
+                            </button>
                         </Link>
                     </div>
                 </div>
@@ -215,15 +262,53 @@ export default function PayComplete(){
 
 const styles = {
   pageWrapper: {
-    display: "flex",
-    justifyContent: "center",
-    width: "100%",
-    backgroundColor: "#fff",
-  },
-  container: {
-    width: "1020px",
-    padding: "20px 0",
-  },
+        display: "flex",
+        justifyContent: "center",
+        width: "100%",
+        backgroundColor: "#fff",
+    },
+    container: {
+        width: "1020px",
+        padding: "0 20px",
+    },
+    sectionTitle: {
+        fontSize: '18px',
+        fontWeight: '700',
+        color: '#222',
+        marginBottom: '16px',
+        paddingBottom: '8px',
+        borderBottom: '2px solid #222',
+    },
+    card: {
+        border: '1px solid #e0e0e0',
+        borderRadius: '8px',
+        overflow: 'hidden',
+        backgroundColor: '#fff',
+        marginBottom: '30px',
+    },
+    formRow: {
+        display: 'flex',
+        borderBottom: '1px solid #eaeaea',
+        minHeight: '56px',
+    },
+    formLabel: {
+        width: '180px',
+        padding: '16px 20px',
+        fontSize: '14px',
+        fontWeight: '600',
+        color: '#444',
+        backgroundColor: '#f8f8f8',
+        display: 'flex',
+        alignItems: 'center',
+    },
+    formValue: {
+        flex: 1,
+        padding: '16px 20px',
+        fontSize: '14px',
+        color: '#222',
+        display: 'flex',
+        alignItems: 'center',
+    },
 };
 const row = {
     display: 'flex',

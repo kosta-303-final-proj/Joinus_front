@@ -1,66 +1,145 @@
-.delivery-product-form-page {
+/* =============== 페이지 레이아웃 =============== */
+.supply-product-form-page {
   padding: 32px;
   display: flex;
   flex-direction: column;
   gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
-.page-title {
+
+/* =============== 헤더 =============== */
+.supply-product-form-header {
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.supply-product-form-title {
   font-size: 28px;
-  margin-bottom: 4px;
+  font-weight: 700;
+  color: #222;
+  margin: 0 0 8px 0;
 }
-.page-description {
-  color: #6b7280;
+
+.supply-product-form-description {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
 }
-.form-card {
+
+/* =============== 폼 카드 =============== */
+.supply-product-form-card {
   background: #fff;
-  border: 1px solid #e3e6eb;
-  border-radius: 16px;
-  padding: 24px 28px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 32px;
 }
-.form-grid {
+
+/* =============== 폼 그리드 =============== */
+.supply-product-form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
+  gap: 24px;
 }
-.form-field {
+
+/* =============== 폼 필드 =============== */
+.supply-product-form-field {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-.form-field.full {
+
+.supply-product-form-field-full {
   grid-column: span 2;
 }
-.form-field input,
-.form-field select,
-.form-field textarea {
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid #cfd6e0;
+
+.supply-product-form-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #444;
 }
-.form-actions {
-  margin-top: 24px;
+
+.supply-product-form-required {
+  color: #ff4444;
+  font-weight: 700;
+}
+
+.supply-product-form-field input,
+.supply-product-form-field select,
+.supply-product-form-field textarea {
+  padding: 12px 14px;
+  border-radius: 6px;
+  border: 1px solid #d0d0d0;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+
+.supply-product-form-field input:focus,
+.supply-product-form-field select:focus,
+.supply-product-form-field textarea:focus {
+  border-color: #739FF2;
+}
+
+.supply-product-form-field input::placeholder,
+.supply-product-form-field textarea::placeholder {
+  color: #999;
+}
+
+.supply-product-form-readonly {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.supply-product-form-field textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* =============== 액션 버튼 =============== */
+.supply-product-form-actions {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #eaeaea;
   display: flex;
   justify-content: flex-end;
   gap: 12px;
 }
-.form-actions button {
-  padding: 10px 18px;
-  border-radius: 8px;
-  border: 1px solid #cfd6e0;
-  background: #fff;
+
+.supply-product-form-btn-reset,
+.supply-product-form-btn-submit {
+  padding: 12px 28px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s;
 }
 
-.form-actions button.primary-btn {
-  border: none;
-  background: #2563eb;
-  color: #fff;
-  font-weight: 600;
+.supply-product-form-btn-reset {
+  background: #fff;
+  border: 1px solid #d0d0d0;
+  color: #555;
 }
 
-/* .primary-btn {
+.supply-product-form-btn-reset:hover:not(:disabled) {
+  background: #f8f8f8;
+  border-color: #999;
+}
+
+.supply-product-form-btn-submit {
+  background: #739FF2;
   border: none;
-  background: #2563eb;
   color: #fff;
-  font-weight: 600;
-} */
+}
+
+.supply-product-form-btn-submit:hover:not(:disabled) {
+  background: #5a7cd6;
+}
+
+.supply-product-form-btn-reset:disabled,
+.supply-product-form-btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

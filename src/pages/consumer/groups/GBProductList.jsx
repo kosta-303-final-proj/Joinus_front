@@ -20,7 +20,7 @@ export default function GBProductList() {
   const categoryParam = searchParams.get("category");
 
   const allCategories = ["뷰티", "패션", "전자기기", "홈&리빙", "식품", "스포츠"];
-  const sortOptions = ["최신순", "찜순", "마감순"];
+  const sortOptions = ["최신순", "마감순"];
   const allStatus = ["진행중", "취소"];
 
   // 필터 state (단일 선택)
@@ -30,12 +30,12 @@ export default function GBProductList() {
 
   const sortParamMap = {
     deadline: "마감순",
-    wish: "찜순",
+    // wish: "찜순",
   };
   
   // 정렬 옵션을 서버 파라미터로 변환
   const getSortType = () => {
-    if (selectedSort === "찜순") return "popular";
+    // if (selectedSort === "찜순") return "popular";
     if (selectedSort === "마감순") return "deadline-soon";
     return "ongoing"; // 최신순
   };

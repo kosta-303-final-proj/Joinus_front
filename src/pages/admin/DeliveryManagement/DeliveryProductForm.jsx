@@ -19,7 +19,6 @@ export default function DeliveryProductForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // 승인된 업체 목록 로드
   useEffect(() => {
     const fetchVendors = async () => {
       setIsLoading(true);
@@ -88,132 +87,146 @@ export default function DeliveryProductForm() {
       <div className="main-content">
         <AdminHeader title="납품상품 등록" />
         <div className="content-area">
-    <div className="delivery-product-form-page">
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">납품 상품 등록</h1>
-          <p className="page-description">
-            승인된 납품 업체 중 선택하여 상품명, 수량, 단가 등을 입력합니다.
-          </p>
-        </div>
-      </div>
+          <div className="supply-product-form-page">
+            <div className="supply-product-form-header">
+              <div>
+                <h1 className="supply-product-form-title">납품 상품 등록</h1>
+                <p className="supply-product-form-description">
+                  승인된 납품 업체 중 선택하여 상품명, 수량, 단가 등을 입력합니다.
+                </p>
+              </div>
+            </div>
 
-      <form className="form-card" onSubmit={handleSubmit}>
-        <div className="form-grid">
-          <label className="form-field">
-            <span>상품명 *</span>
-            <input
-              type="text"
-              name="productName"
-              value={form.productName}
-              onChange={handleChange}
-              placeholder="예) 친환경 텀블러 세트"
-              required
-            />
-          </label>
+            <form className="supply-product-form-card" onSubmit={handleSubmit}>
+              <div className="supply-product-form-grid">
+                <label className="supply-product-form-field">
+                  <span className="supply-product-form-label">
+                    상품명 <span className="supply-product-form-required">*</span>
+                  </span>
+                  <input
+                    type="text"
+                    name="productName"
+                    value={form.productName}
+                    onChange={handleChange}
+                    placeholder="예) 친환경 텀블러 세트"
+                    required
+                  />
+                </label>
 
-          <label className="form-field">
-            <span>납품 업체 *</span>
-            <select
-              name="vendorId"
-              value={form.vendorId}
-              onChange={handleChange}
-              required
-              disabled={isLoading}
-            >
-              <option value="">{isLoading ? '로딩 중...' : '선택하세요'}</option>
-              {vendors.map((vendor) => (
-                <option key={vendor.id} value={vendor.id}>
-                  {vendor.companyName}
-                </option>
-              ))}
-            </select>
-          </label>
+                <label className="supply-product-form-field">
+                  <span className="supply-product-form-label">
+                    납품 업체 <span className="supply-product-form-required">*</span>
+                  </span>
+                  <select
+                    name="vendorId"
+                    value={form.vendorId}
+                    onChange={handleChange}
+                    required
+                    disabled={isLoading}
+                  >
+                    <option value="">{isLoading ? '로딩 중...' : '선택하세요'}</option>
+                    {vendors.map((vendor) => (
+                      <option key={vendor.id} value={vendor.id}>
+                        {vendor.companyName}
+                      </option>
+                    ))}
+                  </select>
+                </label>
 
-          <label className="form-field">
-            <span>수량 *</span>
-            <input
-              type="number"
-              name="quantity"
-              min="1"
-              value={form.quantity}
-              onChange={handleChange}
-              placeholder="예) 100"
-              required
-            />
-          </label>
+                <label className="supply-product-form-field">
+                  <span className="supply-product-form-label">
+                    수량 <span className="supply-product-form-required">*</span>
+                  </span>
+                  <input
+                    type="number"
+                    name="quantity"
+                    min="1"
+                    value={form.quantity}
+                    onChange={handleChange}
+                    placeholder="예) 100"
+                    required
+                  />
+                </label>
 
-          <label className="form-field">
-            <span>단가(원) *</span>
-            <input
-              type="number"
-              name="unitPrice"
-              min="0"
-              value={form.unitPrice}
-              onChange={handleChange}
-              placeholder="예) 8000"
-              required
-            />
-          </label>
+                <label className="supply-product-form-field">
+                  <span className="supply-product-form-label">
+                    단가(원) <span className="supply-product-form-required">*</span>
+                  </span>
+                  <input
+                    type="number"
+                    name="unitPrice"
+                    min="0"
+                    value={form.unitPrice}
+                    onChange={handleChange}
+                    placeholder="예) 8000"
+                    required
+                  />
+                </label>
 
-          <label className="form-field">
-            <span>총 금액(자동 계산)</span>
-            <input
-              type="text"
-              name="totalPrice"
-              value={
-                form.totalPrice
-                  ? form.totalPrice.toLocaleString('ko-KR') + '원'
-                  : ''
-              }
-              readOnly
-            />
-          </label>
+                <label className="supply-product-form-field">
+                  <span className="supply-product-form-label">총 금액 (자동 계산)</span>
+                  <input
+                    type="text"
+                    name="totalPrice"
+                    value={
+                      form.totalPrice
+                        ? form.totalPrice.toLocaleString('ko-KR') + '원'
+                        : ''
+                    }
+                    readOnly
+                    className="supply-product-form-readonly"
+                  />
+                </label>
 
-          <label className="form-field">
-            <span>납품 예정일</span>
-            <input
-              type="date"
-              name="deliveryDate"
-              value={form.deliveryDate}
-              onChange={handleChange}
-            />
-          </label>
+                <label className="supply-product-form-field">
+                  <span className="supply-product-form-label">납품 예정일</span>
+                  <input
+                    type="date"
+                    name="deliveryDate"
+                    value={form.deliveryDate}
+                    onChange={handleChange}
+                  />
+                </label>
 
-          <label className="form-field full">
-            <span>비고</span>
-            <textarea
-              name="note"
-              rows="4"
-              value={form.note}
-              onChange={handleChange}
-              placeholder="추가 참고 사항을 입력하세요."
-            />
-          </label>
-        </div>
+                <label className="supply-product-form-field supply-product-form-field-full">
+                  <span className="supply-product-form-label">비고</span>
+                  <textarea
+                    name="note"
+                    rows="4"
+                    value={form.note}
+                    onChange={handleChange}
+                    placeholder="추가 참고 사항을 입력하세요."
+                  />
+                </label>
+              </div>
 
-        <div className="form-actions">
-          <button 
-            type="reset" 
-            onClick={() => setForm({
-              productName: '',
-              vendorId: '',
-              quantity: '',
-              unitPrice: '',
-              totalPrice: '',
-              deliveryDate: '',
-              note: ''
-            })}
-            disabled={isSubmitting}
-          >
-            초기화
-          </button>
-          <button type="submit" className="primary-btn" disabled={isSubmitting}>
-            {isSubmitting ? '등록 중...' : '등록하기'}
-          </button>
-        </div>
-      </form>
-    </div>
+              <div className="supply-product-form-actions">
+                <button 
+                  type="reset" 
+                  className="supply-product-form-btn-reset"
+                  onClick={() => setForm({
+                    productName: '',
+                    vendorId: '',
+                    quantity: '',
+                    unitPrice: '',
+                    totalPrice: '',
+                    deliveryDate: '',
+                    note: ''
+                  })}
+                  disabled={isSubmitting}
+                >
+                  초기화
+                </button>
+                <button 
+                  type="submit" 
+                  className="supply-product-form-btn-submit" 
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? '등록 중...' : '등록하기'}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>

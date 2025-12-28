@@ -39,21 +39,105 @@ export default function DetailInfo() {
       <div>
         <div style={styles.pageWrapper}>
           <div style={styles.container}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '860px', }}>
-              <div style={{ background: '#E5EEFF', padding: '5px 0' }}>
-                <Label style={{ fontWeight: 'bold', margin: '0', width: '255px', textAlign: 'center' }}>상품 설명</Label>
+            <div style={{
+              display: 'flex',
+              borderBottom: '2px solid #e0e0e0',
+              gap: '0'
+            }}>
+              <div
+                style={{
+                  flex: 1,
+                  textAlign: 'center',
+                  padding: '16px 0',
+                  fontSize: '15px',
+                  fontWeight: '600',
+                  color: '#222',
+                  backgroundColor: '#f0f5ffff',
+                  borderBottom: '3px solid #739FF2',
+                  cursor: 'default'
+                }}
+              >
+                상품 설명
               </div>
-              <div style={{ padding: '5px 0' }}><Link to={`/gbProductDetail/${id}/reviews`} style={{ color: 'black' }}>
-                <Label style={{ fontWeight: 'bold', margin: '0', width: '255px', textAlign: 'center' }}>리뷰</Label></Link>
-              </div>
-              <div style={{ padding: '5px 0' }}><Link to={`/gbProductDetail/${id}/qAndA`} style={{ color: 'black' }}>
-                <Label style={{ fontWeight: 'bold', margin: '0', width: '255px', textAlign: 'center' }}>Q & A</Label></Link>
-              </div>
-              <div style={{ padding: '5px 0' }}><Link to={`/gbProductDetail/${id}/policy`} style={{ color: 'black' }}>
-                <Label style={{ fontWeight: 'bold', margin: '0', width: '255px', textAlign: 'center' }}>배송/환뷸 규칙</Label></Link>
-              </div>
+
+              <Link
+                to={`/gbProductDetail/${id}/reviews`}
+                style={{
+                  flex: 1,
+                  textAlign: 'center',
+                  padding: '16px 0',
+                  fontSize: '15px',
+                  fontWeight: '600',
+                  color: '#666',
+                  textDecoration: 'none',
+                  backgroundColor: '#fff',
+                  borderBottom: '3px solid transparent',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.color = '#222';
+                  e.target.style.backgroundColor = '#f8f8f8';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.color = '#666';
+                  e.target.style.backgroundColor = '#fff';
+                }}
+              >
+                리뷰
+              </Link>
+
+              <Link
+                to={`/gbProductDetail/${id}/qAndA`}
+                style={{
+                  flex: 1,
+                  textAlign: 'center',
+                  padding: '16px 0',
+                  fontSize: '15px',
+                  fontWeight: '600',
+                  color: '#666',
+                  textDecoration: 'none',
+                  backgroundColor: '#fff',
+                  borderBottom: '3px solid transparent',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.color = '#222';
+                  e.target.style.backgroundColor = '#f8f8f8';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.color = '#666';
+                  e.target.style.backgroundColor = '#fff';
+                }}
+              >
+                Q & A
+              </Link>
+
+              <Link
+                to={`/gbProductDetail/${id}/policy`}
+                style={{
+                  flex: 1,
+                  textAlign: 'center',
+                  padding: '16px 0',
+                  fontSize: '15px',
+                  fontWeight: '600',
+                  color: '#666',
+                  textDecoration: 'none',
+                  backgroundColor: '#fff',
+                  borderBottom: '3px solid transparent',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.color = '#222';
+                  e.target.style.backgroundColor = '#f8f8f8';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.color = '#666';
+                  e.target.style.backgroundColor = '#fff';
+                }}
+              >
+                배송/환불 규칙
+              </Link>
             </div>
-            <hr style={{ marginTop: '0' }} />
           </div>
         </div>
         <div style={styles.pageWrapper}>
@@ -231,7 +315,7 @@ export default function DetailInfo() {
             <hr />
             <div style={{ padding: '0 20px' }}>
               <Label style={{ fontSize: '24px' }}>가격 계산 방식</Label>
-              <div style={{ border: '1px solid #b2b6f3ff', backgroundColor: '#F2F9FC', padding: "10px", height: '100px', alignContent: 'center' }}>
+              <div style={{ fontSize: '13px', border: '1px solid #b2b6f3ff', backgroundColor: '#F2F9FC', padding: "10px", height: '100px', alignContent: 'center' }}>
                 <div>(원가 × 환율) + (해외배송비 × 환율 ÷ 인원) × (1 + 수수료) + 국내배송비</div>
                 <div>※ 환율 변동 및 참여 인원에 따라 최종 가격이 소폭 변동될 수 있습니다.</div>
               </div> <br />

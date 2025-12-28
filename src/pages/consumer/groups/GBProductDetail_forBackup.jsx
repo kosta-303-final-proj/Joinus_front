@@ -68,7 +68,7 @@ export default function GBProductDetail() {
         thumbnail: detail.thumbnailFile?.fileName,
         finalPrice: finalPrice,
         productName: detail.product.name,
-        quantity: quantity,
+        quantity: 1,
         selectedOptions: Object.entries(selectedOptions).map(([groupName, optionId]) => {
           const option = detail.options.find(opt => opt.id === Number(optionId));
           return {
@@ -156,19 +156,22 @@ export default function GBProductDetail() {
 
 
 
-  const submit = () => {
-    const selectedIds = Object.values(selectedOptions);
+  const submit = (quantity = 1) => {
+
+
+    const selectedIds = Object.values(selectedOptions); // 선택된 모든 옵션
     if (selectedIds.includes("") || selectedIds.length !== Object.keys(optionGroups).length) {
       alert("모든 옵션을 선택해주세요");
       return;
     }
-    const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+    const userInfo =
+      JSON.parse(sessionStorage.getItem("userInfo"))
     const memberUsername = userInfo.username;
 
     myAxios().post(`/addCart`, {
       username: memberUsername,
       gbProductId: detail.product.id,
-      gbProductOptionIds: selectedIds.map(id => Number(id)),
+      gbProductOptionIds: selectedIds.map(id => Number(id)), // 여러 옵션 전달
       quantity: quantity
     })
       .then(res => alert("장바구니에 추가되었습니다."))
@@ -356,7 +359,7 @@ export default function GBProductDetail() {
                   borderRadius: '20px',
                   fontSize: '12px',
                   fontWeight: 600,
-                  ...getCategoryStyle(detail.category.name)
+                  ...getCategoryStyle(detail.category.name) 
                 }}>
                   {detail.category.name}
                 </div>
@@ -380,9 +383,9 @@ export default function GBProductDetail() {
                 <>
                   <hr style={{ border: '1px solid #959596ff', margin: '20px 0' }} />
 
-                  <Label className="fw-bold" style={{ fontSize: '14px' }}>
+                  <Label className="fw-bold" style={{ fontSize: '12px' }}>
                     옵션선택
-                    <div style={{ fontSize: '11px', color: '#8f8f8fff', margin: '8px 0', fontWeight: '500' }}>
+                    <div style={{ fontSize: '11px', color: '#555', margin: '8px 0' }}>
                       옵션에 따라 가격이 변동될 수 있음
                     </div>
                   </Label>
@@ -410,86 +413,12 @@ export default function GBProductDetail() {
                     </FormGroup>
                   ))}
 
-                  {/* 수량 선택 추가함 */}
-                  {/* <FormGroup style={{ marginTop: '16px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                      <Label className="fw-bold" style={{ fontSize: '14px', margin: 0 }}>
-                        수량
-                      </Label>
-                      <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #d0d0d0', borderRadius: '6px', overflow: 'hidden' }}>
-                        <button
-                          type="button"
-                          onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
-                          style={{
-                            width: '36px',
-                            height: '36px',
-                            border: 'none',
-                            borderRight: '1px solid #d0d0d0',
-                            backgroundColor: '#fff',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                            color: '#666',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            transition: 'background-color 0.2s'
-                          }}
-                          onMouseEnter={(e) => e.target.style.backgroundColor = '#f5f5f5'}
-                          onMouseLeave={(e) => e.target.style.backgroundColor = '#fff'}
-                        >
-                          −
-                        </button>
-                        <input
-                          type="text"
-                          value={quantity}
-                          onChange={(e) => {
-                            const value = parseInt(e.target.value) || 1;
-                            setQuantity(Math.max(1, value));
-                          }}
-                          min="1"
-                          style={{
-                            width: '60px',
-                            height: '36px',
-                            textAlign: 'center',
-                            border: 'none',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                            outline: 'none',
-                          }}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setQuantity(prev => prev + 1)}
-                          style={{
-                            width: '36px',
-                            height: '36px',
-                            border: 'none',
-                            borderLeft: '1px solid #d0d0d0',
-                            backgroundColor: '#fff',
-                            fontSize: '16px',
-                            fontWeight: '600',
-                            color: '#666',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            transition: 'background-color 0.2s'
-                          }}
-                          onMouseEnter={(e) => e.target.style.backgroundColor = '#f5f5f5'}
-                          onMouseLeave={(e) => e.target.style.backgroundColor = '#fff'}
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
-                  </FormGroup> */}
+                  
                 </>
               )}
 
               <hr style={{ border: '1px solid #959596ff', margin: '20px 0' }} />
 
-              {/* 가격 정보 부분 수정 */}
               <div style={{ fontSize: '14px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: '400', marginBottom: '8px' }}>
                   <span>상품 가격</span>
@@ -503,13 +432,9 @@ export default function GBProductDetail() {
                   <span>옵션 추가 금액</span>
                   <span>{getOptionTotalPrice().toLocaleString()}원</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: '400', marginBottom: '8px' }}>
-                  <span>수량</span>
-                  <span>× {quantity}</span>
-                </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '18px', fontWeight: 'bold', marginTop: '20px', marginBottom: '10px' }}>
                   <span>최종 상품 가격</span>
-                  <span>{(finalPrice * quantity).toLocaleString()}원</span>
+                  <span>{finalPrice.toLocaleString()}원</span>
                 </div>
                 <div style={{ fontSize: '13px', marginTop: '10px', color: '#666' }}>
                   ※ 해외 배송 2~3주, 국내 배송 2~3일 소요
@@ -635,17 +560,17 @@ export default function GBProductDetail() {
       </div>
 
 
-
+      
 
 
       <div style={styles.pageWrapper}>
         <div style={styles.container}>
           <div style={{ flex: 1, paddingTop: '10px', width: '1020px' }}>
-            <Outlet context={{
-              showAllDetails,
-              setShowAllDetails,
-              details: detail.details
-            }} />
+            <Outlet context={{ 
+        showAllDetails, 
+        setShowAllDetails,
+        details: detail.details
+      }} />
           </div>
         </div>
       </div>

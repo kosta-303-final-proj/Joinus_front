@@ -1,95 +1,190 @@
-.delivery-product-list-page {
-    padding: 32px;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
-  .page-title {
-    font-size: 28px;
-    margin-bottom: 4px;
-  }
-  .page-description {
-    color: #6b7280;
-  }
-  .filter-panel {
-    display: flex;
-    gap: 16px;
-    padding: 20px;
-    border: 1px solid #e3e6eb;
-    border-radius: 12px;
-    background: #fff;
-  }
-  .filter-field {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    min-width: 200px;
-  }
-  .filter-field.grow {
-    flex: 1;
-  }
-  .filter-field input,
-  .filter-field select {
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid #cfd6e0;
-  }
-  .table-card {
-    border: 1px solid #e3e6eb;
-    border-radius: 12px;
-    background: #fff;
-  }
-  .table-info {
-    display: flex;
-    gap: 16px;
-    padding: 18px 20px;
-    border-bottom: 1px solid #edf1f5;
-    font-weight: 600;
-  }
-  .delivery-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  .delivery-table th,
-  .delivery-table td {
-    padding: 14px;
-    border-bottom: 1px solid #edf1f5;
-    text-align: left;
-  }
-  .status-chip {
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 13px;
-    font-weight: 600;
-  }
-  .status-chip.status-납품 완료 {
-    background: #dcfce7;
-    color: #166534;
-  }
-  .status-chip.status-검수 중 {
-    background: #fef9c3;
-    color: #854d0e;
-  }
-  .status-chip.status-입고 예정 {
-    background: #e0f2fe;
-    color: #075985;
-  }
-  .status-select {
-    padding: 6px 10px;
-    border: 1px solid #cfd6e0;
-    border-radius: 6px;
-    font-size: 14px;
-    cursor: pointer;
-    background: #fff;
-    min-width: 120px;
-  }
-  .status-select:disabled {
-    background-color: #f5f5f5;
-    cursor: not-allowed;
-    opacity: 0.7;
-  }
-  .no-data {
-    text-align: center;
-    padding: 40px 0;
-    color: #9ca3af;
-  }
+/* =============== 페이지 레이아웃 =============== */
+.supply-product-list-page {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* =============== 헤더 =============== */
+.supply-product-list-header {
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.supply-product-list-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #222;
+  margin: 0 0 8px 0;
+}
+
+.supply-product-list-description {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+/* =============== 필터 패널 =============== */
+.supply-product-list-filter {
+  display: flex;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.supply-product-list-filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 200px;
+}
+
+.supply-product-list-filter-field-grow {
+  flex: 1;
+}
+
+.supply-product-list-filter-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #444;
+}
+
+.supply-product-list-filter-field input,
+.supply-product-list-filter-field select {
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #d0d0d0;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.supply-product-list-filter-field input:focus,
+.supply-product-list-filter-field select:focus {
+  border-color: #739FF2;
+}
+
+.supply-product-list-filter-field input::placeholder {
+  color: #999;
+}
+
+/* =============== 테이블 카드 =============== */
+.supply-product-list-table-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.supply-product-list-table-info {
+  display: flex;
+  gap: 20px;
+  padding: 18px 20px;
+  border-bottom: 2px solid #e0e0e0;
+  font-weight: 700;
+  font-size: 14px;
+  color: #444;
+  background: #f8f8f8;
+}
+
+.supply-product-list-table-info span {
+  display: flex;
+  align-items: center;
+}
+
+/* =============== 테이블 =============== */
+.supply-product-list-table-container {
+  overflow-x: auto;
+}
+
+.supply-product-list-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.supply-product-list-table thead {
+  background: #f8f8f8;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.supply-product-list-table th {
+  padding: 14px 16px;
+  text-align: left;
+  font-weight: 700;
+  color: #444;
+  font-size: 13px;
+}
+
+.supply-product-list-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #eaeaea;
+  color: #333;
+}
+
+.supply-product-list-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.supply-product-list-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* =============== 상품명 강조 =============== */
+.supply-product-list-product-name {
+  font-weight: 600;
+  color: #222;
+}
+
+/* =============== 상태 선택 =============== */
+.supply-product-list-status-select {
+  padding: 6px 12px;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  background: #fff;
+  min-width: 110px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.supply-product-list-status-select:focus {
+  border-color: #739FF2;
+}
+
+.supply-product-list-status-select:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+  opacity: 0.6;
+  color: #999;
+}
+
+/* =============== 빈 데이터 =============== */
+.supply-product-list-no-data {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+  font-size: 14px;
+}
+
+/* =============== 로딩/에러 =============== */
+.supply-product-list-loading,
+.supply-product-list-error {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 14px;
+}
+
+.supply-product-list-loading {
+  color: #666;
+}
+
+.supply-product-list-error {
+  color: #C62828;
+}

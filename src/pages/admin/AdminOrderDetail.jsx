@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { myAxios } from "../../config";
 import AdminHeader from "../../components/layout/AdminHeader";
 import './admin-common.css';
 
 export default function AdminOrderDetail() {
+    const navigate = useNavigate();
     const { gbProductId } = useParams();
-    
+
     // State
     const [orderDetail, setOrderDetail] = useState(null);
     const [adminOrderNo, setAdminOrderNo] = useState("");
-    
+
     const [participantPage, setParticipantPage] = useState({
         content: [],
         totalPages: 0,
@@ -18,30 +19,30 @@ export default function AdminOrderDetail() {
         number: 0
     });
     const [currentPage, setCurrentPage] = useState(0);
-    
+
     const [trackingInputs, setTrackingInputs] = useState({});
     const [carrierInputs, setCarrierInputs] = useState({});
-    
-    
+
+
     // 공구 상품 정보 조회
     const fetchOrderDetail = async () => {
         try {
             const response = await myAxios().get(
                 `/admin/adminOrderDetail/${gbProductId}`
             );
-            
+
             console.log('📥 공구 상품 정보:', response.data);
-            
+
             setOrderDetail(response.data);
             setAdminOrderNo(response.data.adminOrderId || "");
-            
+
         } catch (error) {
             console.error("공구 상품 정보 조회 실패:", error);
             alert("공구 상품 정보를 불러오는 데 실패했습니다.");
         }
     };
-    
-    
+
+
     // 참여자 목록 조회
     const fetchParticipants = async (page = 0) => {
         try {
@@ -49,57 +50,57 @@ export default function AdminOrderDetail() {
                 `/admin/adminOrderDetail/${gbProductId}/participants`,
                 { params: { page, size: 10 } }
             );
-            
+
             console.log('📥 참여자 목록:', response.data);
-            
+
             setParticipantPage(response.data);
             setCurrentPage(page);
-            
+
         } catch (error) {
             console.error("참여자 목록 조회 실패:", error);
             alert("참여자 목록을 불러오는 데 실패했습니다.");
         }
     };
-    
-    
+
+
     // 초기 로드
     useEffect(() => {
         fetchOrderDetail();
         fetchParticipants();
     }, [gbProductId]);
-    
-    
+
+
     // 페이지 변경
     const handlePageChange = (pageNumber) => {
         if (pageNumber >= 0 && pageNumber < participantPage.totalPages) {
             fetchParticipants(pageNumber);
         }
     };
-    
-    
+
+
     // 관리자 주문번호 저장
     const handleSaveAdminOrder = async () => {
         if (!adminOrderNo.trim()) {
             alert("관리자 주문번호를 입력해주세요.");
             return;
         }
-        
+
         try {
             await myAxios().post(
                 `/admin/adminOrderDetail/${gbProductId}/admin-order`,
                 { adminOrderId: adminOrderNo }
             );
-            
+
             alert("관리자 주문번호가 저장되었습니다.");
             fetchOrderDetail();
-            
+
         } catch (error) {
             console.error("관리자 주문번호 저장 실패:", error);
             alert("저장에 실패했습니다.");
         }
     };
-    
-    
+
+
     // 송장번호 입력 핸들러
     const handleTrackingChange = (orderId, value) => {
         setTrackingInputs(prev => ({
@@ -107,36 +108,36 @@ export default function AdminOrderDetail() {
             [orderId]: value
         }));
     };
-    
+
     const handleCarrierChange = (orderId, value) => {
         setCarrierInputs(prev => ({
             ...prev,
             [orderId]: value
         }));
     };
-    
-    
+
+
     // 송장번호 저장
     const handleSaveTracking = async (orderId) => {
         const trackingNo = trackingInputs[orderId];
         const carrierName = carrierInputs[orderId] || "CJ대한통운";
-        
+
         if (!trackingNo || !trackingNo.trim()) {
             alert("송장번호를 입력해주세요.");
             return;
         }
-        
+
         try {
             await myAxios().post(
                 `/admin/adminOrderDetail/${orderId}/tracking`,
-                { 
+                {
                     trackingNo: trackingNo,
                     carrierName: carrierName
                 }
             );
-            
+
             alert("송장번호가 저장되었습니다.");
-            
+
             setTrackingInputs(prev => {
                 const newInputs = { ...prev };
                 delete newInputs[orderId];
@@ -147,16 +148,16 @@ export default function AdminOrderDetail() {
                 delete newInputs[orderId];
                 return newInputs;
             });
-            
+
             fetchParticipants(currentPage);
-            
+
         } catch (error) {
             console.error("송장번호 저장 실패:", error);
             alert("저장에 실패했습니다.");
         }
     };
-    
-    
+
+
     // 로딩 중
     if (!orderDetail) {
         return (
@@ -172,19 +173,19 @@ export default function AdminOrderDetail() {
             </div>
         );
     }
-    
-    
+
+
     return (
         <div className="admin-layout">
             <div className="main-content">
                 <AdminHeader title="참여인원 조회 및 배송관리" />
                 <div className="content-area">
-                    
+
                     {/* 공구 상품 카드 */}
                     <div style={{ marginBottom: '32px' }}>
-                        <h6 
-                            style={{ 
-                                background: '#eaf1ff', 
+                        <h6
+                            style={{
+                                background: '#eaf1ff',
                                 padding: '10px 16px',
                                 borderRadius: '6px',
                                 fontWeight: 600,
@@ -194,8 +195,8 @@ export default function AdminOrderDetail() {
                         >
                             공구 상품
                         </h6>
-                        <div 
-                            style={{ 
+                        <div
+                            style={{
                                 background: 'white',
                                 border: '1px solid #e0e0e0',
                                 borderRadius: '8px',
@@ -208,11 +209,11 @@ export default function AdminOrderDetail() {
                             {/* 이미지 */}
                             <div style={{ flexShrink: 0 }}>
                                 <img
-                                    src={orderDetail.thumbnailFileId 
-                                        ? `http://localhost:8080/file/view/${orderDetail.thumbnailFileId}` 
+                                    src={orderDetail.thumbnailFileId
+                                        ? `http://localhost:8080/file/view/${orderDetail.thumbnailFileId}`
                                         : "/productSampleImg.png"}
                                     alt="product"
-                                    style={{ 
+                                    style={{
                                         width: '200px',
                                         height: '200px',
                                         objectFit: 'cover',
@@ -229,8 +230,8 @@ export default function AdminOrderDetail() {
                                 {/* 주문번호 입력 */}
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                     <strong style={{ minWidth: '100px' }}>주문번호:</strong>
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
                                         placeholder="주문번호 입력"
                                         value={adminOrderNo}
                                         onChange={(e) => setAdminOrderNo(e.target.value)}
@@ -243,7 +244,7 @@ export default function AdminOrderDetail() {
                                             borderRadius: '6px'
                                         }}
                                     />
-                                    <button 
+                                    <button
                                         className="admin-button primary small"
                                         onClick={handleSaveAdminOrder}
                                         disabled={!!orderDetail.adminOrderId}
@@ -251,12 +252,25 @@ export default function AdminOrderDetail() {
                                         저장
                                     </button>
                                 </div>
-                                
+
                                 {/* 상품 상세정보 */}
                                 <div style={{ fontSize: '14px', lineHeight: 1.6 }}>
-                                    <strong>상품명:</strong> {orderDetail.gbProductName}
+                                    <strong>상품명:</strong>{' '}
+                                    <span
+                                        onClick={() => navigate(`/gbProductDetail/${gbProductId}`)}
+                                        style={{
+                                            cursor: 'pointer',
+                                            color: '#1f2430',
+                                            fontWeight: '500',
+                                            textDecoration: 'none'
+                                        }}
+                                        onMouseOver={(e) => e.currentTarget.style.textDecoration = 'underline'} // 호버 시 밑줄
+                                        onMouseOut={(e) => e.currentTarget.style.textDecoration = 'none'}
+                                    >
+                                        {orderDetail.gbProductName}
+                                    </span>
                                 </div>
-                                
+
                                 {/* 옵션별 수량 */}
                                 {orderDetail.optionSummaries?.map((option) => (
                                     <div key={option.optionId} style={{ fontSize: '14px', lineHeight: 1.6 }}>
@@ -266,11 +280,11 @@ export default function AdminOrderDetail() {
 
                                 {orderDetail.originalSiteUrl && (
                                     <div style={{ marginTop: '12px', fontSize: '14px' }}>
-                                        <a 
-                                            href={orderDetail.originalSiteUrl} 
-                                            target="_blank" 
+                                        <a
+                                            href={orderDetail.originalSiteUrl}
+                                            target="_blank"
                                             rel="noopener noreferrer"
-                                            style={{ 
+                                            style={{
                                                 color: '#0066cc',
                                                 textDecoration: 'none'
                                             }}
@@ -285,13 +299,13 @@ export default function AdminOrderDetail() {
 
                     {/* 참여자 테이블 */}
                     <div style={{ marginTop: '32px' }}>
-                        <h6 
-                            style={{ 
-                                background: '#eaf1ff', 
+                        <h6
+                            style={{
+                                background: '#eaf1ff',
                                 padding: '10px 16px',
                                 borderRadius: '6px',
                                 fontWeight: 600,
-                                fontSize: '16px',
+                                fontSize: '13px',
                                 marginBottom: '16px'
                             }}
                         >
@@ -302,15 +316,15 @@ export default function AdminOrderDetail() {
                                 <thead>
                                     <tr>
                                         <th style={{ width: '100px' }}>주문번호</th>
-                                        <th style={{ width: '100px' }}>주문일</th>
+                                        <th style={{ width: '90px' }}>주문일</th>
                                         <th style={{ width: '50px' }}>주문자명</th>
                                         <th style={{ width: '50px' }}>옵션명</th>
                                         <th style={{ width: '50px' }}>수량</th>
-                                        <th style={{ width: '80px' }}>결제수단</th>
-                                        <th style={{ width: '100px' }}>결제금액</th>
+                                        <th style={{ width: '70px' }}>결제수단</th>
+                                        <th style={{ width: '90px' }}>결제금액</th>
                                         <th style={{ width: '100px' }}>택배사</th>
-                                        <th style={{ width: '100px' }}>송장번호</th>
-                                        <th></th>
+                                        <th style={{ width: '130px' }}>송장번호</th>
+                                        <th style={{ width: '50px' }}></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -327,8 +341,8 @@ export default function AdminOrderDetail() {
                                             <tr key={participant.orderId}>
                                                 <td>{participant.orderId}</td>
                                                 <td>
-                                                    {participant.orderDate 
-                                                        ? participant.orderDate.substring(0, 10).replace(/-/g, '.') 
+                                                    {participant.orderDate
+                                                        ? participant.orderDate.substring(0, 10).replace(/-/g, '.')
                                                         : 'N/A'}
                                                 </td>
                                                 <td>{participant.customerName}</td>
@@ -344,16 +358,16 @@ export default function AdminOrderDetail() {
                                                 </td>
                                                 <td>{participant.paymentMethod}</td>
                                                 <td>{participant.paymentAmount?.toLocaleString()}원</td>
-                                                
+
                                                 {/* 택배사 */}
                                                 <td>
                                                     {participant.trackingNo ? (
                                                         participant.carrierName || '-'
                                                     ) : (
-                                                        <select 
+                                                        <select
                                                             value={carrierInputs[participant.orderId] || "CJ대한통운"}
                                                             onChange={(e) => handleCarrierChange(participant.orderId, e.target.value)}
-                                                            style={{ 
+                                                            style={{
                                                                 minWidth: '120px',
                                                                 padding: '6px',
                                                                 border: '1px solid #d1d5db',
@@ -367,13 +381,13 @@ export default function AdminOrderDetail() {
                                                         </select>
                                                     )}
                                                 </td>
-                                                
+
                                                 {/* 송장번호 */}
                                                 <td>
                                                     {participant.trackingNo ? (
                                                         participant.trackingNo
                                                     ) : (
-                                                        <input 
+                                                        <input
                                                             type="text"
                                                             placeholder="송장번호 입력"
                                                             value={trackingInputs[participant.orderId] || ""}
@@ -386,9 +400,9 @@ export default function AdminOrderDetail() {
                                                         />
                                                     )}
                                                 </td>
-                                                
+
                                                 <td>
-                                                    <button 
+                                                    <button
                                                         className="admin-button primary small"
                                                         onClick={() => handleSaveTracking(participant.orderId)}
                                                         disabled={!!participant.trackingNo}

@@ -58,10 +58,11 @@ export default function OrderDetail(){
                                 borderRadius: '6px',
                                 fontWeight: '600',
                                 cursor: 'pointer'
-                            }}>
+                            }}
+                            onClick={() => navigate(`/gbProductDetail/${orderDetail.productId}`)}>
                                 상품 조회
                             </button>
-                            <button style={{
+                            {/* <button style={{
                                 backgroundColor: '#FFB84D',
                                 border: 'none',
                                 color: 'white',
@@ -84,7 +85,7 @@ export default function OrderDetail(){
                                 cursor: 'pointer'
                             }}>
                                 환불 신청
-                            </button>
+                            </button> */}
                         </div>
                     </div>
                 </div>

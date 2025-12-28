@@ -7,7 +7,7 @@ const ParticipantsModal = ({ productId, productName, onClose }) => {
   const [participants, setParticipants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
-  const [showCancelModal, setShowCancelModal] = useState(false); 
+  const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelReason, setCancelReason] = useState('');
 
   useEffect(() => {
@@ -15,6 +15,7 @@ const ParticipantsModal = ({ productId, productName, onClose }) => {
       try {
         setLoading(true);
         const response = await myAxios().get(`/admin/gbProduct/${productId}/participants`);
+        console.log('참여인원 데이터:', response.data);  // ✅ 디버깅
         setParticipants(response.data);
       } catch (error) {
         console.error('참여인원 조회 실패:', error);
@@ -27,10 +28,6 @@ const ParticipantsModal = ({ productId, productName, onClose }) => {
     fetchParticipants();
   }, [productId]);
 
-  
-  // ========================================
-  // 알림 발송 모달 열기
-  // ========================================
   const handleOpenNotificationModal = () => {
     if (participants.length === 0) {
       alert('참여인원이 없어 알림을 발송할 수 없습니다.');
@@ -39,30 +36,20 @@ const ParticipantsModal = ({ productId, productName, onClose }) => {
     setShowNotificationModal(true);
   };
 
-  
-  // ========================================
-  // 알림 발송
-  // ========================================
   const handleSendNotification = async ({ title, content }) => {
     try {
       await myAxios().post(`/admin/gbProduct/${productId}/notify`, {
         title,
         content
       });
-      
       alert(`알림이 ${participants.length}명에게 발송되었습니다!`);
       setShowNotificationModal(false);
-      
     } catch (error) {
       console.error('알림 발송 실패:', error);
       alert('알림 발송에 실패했습니다.');
     }
   };
 
-
-  // ========================================
-  // 공구 취소
-  // ========================================
   const handleCancelGbProduct = async () => {
     if (!cancelReason.trim()) {
       alert('취소 사유를 입력해주세요.');
@@ -79,45 +66,50 @@ const ParticipantsModal = ({ productId, productName, onClose }) => {
     }
 
     try {
-      console.log('========== 공구 취소 시작 ==========');
-      console.log('공구 ID:', productId);
-      console.log('취소 사유:', cancelReason);
-
-      // 공구 취소 + 환불 처리
       await myAxios().post(`/admin/gbProduct/${productId}/cancel`, {
         reason: cancelReason
       });
-
       alert(
         '공구가 취소되었습니다.\n' +
         '- 간단한 알림이 발송되었습니다.\n' +
         '- 자세한 안내는 "알림 발송"을 이용해주세요.\n' +
         '- 환불 처리가 완료되었습니다.'
       );
-
       setShowCancelModal(false);
       setCancelReason('');
-      onClose();  // 모달 닫기
-
+      onClose();
     } catch (error) {
       console.error('공구 취소 실패:', error);
       alert('공구 취소에 실패했습니다.');
     }
   };
 
+  // ========================================
+  // ✅ 옵션 표시 헬퍼 함수
+  // ========================================
+  const formatOptions = (options) => {
+    if (!options || options.length === 0) return '-';
+    return options.map(opt => opt.optionName).join(', ');
+  };
+
+  // ========================================
+  // ✅ 총 수량 계산
+  // ========================================
+  const getTotalQuantity = (options) => {
+    if (!options || options.length === 0) return 0;
+    return options.reduce((sum, opt) => sum + (opt.quantity || 0), 0);
+  };
 
   return (
     <>
       <div className="participants-modal-overlay" onClick={onClose}>
         <div className="participants-modal-content" onClick={(e) => e.stopPropagation()}>
           
-          {/* 헤더 */}
           <div className="participants-modal-header">
             <h2>참여인원 목록</h2>
             <button className="participants-modal-close-btn" onClick={onClose}>×</button>
           </div>
 
-          {/* 바디 */}
           <div className="participants-modal-body">
             {loading ? (
               <div className="participants-modal-loading">로딩 중...</div>
@@ -127,7 +119,6 @@ const ParticipantsModal = ({ productId, productName, onClose }) => {
               </div>
             ) : (
               <>
-                {/* 요약 */}
                 <div className="participants-modal-summary">
                   <span>총 참여인원: <strong>{participants.length}명</strong></span>
                   <div style={{ display: 'flex', gap: '8px' }}>
@@ -137,7 +128,6 @@ const ParticipantsModal = ({ productId, productName, onClose }) => {
                     >
                       📢 알림 발송
                     </button>
-                    {/* 공구 취소 */}
                     <button 
                       className="participants-modal-cancel-btn"
                       onClick={() => setShowCancelModal(true)}
@@ -157,7 +147,7 @@ const ParticipantsModal = ({ productId, productName, onClose }) => {
                   </div>
                 </div>
 
-                {/* 테이블 */}
+                {/* ✅ 테이블 수정 */}
                 <div className="participants-modal-table-wrapper">
                   <table className="participants-modal-table">
                     <thead>
@@ -165,7 +155,7 @@ const ParticipantsModal = ({ productId, productName, onClose }) => {
                         <th>주문번호</th>
                         <th>주문일</th>
                         <th>주문자명</th>
-                        <th>옵션명</th>
+                        {/* <th>옵션명</th> */}
                         <th>수량</th>
                         <th>결제금액</th>
                       </tr>
@@ -174,10 +164,19 @@ const ParticipantsModal = ({ productId, productName, onClose }) => {
                       {participants.map((p, index) => (
                         <tr key={`${p.orderId}-${index}`}>
                           <td>{p.orderId}</td>
-                          <td>{new Date(p.orderDate).toLocaleDateString('ko-KR')}</td>
+                          <td>
+                            {p.orderDate 
+                              ? new Date(p.orderDate).toLocaleDateString('ko-KR')
+                              : '-'}
+                          </td>
                           <td>{p.customerName}</td>
-                          <td>{p.optionName || '-'}</td>
-                          <td>{p.quantity}</td>
+                          
+                          {/* 옵션명 */}
+                          {/* <td>{formatOptions(p.options)}</td> */}
+                          
+                          {/* ✅ 총 수량 표시 */}
+                          <td>{getTotalQuantity(p.options)}</td>
+                          
                           <td>{p.paymentAmount?.toLocaleString()}원</td>
                         </tr>
                       ))}
@@ -188,7 +187,6 @@ const ParticipantsModal = ({ productId, productName, onClose }) => {
             )}
           </div>
 
-          {/* 푸터 */}
           <div className="participants-modal-footer">
             <button className="participants-modal-close-footer-btn" onClick={onClose}>
               닫기
@@ -197,7 +195,6 @@ const ParticipantsModal = ({ productId, productName, onClose }) => {
         </div>
       </div>
 
-      {/* 알림 발송 모달 */}
       {showNotificationModal && (
         <NotificationSendModal
           productId={productId}
@@ -207,7 +204,6 @@ const ParticipantsModal = ({ productId, productName, onClose }) => {
         />
       )}
 
-      {/* 공구 취소 모달 */}
       {showCancelModal && (
         <div className="notification-modal-overlay" onClick={() => setShowCancelModal(false)}>
           <div className="notification-modal-content" onClick={(e) => e.stopPropagation()}>
