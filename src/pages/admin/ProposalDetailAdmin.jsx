@@ -466,7 +466,7 @@ export default function ProposalDetailAdmin() {
       <div style={styles.pageWrapper}>
         <div style={styles.container}>
           <div style={{ marginTop: '40px' }}>
-            <h4 style={{ fontSize: '18px', fontWeight: '700', color: '#222', marginBottom: '20px', paddingBottom: '12px', borderBottom: '2px solid #222' }}>
+            <h4 style={{ fontSize: '18px', fontWeight: '700', color: '#222', marginBottom: '20px', paddingBottom: '12px', borderBottom: '2px solid #77787aff' }}>
               댓글 {comments.length}개
             </h4>
 
@@ -476,7 +476,7 @@ export default function ProposalDetailAdmin() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ fontWeight: '600', fontSize: '14px', color: '#222' }}>{c.memberNickname}</span>
                     <img
-                      src={`/grade/${c.grade.charAt(0) + c.grade.slice(1).toLowerCase()}.png`}
+                      src={`/grade/${c.grade}.png`}
                       alt="등급"
                       style={{ width: '22px', height: '22px' }}
                     />

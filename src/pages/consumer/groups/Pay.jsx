@@ -47,11 +47,13 @@ export default function Pay(){
     const [selectedOptions, setSelectedOptions] = useState(
         selectedOptionsFromDetail || []
     );
+    const productTotal = finalPrice * quantity;
     
     const shippingAmount = 0;
     const maxUsablePoint = Math.min(memberPoint, finalPrice + shippingAmount);
     const safeUsingPoint = Math.min(usingPoint, maxUsablePoint);
-    const totalAmount = Math.max(finalPrice + shippingAmount - safeUsingPoint, 0);
+    // const totalAmount = Math.max(finalPrice + shippingAmount - safeUsingPoint, 0);
+    const totalAmount = Math.max(productTotal + shippingAmount - safeUsingPoint,0);
     const remainingPoint = Math.max(memberPoint - safeUsingPoint, 0);
 
     const getMemberPoint = () => {
@@ -139,7 +141,7 @@ export default function Pay(){
                 gbProduct: { id: productId },
                 optionIds,
                 quantity,
-                subtotalAmount: finalPrice,
+                subtotalAmount: finalPrice * quantity,
                 shippingAmount,
                 totalAmount,
                 usingPoint,

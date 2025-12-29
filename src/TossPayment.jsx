@@ -106,7 +106,7 @@ export function CheckoutPage() {
               await widgets.requestPayment({
                 orderId,
                 orderName: productName,
-                successUrl: `${window.location.origin}/paycomplete?orderId=${orderId}&productId=${productId}`,
+                successUrl: `${window.location.origin}/paycomplete?orderId=${orderId}&productId=${productId}&quantity=${quantity}&amount=${payAmount}`,
                 failUrl: window.location.origin + "/fail",
                 customerName: "Global Buyer",
                 customerEmail: "buyer@email.com",
