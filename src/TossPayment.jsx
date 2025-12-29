@@ -15,6 +15,11 @@ export function CheckoutPage() {
     quantity,
     selectedOptions,
   } = location.state || {};
+    // ✅ 여기 추가 (중요)
+    const encodedOptions = encodeURIComponent(
+      JSON.stringify(selectedOptions || [])
+    );
+
 
   if (!productId) {
     alert("상품 정보가 올바르게 전달되지 않았습니다.");
@@ -106,7 +111,7 @@ export function CheckoutPage() {
               await widgets.requestPayment({
                 orderId,
                 orderName: productName,
-                successUrl: `${window.location.origin}/paycomplete?orderId=${orderId}&productId=${productId}&quantity=${quantity}&amount=${payAmount}`,
+                successUrl: `${window.location.origin}/paycomplete?orderId=${orderId}&productId=${productId}&quantity=${quantity}&amount=${payAmount}&selectedOptions=${encodedOptions}`,
                 failUrl: window.location.origin + "/fail",
                 customerName: "Global Buyer",
                 customerEmail: "buyer@email.com",
