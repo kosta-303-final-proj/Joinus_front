@@ -35,6 +35,29 @@ export default function MypageMain() {
 
   const navigate = useNavigate();
 
+  const getSuggestionStatusText = (status) => {
+  switch (status) {
+    case "APPROVED":
+      return "승인";
+    case "REJECTED":
+      return "반려";
+    default:
+      return "검토대기";
+  }
+};
+
+const getSuggestionStatusClass = (status) => {
+  switch (status) {
+    case "APPROVED":
+      return "suggest-status-approved";
+    case "REJECTED":
+      return "suggest-status-rejected";
+    default:
+      return "suggest-status-pending";
+  }
+};
+
+
   /* ===============================
      상태 값들 (기존 코드 유지)
      =============================== */
@@ -337,45 +360,62 @@ export default function MypageMain() {
       </div>
 
       {/* ================= 공동구매 요청 ================= */}
-      <div className="main-card">
-        <h3 className="main-card-title">
-          투표한 공동 구매
-          <Link to="/mypage/suggestions" className="main-more">
-            더보기 &gt;
-          </Link>
-        </h3>
+<div className="main-card">
+  <h3 className="main-card-title">
+    투표한 공동 구매
+    <Link to="/mypage/suggestions" className="main-more">
+      더보기 &gt;
+    </Link>
+  </h3>
 
-        {suggestions.length === 0 ? (
-          <div className="main-product-item">
-            <div className="main-product-info">
-              <p>참여 중인 공동구매가 없습니다.</p>
-            </div>
-          </div>
-        ) : (
-          suggestions.map((item) => (
-            <div
-              key={`suggestion-item-${item.id}`}
-              className="main-product-item"
-              style={{ cursor: "pointer" }}
-              onClick={() => navigate(`/proposalDetail/${item.id}`)}
-            >
-              <div className="main-thumb">
-                <img
-                  src={
-                    "http://localhost:8080/imageView?filename=" +
-                    item.imageUrl || "/default.png"
-                  }
-                  alt=""
-                />
-              </div>
-              <div className="main-product-info">
-                <p>{item.title || item.productName}</p>
-                <p>참여자 {item.voteCount || 0}명</p>
-              </div>
-            </div>
-          ))
-        )}
+  {suggestions.length === 0 ? (
+    <div className="main-product-item">
+      <div className="main-product-info">
+        <p>참여 중인 공동구매가 없습니다.</p>
       </div>
-    </>
+    </div>
+  ) : (
+    suggestions.map((item) => (
+      <div
+        key={`suggestion-item-${item.id}`}
+        className="main-product-item suggestion-item"
+        onClick={() => navigate(`/proposalDetail/${item.id}`)}
+        style={{ position: "relative" }}
+      >
+        {/* 왼쪽: 이미지 */}
+        <div className="main-thumb">
+          <img
+            src={
+              item.imageUrl
+                ? `${baseUrl}/imageView?filename=${item.imageUrl}`
+                : "/default.png"
+            }
+            alt=""
+          />
+        </div>
+
+        {/* 가운데: 정보 */}
+        <div className="main-product-info">
+          <p>{item.title || item.productName}</p>
+          <p>참여자 {item.voteCount || 0}명</p>
+        </div>
+
+        {/* 오른쪽: 상태 뱃지 */}
+        <span
+          className={`suggest-status-badge ${getSuggestionStatusClass(
+            item.status
+          )}`}
+          style={{
+            marginLeft: "auto",
+            alignSelf: "center",
+          }}
+        >
+          {getSuggestionStatusText(item.status)}
+        </span>
+      </div>
+    ))
+  )}
+</div>
+</>
   );
 }
