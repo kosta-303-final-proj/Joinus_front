@@ -13,6 +13,7 @@ export default function GBProductDetail() {
 
   // 기존 코드 안에 넣기
   const [showAllDetails, setShowAllDetails] = useState(false);
+  const [isTimeOver, setIsTimeOver] = useState(false);
 
   const navigate = useNavigate();
 
@@ -107,6 +108,7 @@ export default function GBProductDetail() {
       if (distance <= 0) {
         clearInterval(interval);
         setTimeLeft("종료");
+        setIsTimeOver(true);
         return;
       }
 
@@ -565,8 +567,8 @@ export default function GBProductDetail() {
 
                   <Button
                     style={{
-                      backgroundColor: isClosed ? PRIMARY_BLUE_DISABLED : (isHeart ? PRIMARY_BLUE : '#fff'),
-                      color: isClosed ? '#fff' : (isHeart ? '#fff' : '#739FF2'),
+                      backgroundColor: isHeart ? PRIMARY_BLUE : '#fff',
+                      color: isHeart ? '#fff' : '#739FF2',
                       border: isHeart ? 'none' : '1px solid #739FF2',
                       flex: 1,
                       height: "40px",
@@ -574,19 +576,20 @@ export default function GBProductDetail() {
                       fontWeight: "600",
                       padding: "0",
                       borderRadius: '6px',
-                      cursor: isClosed ? 'not-allowed' : 'pointer'
+                      cursor: isTimeOver ? 'not-allowed' : 'pointer',
+                      opacity: isTimeOver ? 0.5 : 1
                     }}
                     onClick={handleWishList}
-                    disabled={isClosed}
+                    // disabled={isClosed}
                   >
-                    {isClosed ? "마감" : isHeart ? "찜 취소" : "찜하기"}
+                    {isHeart ? "찜 취소" : "찜하기"}
                   </Button>
 
                   <img src="/share.png" style={{ width: "22px", margin: '0 12px' }} />
 
                   <Button
                     style={{
-                      backgroundColor: isClosed ? PRIMARY_BLUE_DISABLED : PRIMARY_BLUE,
+                      backgroundColor: PRIMARY_BLUE,
                       color: '#fff',
                       flex: 1,
                       height: "40px",
@@ -595,10 +598,11 @@ export default function GBProductDetail() {
                       padding: "0",
                       border: 'none',
                       borderRadius: '6px',
-                      cursor: isClosed ? 'not-allowed' : 'pointer'
+                      cursor: isTimeOver ? 'not-allowed' : 'pointer',
+                      opacity: isTimeOver ? 0.5 : 1
                     }}
                     onClick={() => submit()}
-                    disabled={isClosed}
+                    // disabled={isClosed}
                   >
                     장바구니
                   </Button>
@@ -607,9 +611,9 @@ export default function GBProductDetail() {
                 {/* 두 번째 줄: 참여하기 (전체 너비) */}
                 <Button
                   onClick={handleParticipate}
-                  disabled={isClosed}
+                  disabled={isTimeOver}   // ✅ 시간 종료만 막기
                   style={{
-                    backgroundColor: isClosed ? PRIMARY_BLUE_DISABLED : '#000000',
+                    backgroundColor: isTimeOver ? '#999' : '#000',
                     color: "#fff",
                     width: "100%",
                     height: "52px",
@@ -619,10 +623,11 @@ export default function GBProductDetail() {
                     padding: "0",
                     border: "none",
                     borderRadius: '6px',
-                    cursor: isClosed ? "not-allowed" : "pointer",
+                    cursor: isTimeOver ? 'not-allowed' : 'pointer',
+                    opacity: isTimeOver ? 0.5 : 1
                   }}
                 >
-                  {isClosed ? "마감" : "참여하기"}
+                  {isTimeOver ? "종료된 공동구매입니다" : "참여하기"}
                 </Button>
               </div>
             </div>

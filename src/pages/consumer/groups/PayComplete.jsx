@@ -12,11 +12,14 @@ export default function PayComplete(){
     const userInfo = JSON.parse(sessionStorage.getItem("userInfo") || "{}");
     const memberUsername = userInfo.username;
 
-    if (!memberUsername) {
-        console.error("로그인 정보 없음");
-        navigate(`/fail?message=로그인 정보 없음`);
-        return null; // 렌더링 중단
-    }
+    useEffect(() => {
+        if (!memberUsername) {
+            navigate(`/fail?message=로그인 정보 없음`);
+        }
+    }, [memberUsername, navigate]);
+
+    if (!memberUsername) return null;
+
     
 
     const [paymentConfirmed, setPaymentConfirmed] = useState(false); // 결제 확인 상태
