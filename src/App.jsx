@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 import AdminSidebar from './components/layout/AdminSidebar';
@@ -96,8 +97,16 @@ import { CheckoutPage } from './TossPayment';
 import ProposalDetailAdmin from './pages/admin/ProposalDetailAdmin';
 import InquiryWrite from './pages/cs/InquiryWrite';
 
+// 스크롤을 맨 위로 이동시키는 컴포넌트
+function ScrollToTop() {
+  const { pathname } = useLocation();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
+  return null;
+}
 
 function AppContent() {
   const location = useLocation(); /* ?�재 url?�보 반환 */
@@ -105,6 +114,7 @@ function AppContent() {
 
   return (
     <div className="app">
+      <ScrollToTop />
       {!isAdminPage && <Header />}
       <div className={isAdminPage ? 'app-body-admin' : 'app-body'}>
         {isAdminPage && <AdminSidebar />}
