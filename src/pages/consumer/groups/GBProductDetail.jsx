@@ -16,6 +16,17 @@ export default function GBProductDetail() {
 
   const navigate = useNavigate();
 
+  /* ================ 로그인 필요 ================*/ 
+  const checkLogin = () => {
+    const userInfo = JSON.parse(sessionStorage.getItem("userInfo") || "{}");
+    if (!userInfo.username) {
+      alert("로그인이 필요합니다.");
+      navigate("/login");
+      return false;
+    }
+    return true;
+  };
+
   // 카테고리별 색상 함수
   const getCategoryStyle = (categoryName) => {
     const styles = {
@@ -53,6 +64,7 @@ export default function GBProductDetail() {
   };
 
   const handleParticipate = () => {
+    if (!checkLogin()) return;
     // 옵션 선택 체크
     const selectedIds = Object.values(selectedOptions);
 
@@ -126,6 +138,9 @@ export default function GBProductDetail() {
     getProduct();
   }, [])
 
+
+  
+
   /* ========================= 옵션 그룹 ========================= */
   const optionGroups = detail.options.reduce((acc, opt) => {
     if (!acc[opt.groupName]) acc[opt.groupName] = [];
@@ -157,6 +172,7 @@ export default function GBProductDetail() {
 
 
   const submit = () => {
+    if (!checkLogin()) return;
     const selectedIds = Object.values(selectedOptions);
     if (selectedIds.includes("") || selectedIds.length !== Object.keys(optionGroups).length) {
       alert("모든 옵션을 선택해주세요");

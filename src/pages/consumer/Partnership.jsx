@@ -252,11 +252,12 @@ export default function Partnership() {
                   className="select-input"
                 >
                   <option value="">선택하세요</option>
-                  <option value="생활">생활</option>
-                  <option value="생활용품">생활용품</option>
-                  <option value="주방/식기">주방/식기</option>
+                  <option value="뷰티">뷰티</option>
+                  <option value="패션">패션</option>
+                  <option value="전자기기">전자기기</option>
+                  <option value="홈&리빙">홈&리빙</option>
                   <option value="식품">식품</option>
-                  <option value="기타">기타</option>
+                  <option value="스포츠">스포츠</option>
                 </select>
               </div>
             </div>
