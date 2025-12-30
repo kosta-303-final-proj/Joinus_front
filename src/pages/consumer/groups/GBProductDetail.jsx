@@ -17,7 +17,7 @@ export default function GBProductDetail() {
 
   const navigate = useNavigate();
 
-  /* ================ 로그인 필요 ================*/ 
+  /* ================ 로그인 필요 ================*/
   const checkLogin = () => {
     const userInfo = JSON.parse(sessionStorage.getItem("userInfo") || "{}");
     if (!userInfo.username) {
@@ -141,7 +141,7 @@ export default function GBProductDetail() {
   }, [])
 
 
-  
+
 
   /* ========================= 옵션 그룹 ========================= */
   const optionGroups = detail.options.reduce((acc, opt) => {
@@ -162,7 +162,6 @@ export default function GBProductDetail() {
   /* ========================= 가격 계산 ========================= */
   const basePrice =
     (detail.product.price || 0) +
-    (detail.product.abroadShippingCost || 0) +
     (detail.product.shippingAmount || 0);
 
   const finalPrice = basePrice + getOptionTotalPrice();
@@ -389,7 +388,7 @@ export default function GBProductDetail() {
 
               <div style={{ marginTop: '10px' }}>
                 <Label style={{ fontSize: "22px", fontWeight: 'bold' }}>
-                  {((detail.product.price || 0) + (detail.product.abroadShippingCost || 0)).toLocaleString()}원
+                  {(detail.product.price || 0).toLocaleString()}원
                 </Label>
               </div>
 
@@ -511,7 +510,7 @@ export default function GBProductDetail() {
               <div style={{ fontSize: '14px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: '400', marginBottom: '8px' }}>
                   <span>상품 가격</span>
-                  <span>{((detail.product.price || 0) + (detail.product.abroadShippingCost || 0)).toLocaleString()}원</span>
+                  <span>{(detail.product.price || 0).toLocaleString()}원</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: '400', marginBottom: '8px' }}>
                   <span>국내 배송비</span>
@@ -580,7 +579,7 @@ export default function GBProductDetail() {
                       opacity: isTimeOver ? 0.5 : 1
                     }}
                     onClick={handleWishList}
-                    // disabled={isClosed}
+                  // disabled={isClosed}
                   >
                     {isHeart ? "찜 취소" : "찜하기"}
                   </Button>
@@ -602,7 +601,7 @@ export default function GBProductDetail() {
                       opacity: isTimeOver ? 0.5 : 1
                     }}
                     onClick={() => submit()}
-                    // disabled={isClosed}
+                  // disabled={isClosed}
                   >
                     장바구니
                   </Button>

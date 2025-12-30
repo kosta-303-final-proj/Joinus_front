@@ -570,7 +570,7 @@ const GBProductCreatePage = () => {
                 <input
                   type="date"
                   value={formData.endDate}
-                  onChange={(e) => updateField('startDate', e.target.value)}
+                  onChange={(e) => updateField('endDate', e.target.value)}
                 />
               </div>
             </div>
@@ -1014,8 +1014,8 @@ const GBProductCreatePage = () => {
                 value={formData.groupBuyPrice}
                 onChange={(e) => updateField('groupBuyPrice', e.target.value)}
                 style={{
-                  fontSize: '20px',
-                  fontWeight: '700',
+                  fontSize: '16px',
+                  fontWeight: '500',
                   backgroundColor: 'white',
                   border: '1px solid #b9babdff',
                   padding: '14px',
