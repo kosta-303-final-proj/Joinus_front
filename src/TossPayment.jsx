@@ -7,6 +7,7 @@ const customerKey = "NWNmY8ZpgKTZUzoW8EKVJ";
 
 export function CheckoutPage() {
   const location = useLocation();
+  //이놈이 데이터 받음
   const {
     productId,
     orderId,

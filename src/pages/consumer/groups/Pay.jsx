@@ -11,6 +11,7 @@ export default function Pay(){
     const { id } = useParams();
     const location = useLocation();
     const [detail, setDetail] = useState({ product: {}, category: {}, thumbnailFile: {}, images: [], options: []});
+    //detail에서 넘겨주는 데이터 받기
     const { productId, thumbnail, finalPrice, productName, quantity, selectedOptions: selectedOptionsFromDetail } = location.state || {};
     const navigate = useNavigate();
     const [memberPoint, setMemberPoint] = useState(0);

@@ -306,6 +306,10 @@ const GBProductCreatePage = () => {
       }
 
       if (optionGroups.length > 0) {
+        // ⭐ 수정 모드일 경우 기존 옵션 전체 삭제
+        if (isEditMode) {
+          await myAxios().delete(`/admin/gbProducts/${resultProductId}/options`);
+        }
         for (const group of optionGroups) {
           for (const option of group.options) {
             await myAxios().post(`/admin/gbProducts/${resultProductId}/options`, [{
@@ -394,6 +398,10 @@ const GBProductCreatePage = () => {
       }
 
       if (optionGroups.length > 0) {
+        // ⭐ 수정 모드일 경우 기존 옵션 전체 삭제
+        if (isEditMode) {
+          await myAxios().delete(`/admin/gbProducts/${resultProductId}/options`);
+        }
         for (const group of optionGroups) {
           for (const option of group.options) {
             await myAxios().post(`/admin/gbProducts/${resultProductId}/options`, [{
