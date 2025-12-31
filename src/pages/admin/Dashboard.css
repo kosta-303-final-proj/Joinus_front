@@ -100,6 +100,22 @@
   border-bottom: 1px solid var(--color-border-light);
 }
 
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-4);
+  padding-bottom: var(--spacing-3);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+/* card-header 안의 card-title은 border와 margin 제거 */
+.card-header .card-title {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
 .payment-list .card-more,
 .payment-list .card-more {
   position: absolute;

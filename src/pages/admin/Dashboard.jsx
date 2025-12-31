@@ -126,35 +126,31 @@ export default function Dashboard() {
 
         <div className="content-card">
           <div className="card-header">
-            <div className="d-flex flex-row justify-content-between">
-              <h2 className="card-title">구매 대기 공구상품 건</h2>
-              <div className="payment-list">
-                <a
-                  href="/admin/pendingPayment"
-                  className="card-more-link"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    navigate('/admin/adminOrderList');
-                  }}
-                >
-                  더보기
-                </a>
-              </div>
-            </div>
+            <h2 className="card-title">구매 대기 공구상품 건</h2>
+            <a
+              href="/admin/pendingPayment"
+              className="card-more-link"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate('/admin/adminOrderList');
+              }}
+            >
+              더보기
+            </a>
+          </div>
 
-            <div className="payment-list">
-              {pendingPayments && pendingPayments.length > 0 ? (
-                pendingPayments.map((item, index) => (
-                  <div key={item.gbProductId || index} className="payment-item">
-                    <div className="payment-info">
-                      <div className="payment-name">{item.name}</div>
-                    </div>
+          <div className="payment-list">
+            {pendingPayments && pendingPayments.length > 0 ? (
+              pendingPayments.map((item, index) => (
+                <div key={item.gbProductId || index} className="payment-item">
+                  <div className="payment-info">
+                    <div className="payment-name">{item.name}</div>
                   </div>
-                ))
-              ) : (
-                <div className="no-data">주문 대기 공구상품이 없습니다.</div>
-              )}
-            </div>
+                </div>
+              ))
+            ) : (
+              <div className="no-data">주문 대기 공구상품이 없습니다.</div>
+            )}
           </div>
         </div>
       </div>
