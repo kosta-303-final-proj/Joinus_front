@@ -465,6 +465,27 @@
   background-color: #fef2f2;
 }
 
+.custom-select {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background-color: white;
+  font-size: 14px;
+  font-weight: 500;
+  appearance: none; /* 기본 화살표 제거 */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
+.custom-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+
 /* 버튼들 */
 .add-btn {
   display: flex;
@@ -539,16 +560,17 @@
 }
 
 /* ========================================
-   저장 버튼 (흰색 테두리)
+   저장 버튼
    ======================================== */
 .gb-product-btn-save {
-  background-color: #ffffff;
-  color: #6b7280;
-  border: 1px solid #d1d5db;
+  background-color: #3b82f6;
+  color: #ffffff;
+  border: 1px solid #3b82f6;
 }
 
 .gb-product-btn-save:hover {
-  background-color: #f9fafb;
+  background-color: #2563eb;
+  border-color: #2563eb;
 }
 
 /* ========================================

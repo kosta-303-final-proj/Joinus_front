@@ -198,7 +198,7 @@ const Sidebar = () => {
                 onClick={() => navigate('/admin/faqAndInquiryList')}
                 style={{ cursor: 'pointer' }}
               >
-                <span className="submenu-label">FAQ 및 1:1문의</span>
+                <span className="submenu-label">FAQ 및 문의</span>
               </div>
               <div 
                 className={`submenu-item ${isActive(['/admin/memberList', '/admin/member']) ? 'active' : ''}`}
